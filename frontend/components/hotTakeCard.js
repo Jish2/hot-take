@@ -4,7 +4,9 @@ import {Stack, Heading, Divider, ButtonGroup, Button, Image, Text, Card, CardHea
 
 export default function HotTakeCard() {
   return (
-            <Card maxW='sm' >
+    <div style={{height:'100vh', display:'flex',justifyContent:'center',alignItems:'center'}}>
+        <div>
+        <Card maxW='sm'>
         <CardBody>
             
             <Stack mt='6' spacing='3'>
@@ -31,5 +33,9 @@ export default function HotTakeCard() {
             </ButtonGroup>
         </CardFooter>
         </Card>
+        </div>
+        
+    </div>
+            
   )
 }
