@@ -1,10 +1,10 @@
 {
-	"name": "express-example-app",
+	"name": "hot-take",
 	"version": "1.0",
 	"description": "backend for Hot Take",
 	"main": "app.js",
 	"scripts": {
-		"start": "node app.js",
+		"start": "nodemon src/app.js",
 		"pretest": "eslint --ignore-path .gitignore .",
 		"test": "tap test.js"
 	},
@@ -12,6 +12,7 @@
 		"type": "git",
 		"url": "https://github.com/Jish2/hot-take.git"
 	},
+	"type": "module",
 	"author": "Joshua Goon",
 	"license": "MIT",
 	"homepage": "https://hottake.gg/",
@@ -19,5 +20,7 @@
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2"
 	},
-	"type": "module"
+	"devDependencies": {
+		"nodemon": "..."
+	}
 }
