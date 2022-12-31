@@ -1,0 +1,33 @@
+{
+	"name": "hot-take",
+	"version": "1.0.0",
+	"description": "backend server for Hot Take",
+	"main": "app.js",
+	"type": "module",
+	"dependencies": {
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"mongoose": "^6.8.2"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.20"
+	},
+	"scripts": {
+		"start": "nodemon src/app.js",
+		"pretest": "eslint --ignore-path .gitignore .",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Jish2/hot-take.git"
+	},
+	"keywords": [
+		"express.js"
+	],
+	"author": "Joshua Goon",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Jish2/hot-take/issues"
+	},
+	"homepage": "https://hottake.gg/"
+}
