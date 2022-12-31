@@ -5,13 +5,13 @@ const ObjectId = Schema.ObjectId;
 // the post should contain:
 // Title (or post content)
 // Timestamp
-// upvotes and downvotes
+// agree and disagree
 // identification (auto generated)
 
 const PostSchema = new Schema({
 	title: String,
-	upvote: [String],
-	downvote: [String],
+	agree: [String],
+	disagree: [String],
 	date: Date,
 });
 
