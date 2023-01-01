@@ -4,16 +4,19 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import Post from "./models/Post.js";
-
+import cors from "cors"
 // initialization
 const port = process.env.PORT || 3000;
 const app = express();
+
 
 // restrict hostname requests through CORS?
 const db = "";
 
 // middleware
 app.use(express.json());
+app.use(cors())
+
 
 // HELPER FUNCTIONS
 // error handling
@@ -31,6 +34,7 @@ const remove = (value, array) => {
 
 // fetch posts
 app.get("/posts", async (req, res) => {
+	
 	// sorts collection so newest posts are first
 	const postsLists = await Post.find().sort({ date: -1 });
 	res.send(postsLists);

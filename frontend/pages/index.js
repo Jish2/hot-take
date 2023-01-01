@@ -1,14 +1,19 @@
 'use client'
 import { Inter } from '@next/font/google'
-import { VStack, Text,Center} from '@chakra-ui/react'
+import { VStack, Text,Center, useDisclosure, Button, Container, HStack,Box,Tag,Image} from '@chakra-ui/react'
 import HotTakeCard from '../components/hotTakeCard'
 import React, {useState, useRef, useEffect} from 'react';
 import { ChakraProvider } from '@chakra-ui/react'
+import UploadHotTake from '../components/uploadHT';
+import useScrollSnap from 'react-use-scroll-snap';
 
 import { v4 as uuidv4 } from 'uuid';
 
 
+
 const inter = Inter({ subsets: ['latin'] })
+
+
 
 export async function getStaticProps() {
   // Call an external API endpoint to get posts.
@@ -27,6 +32,11 @@ export async function getStaticProps() {
 }
 
 export default function Home({postsFromDB}) {
+  // const scrollRef = useRef(null);
+  // useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
+
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
   //const posts = await getPosts();
   //on load, check if the user has a uuid stored
   useEffect(()=>{
@@ -47,17 +57,13 @@ export default function Home({postsFromDB}) {
 
   return (
     <>
-      <VStack w="full" overflowY='scroll'>
-        {
-          posts.map((post)=>{
-            return <HotTakeCard title={post.title} />
-          })
-        }
+       <UploadHotTake isOpen={isOpen} onClose={onClose}/>
+      <Button onClick={onOpen} colorScheme='twitter' size='lg' style={{aspectRatio:"1/1", borderRadius:"100%", position:"fixed", right:'10vw', bottom:'10vh'}} >+</Button>
+      <Container m={0} w="100%" style={{marginLeft:"auto", marginRight:"auto", height:"100vh", scrollSnapType:"y mandatory",overflowY:"scroll"}} w="full" >
+        {posts.map((post,i)=><div style={{scrollSnapAlign:"center"}}><HotTakeCard key={i} title={post.title} /></div>)}
+      </Container> 
+      
         
-
-
-        
-      </VStack>
     </>
   )
 }
