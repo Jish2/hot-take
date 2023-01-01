@@ -15,6 +15,20 @@ const db = "";
 // middleware
 app.use(express.json());
 
+// HELPER FUNCTIONS
+// error handling
+const handleError = (err) => {
+	console.error(err);
+	return;
+};
+
+// remove element from array
+const remove = (value, array) => {
+	return array.filter((item) => {
+		return item !== value;
+	});
+};
+
 // fetch posts
 app.get("/posts", async (req, res) => {
 	// sorts collection so newest posts are first
@@ -22,10 +36,73 @@ app.get("/posts", async (req, res) => {
 	res.send(postsLists);
 });
 
-// upvote function
+// agree function
+app.post("/agree", async (req, res) => {
+	// console.log(req.headers);
+
+	const postID = req.body.postID;
+	const user = req.body.userUUID;
+
+	if (!postID) {
+		res.status(400).send("Agreement failed, no post included.");
+	} else if (!user) {
+		res.status(400).send("Agreement failed, no user registered.");
+	} else {
+		Post.findById(postID, (err, post) => {
+			if (err) handleError(err); // error handle
+			else {
+				// check if includes....
+				if (post.agree.includes(user)) {
+					post.agree = remove(user, post.agree);
+				} else if (post.disagree.includes(user)) {
+					post.disagree = remove(user, post.disagree);
+				} else {
+					post.agree.push(user);
+				}
+				post.save((err, result) => {
+					if (err) handleError(err);
+					else res.status(200).send(result);
+				});
+			}
+		});
+	}
+});
+
+// disagree function
+app.post("/disagree", async (req, res) => {
+	// console.log(req.headers);
+
+	const postID = req.body.postID;
+	const user = req.body.userUUID;
+
+	if (!postID) {
+		res.status(400).send("Disagreement failed, no post included.");
+	} else if (!user) {
+		res.status(400).send("Disagreement failed, no user registered.");
+	} else {
+		Post.findById(postID, (err, post) => {
+			if (err) handleError(err); // error handle
+			else {
+				// check if includes....
+				if (post.agree.includes(user)) {
+					post.agree = remove(user, post.agree);
+				} else if (post.disagree.includes(user)) {
+					post.disagree = remove(user, post.disagree);
+				} else {
+					post.disagree.push(user);
+				}
+				post.save((err, result) => {
+					if (err) handleError(err);
+					else res.status(200).send(result);
+				});
+			}
+		});
+	}
+});
 
 // create a post :) 😁
 // TODO: implement rate limiting
+// TODO: check if post exists already? (May be unnecessary...)
 app.post("/post", async (req, res) => {
 	// console.log(req.headers);
 	if (req.body.title.length == 0) {
@@ -35,13 +112,12 @@ app.post("/post", async (req, res) => {
 	} else {
 		const newPost = new Post({
 			title: req.body.title,
-			upvote: [],
-			downvote: [],
+			agree: [],
+			disagree: [],
 			date: new Date(),
 		});
 		const createdPost = await newPost.save();
-		// res.send(created);
-		res.sendStatus(200); // no body needed?
+		res.status(200).send(createdPost);
 	}
 });
 
