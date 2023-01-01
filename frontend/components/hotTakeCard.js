@@ -2,7 +2,7 @@ import React from 'react'
 import {Stack, Heading, Divider, ButtonGroup, Button, Image, Text, Card, CardHeader, CardBody, CardFooter, HStack } from '@chakra-ui/react'
 
 
-export default function HotTakeCard() {
+export default function HotTakeCard( { title }) {
   return (
     <div style={{height:'100vh', display:'flex',justifyContent:'center',alignItems:'center'}}>
         <div>
@@ -10,7 +10,8 @@ export default function HotTakeCard() {
         <CardBody>
             
             <Stack mt='6' spacing='3'>
-            <Heading size='lg'>My math teacher is so sexy I cannot take it anymore</Heading>
+
+            <Heading size='lg'>{title}</Heading>
             
             
             </Stack>
