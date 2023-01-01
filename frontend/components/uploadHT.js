@@ -1,15 +1,32 @@
-import React from 'react'
+import {React, useState, useRef} from 'react'
 import { Button, Modal, ModalOverlay, ModalHeader,
 ModalCloseButton,ModalBody, Textarea, ModalFooter, ModalContent} from '@chakra-ui/react'
+import axios, {isCancel, AxiosError} from 'axios';
 
 
-const handlePostSubmit = (e) => {
-    e.preventDefault()
-    // POST request
-  }
+
 
 export default function UploadHotTake( { isOpen, onClose } ) {
 
+
+    const handlePostSubmit = (e) => {
+        e.preventDefault()
+        //console.log("asshole")
+        axios.post('http://localhost:3001/post', {
+            title: input.current.value,
+          })
+          .then(function (response) {
+            location.reload()
+            
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+        // POST request
+    }
+    const input = useRef(null)  
     
       return (
         <>
@@ -18,11 +35,11 @@ export default function UploadHotTake( { isOpen, onClose } ) {
             isCentered>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Create a post</ModalHeader>
+              <ModalHeader>Share a hot take of up to 140 words!</ModalHeader>
               <ModalCloseButton />
               <form onSubmit={handlePostSubmit}>
                 <ModalBody>
-                  <Textarea placeholder='Share you hot take up to 140 words!' />
+                  <Textarea ref={input} placeholder='Share your hot take' />
                 </ModalBody>
       
                 <ModalFooter>

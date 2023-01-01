@@ -4,9 +4,9 @@ import {Stack, Heading, Divider, ButtonGroup, Button, Image, Text, Card, CardHea
 
 export default function HotTakeCard( { title }) {
   return (
-    <div style={{height:'100vh', display:'flex',justifyContent:'center',alignItems:'center'}}>
-        <div>
-        <Card maxW='sm'>
+    <div style={{scrollSnapAlign:"center", height:'100vh', display:'flex',justifyContent:'center',alignItems:'center'}}>
+
+        <Card >
         <CardBody>
             
             <Stack mt='6' spacing='3'>
@@ -34,7 +34,7 @@ export default function HotTakeCard( { title }) {
             </ButtonGroup>
         </CardFooter>
         </Card>
-        </div>
+
         
     </div>
             

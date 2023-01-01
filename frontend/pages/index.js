@@ -1,12 +1,14 @@
 'use client'
 import { Inter } from '@next/font/google'
-import { VStack, Text,Center, useDisclosure, Button} from '@chakra-ui/react'
+import { VStack, Text,Center, useDisclosure, Button, Container, HStack,Box,Tag,Image} from '@chakra-ui/react'
 import HotTakeCard from '../components/hotTakeCard'
 import React, {useState, useRef, useEffect} from 'react';
 import { ChakraProvider } from '@chakra-ui/react'
 import UploadHotTake from '../components/uploadHT';
+import useScrollSnap from 'react-use-scroll-snap';
 
 import { v4 as uuidv4 } from 'uuid';
+
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -30,6 +32,9 @@ export async function getStaticProps() {
 }
 
 export default function Home({postsFromDB}) {
+  const scrollRef = useRef(null);
+  useScrollSnap({ ref: scrollRef, duration: 50, delay: 10 });
+
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   //const posts = await getPosts();
@@ -52,20 +57,13 @@ export default function Home({postsFromDB}) {
 
   return (
     <>
-      <UploadHotTake isOpen={isOpen} onClose={onClose}/>
+       <UploadHotTake isOpen={isOpen} onClose={onClose}/>
       <Button onClick={onOpen} colorScheme='twitter' size='lg' style={{aspectRatio:"1/1", borderRadius:"100%", position:"fixed", right:'10vw', bottom:'10vh'}} >+</Button>
-      <VStack w="full" overflowY='scroll'>
+      <VStack ref={scrollRef} w="full" overflowY='center' scrollSnapType="y mandatory">
+        {posts.map((post,i)=><HotTakeCard key={i} title={post.title} />)}
+      </VStack> 
+      
         
-        {
-          posts.map((post)=>{
-            return <HotTakeCard title={post.title} />
-          })
-        }
-        
-
-
-        
-      </VStack>
     </>
   )
 }
