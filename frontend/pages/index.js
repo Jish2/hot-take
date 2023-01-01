@@ -32,8 +32,8 @@ export async function getStaticProps() {
 }
 
 export default function Home({postsFromDB}) {
-  const scrollRef = useRef(null);
-  useScrollSnap({ ref: scrollRef, duration: 50, delay: 10 });
+  // const scrollRef = useRef(null);
+  // useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
 
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -59,9 +59,9 @@ export default function Home({postsFromDB}) {
     <>
        <UploadHotTake isOpen={isOpen} onClose={onClose}/>
       <Button onClick={onOpen} colorScheme='twitter' size='lg' style={{aspectRatio:"1/1", borderRadius:"100%", position:"fixed", right:'10vw', bottom:'10vh'}} >+</Button>
-      <VStack ref={scrollRef} w="full" overflowY='center' scrollSnapType="y mandatory">
-        {posts.map((post,i)=><HotTakeCard key={i} title={post.title} />)}
-      </VStack> 
+      <Container m={0} w="100%" style={{marginLeft:"auto", marginRight:"auto", height:"100vh", scrollSnapType:"y mandatory",overflowY:"scroll"}} w="full" >
+        {posts.map((post,i)=><div style={{scrollSnapAlign:"center"}}><HotTakeCard key={i} title={post.title} /></div>)}
+      </Container> 
       
         
     </>
