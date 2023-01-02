@@ -2,6 +2,7 @@ import React from "react";
 //prettier-ignore
 import { Stack, Heading, Divider, ButtonGroup, Button, Image, Text, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer } from "@chakra-ui/react";
 import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsExclamationTriangle } from "react-icons/bs";
+import { AiOutlineFire } from "react-icons/ai";
 
 export default function HotTakeCard({ title }) {
 	const handleAgreeClick = () => {};
@@ -52,7 +53,7 @@ export default function HotTakeCard({ title }) {
 				</CardBody>
 				{/* <Divider /> */}
 				<CardFooter>
-					<Flex style={{ width: "100%" }}>
+					<Flex style={{ width: "100%" }} gap="6px">
 						<Button
 							width="125px"
 							leftIcon={<BsFillHandThumbsUpFill />}
@@ -63,7 +64,7 @@ export default function HotTakeCard({ title }) {
 							Agree
 						</Button>
 						<Spacer />
-						<Button disabled variant="outline" color="black" colorScheme="gray">
+						<Button leftIcon={<AiOutlineFire />} disabled variant="outline" color="black" colorScheme="gray">
 							1.0k
 						</Button>
 						<Spacer />
