@@ -1,22 +1,12 @@
 "use client";
 import { Inter } from "@next/font/google";
-import {
-	VStack,
-	Text,
-	Center,
-	useDisclosure,
-	Button,
-	Container,
-	HStack,
-	Box,
-	Tag,
-	Image,
-} from "@chakra-ui/react";
+import { useDisclosure, Button, Container, Icon } from "@chakra-ui/react";
 import HotTakeCard from "../components/hotTakeCard";
 import React, { useState, useRef, useEffect } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import UploadHotTake from "../components/uploadHT";
-import useScrollSnap from "react-use-scroll-snap";
+import WithSubnavigation from "../components/ChakraNavbar";
+import { BsPlusLg } from "react-icons/bs";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -55,38 +45,39 @@ export default function Home({ postsFromDB }) {
 	}, []);
 
 	const [posts, setPosts] = useState(postsFromDB);
-	//console.log(posts)
 
 	return (
 		<>
+			<WithSubnavigation />
 			<UploadHotTake isOpen={isOpen} onClose={onClose} />
 			<Button
 				onClick={onOpen}
-				colorScheme="twitter"
+				colorScheme="teal"
 				size="lg"
 				style={{
 					aspectRatio: "1/1",
 					borderRadius: "100%",
 					position: "fixed",
-					right: "10vw",
-					bottom: "10vh",
+					right: "18px",
+					bottom: "18px",
 				}}
 			>
-				+
+				<Icon as={BsPlusLg} w={4} h={4} color="white" />
 			</Button>
 			<Container
 				m={0}
-				w="100%"
 				style={{
 					marginLeft: "auto",
 					marginRight: "auto",
 					height: "100vh",
+					width: "100vw",
 					scrollSnapType: "y mandatory",
 					overflowY: "scroll",
+					scrollBehavior: "smooth",
 				}}
 			>
 				{posts.map((post, i) => (
-					<div style={{ scrollSnapAlign: "center" }}>
+					<div style={{ scrollSnapAlign: "end" }}>
 						<HotTakeCard key={i} title={post.title} />
 					</div>
 				))}
