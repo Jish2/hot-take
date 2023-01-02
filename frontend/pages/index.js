@@ -31,7 +31,7 @@ export async function getStaticProps() {
 export default function Home({ postsFromDB }) {
 	// const scrollRef = useRef(null);
 	// useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
-
+	
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
@@ -64,8 +64,9 @@ export default function Home({ postsFromDB }) {
 			>
 				<Icon as={BsPlusLg} w={4} h={4} color="white" />
 			</Button>
-			<Container
+			<div
 				m={0}
+				p={0}
 				style={{
 					marginLeft: "auto",
 					marginRight: "auto",
@@ -77,11 +78,20 @@ export default function Home({ postsFromDB }) {
 				}}
 			>
 				{posts.map((post, i) => (
-					<div style={{ scrollSnapAlign: "end" }}>
-						<HotTakeCard key={i} title={post.title} />
+					<div style={{position:"relative"}}>
+						<div  style={{ position:"absolute",display:"flex",scrollSnapAlign: "end",width:"100%",height:"100%"}}>
+							<div  onClick={()=>{console.log("left clicked")}} style={{width:"50%",height:"100vh"}}></div>
+							<div  onClick={()=>{console.log("right clicked")}}style={{width:"50%",height:"100vh"}}></div> 
+						</div>
+						
+						<HotTakeCard key={i} title={post.title} /> 
+
+						
 					</div>
+					
+					
 				))}
-			</Container>
+			</div>
 		</>
 	);
 }
