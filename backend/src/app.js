@@ -57,6 +57,7 @@ app.post("/agree", async (req, res) => {
 					post.agree = remove(user, post.agree);
 				} else if (post.disagree.includes(user)) {
 					post.disagree = remove(user, post.disagree);
+					post.agree.push(user);
 				} else {
 					post.agree.push(user);
 				}
@@ -87,6 +88,7 @@ app.post("/disagree", async (req, res) => {
 				// check if includes....
 				if (post.agree.includes(user)) {
 					post.agree = remove(user, post.agree);
+					post.disagree.push(user);
 				} else if (post.disagree.includes(user)) {
 					post.disagree = remove(user, post.disagree);
 				} else {
