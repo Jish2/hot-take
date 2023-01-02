@@ -4,19 +4,17 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import Post from "./models/Post.js";
-import cors from "cors"
+import cors from "cors";
 // initialization
 const port = process.env.PORT || 3000;
 const app = express();
-
 
 // restrict hostname requests through CORS?
 const db = "";
 
 // middleware
 app.use(express.json());
-app.use(cors())
-
+app.use(cors());
 
 // HELPER FUNCTIONS
 // error handling
@@ -34,7 +32,6 @@ const remove = (value, array) => {
 
 // fetch posts
 app.get("/posts", async (req, res) => {
-	
 	// sorts collection so newest posts are first
 	const postsLists = await Post.find().sort({ date: -1 });
 	res.send(postsLists);
@@ -60,6 +57,7 @@ app.post("/agree", async (req, res) => {
 					post.agree = remove(user, post.agree);
 				} else if (post.disagree.includes(user)) {
 					post.disagree = remove(user, post.disagree);
+					post.agree.push(user);
 				} else {
 					post.agree.push(user);
 				}
@@ -90,6 +88,7 @@ app.post("/disagree", async (req, res) => {
 				// check if includes....
 				if (post.agree.includes(user)) {
 					post.agree = remove(user, post.agree);
+					post.disagree.push(user);
 				} else if (post.disagree.includes(user)) {
 					post.disagree = remove(user, post.disagree);
 				} else {
