@@ -1,6 +1,8 @@
 // prettier-ignore
-import { Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Link, Popover, PopoverTrigger, PopoverContent, useColorModeValue, useBreakpointValue, useDisclosure, HStack } from "@chakra-ui/react";
+import { Box, Flex, Text, IconButton, Button, Stack, Collapse, Icon, Popover, PopoverTrigger, PopoverContent, useColorModeValue, useBreakpointValue, useDisclosure, HStack } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { AiFillFire } from "react-icons/ai";
+import Link from "next/link";
 
 const LOGO_TEXT = "Hot Take";
 const NAV_ITEMS = [
@@ -56,6 +58,7 @@ export default function WithSubnavigation() {
 					</Flex>
 					<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
 						<HStack spacing="6px">
+							<Icon as={AiFillFire} w={4} h={4} />
 							<Text
 								textAlign={useBreakpointValue({ base: "center", md: "left" })}
 								fontFamily={"heading"}
@@ -64,9 +67,6 @@ export default function WithSubnavigation() {
 							>
 								{LOGO_TEXT}
 							</Text>
-							<Button colorScheme="teal" size="xs">
-								BETA
-							</Button>
 						</HStack>
 
 						<Flex display={{ base: "none", md: "flex" }} ml={10}>
@@ -75,6 +75,9 @@ export default function WithSubnavigation() {
 					</Flex>
 
 					<Stack flex={{ base: 1, md: 0 }} justify={"flex-end"} direction={"row"} spacing={6}>
+						<Button colorScheme="teal" size="xs">
+							BETA
+						</Button>
 						{/* <Button as={"a"} fontSize={"sm"} fontWeight={400} variant={"link"} href={"#"}>
 							Sign In
 						</Button>
