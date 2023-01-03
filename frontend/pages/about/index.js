@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Heading, Image, Text } from "@chakra-ui/react";
+import { Container, Heading, Image, Text,Button } from "@chakra-ui/react";
 
 import WithSubnavigation from "../../components/ChakraNavbar";
 export default function About() {
@@ -18,18 +18,34 @@ export default function About() {
             marginTop: "5vh",
           }}
         >
-          <Image
-            borderRadius="full"
-            boxSize="150px"
-            src="https://i.postimg.cc/52zDJrby/hottakepfp-1.png"
-            alt="Dan Abramov"
-          />
-          <Image
-            borderRadius="full"
-            boxSize="150px"
-            src="https://i.postimg.cc/477KCk0k/josh-1.png"
-            alt="Dan Abramov"
-          />
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
+            <Image
+
+              borderRadius="full"
+              boxSize={{base:"125px",sm:"150px"}}
+              src="https://i.postimg.cc/52zDJrby/hottakepfp-1.png"
+              alt="Dan Abramov"
+            />
+            <Button mt={3} colorScheme="teal" size={{base:"sm", sm:"md"}}>
+              CEO @ibrahimthespy
+            </Button>
+
+          </div>
+
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
+            <Image
+              borderRadius="full"
+              boxSize={{base:"125px",sm:"150px"}}
+
+              src="https://i.postimg.cc/477KCk0k/josh-1.png"
+              alt="Dan Abramov"
+            />
+            <Button mt={3} colorScheme="teal" size={{base:"sm", sm:"md"}}>
+              CTO @jgoon3
+            </Button>
+
+          </div>
+          
         </div>
         <Text mt={10} style={{textAlign:"center"}}>
           HotTake was founded in December of 2022, by founders Ibrahim Shah, and Joshua Goon.
