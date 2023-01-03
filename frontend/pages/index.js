@@ -7,6 +7,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 import UploadHotTake from "../components/uploadHT";
 import WithSubnavigation from "../components/ChakraNavbar";
 import { BsPlusLg } from "react-icons/bs";
+import { useScrollBy } from "react-use-window-scroll";
+
 
 
 import { v4 as uuidv4 } from "uuid";
@@ -32,22 +34,11 @@ export async function getStaticProps() {
 export default function Home({ postsFromDB }) {
 	// const scrollRef = useRef(null);
 	// useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
-	
+	const scrollBy = useScrollBy();
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [scrollPosition, setScrollPosition] = useState(0);
-	const handleScroll = () => {
-		const position = window.pageYOffset;
-		console.log(window.pageYOffset)
-		setScrollPosition(position);
-	};
 	
-	useEffect(() => {
-		window.addEventListener('scroll', handleScroll, { passive: true });
-	
-		return () => {
-			window.removeEventListener('scroll', handleScroll);
-		};
-	}, []);
 	const postListRef = useRef(null)
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
@@ -98,17 +89,16 @@ export default function Home({ postsFromDB }) {
 			>
 				{posts.map((post, i) => (
 					<div style={{position:"relative"}}>
-						<div id="flexContainer" style={{ position:"absolute",display:"flex",scrollSnapAlign: "end",width:"100%",height:"100%"}}>
+						<div id="flexContainer" style={{ overflow:"scroll",position:"absolute",display:"flex",scrollSnapAlign: "end",width:"100%",height:"100%"}}>
 							<div  onClick={()=>{
+								 scrollBy(200, 0)
+								 //window.scrollBy(300,0)
 
-								var position = document.getElementById("flexContainer").getBoundingClientRect();
-								console.log(position.top)
-
-								document.getElementById("scrollContainer").scrollTo(-400,0)
+								
 
 
 							 }} style={{width:"50%",height:"100vh"}}></div>
-							<div  onClick={()=>{console.log("clicked right")}}style={{width:"50%",height:"100vh"}}></div> 
+							<div  onClick={()=>{scrollTo(0, 0) }}style={{width:"50%",height:"100vh"}}></div> 
 						</div>
 						
 						<HotTakeCard key={i} title={post.title} /> 
