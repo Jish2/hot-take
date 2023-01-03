@@ -34,10 +34,7 @@ export async function getStaticProps() {
 export default function Home({ postsFromDB }) {
 	// const scrollRef = useRef(null);
 	// useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
-	const scrollBy = useScrollBy();
-
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [scrollPosition, setScrollPosition] = useState(0);
 	
 	const postListRef = useRef(null)
 	//const posts = await getPosts();
@@ -91,14 +88,18 @@ export default function Home({ postsFromDB }) {
 					<div style={{position:"relative"}}>
 						<div id="flexContainer" style={{ overflow:"scroll",position:"absolute",display:"flex",scrollSnapAlign: "end",width:"100%",height:"100%"}}>
 							<div  onClick={()=>{
-								 scrollBy(200, 0)
-								 //window.scrollBy(300,0)
+
+								 postListRef.current.scrollBy({top:50})
 
 								
 
 
 							 }} style={{width:"50%",height:"100vh"}}></div>
-							<div  onClick={()=>{scrollTo(0, 0) }}style={{width:"50%",height:"100vh"}}></div> 
+							<div  onClick={()=>{
+								
+								postListRef.current.scrollBy({top:50})
+								
+								}}style={{width:"50%",height:"100vh"}}></div> 
 						</div>
 						
 						<HotTakeCard key={i} title={post.title} /> 
