@@ -7,6 +7,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import UploadHotTake from "../components/uploadHT";
 import WithSubnavigation from "../components/ChakraNavbar";
 import { BsPlusLg } from "react-icons/bs";
+import { useScrollBy } from "react-use-window-scroll";
+
+
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -31,8 +34,9 @@ export async function getStaticProps() {
 export default function Home({ postsFromDB }) {
 	// const scrollRef = useRef(null);
 	// useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
-
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	
+	const postListRef = useRef(null)
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
 	useEffect(() => {
@@ -55,6 +59,7 @@ export default function Home({ postsFromDB }) {
 				colorScheme="teal"
 				size="lg"
 				style={{
+					zIndex:"999",
 					aspectRatio: "1/1",
 					borderRadius: "100%",
 					position: "fixed",
@@ -64,8 +69,11 @@ export default function Home({ postsFromDB }) {
 			>
 				<Icon as={BsPlusLg} w={4} h={4} color="white" />
 			</Button>
-			<Container
+			<div
+				id="scrollContainer"
+				ref={postListRef}
 				m={0}
+				p={0}
 				style={{
 					marginLeft: "auto",
 					marginRight: "auto",
@@ -77,11 +85,31 @@ export default function Home({ postsFromDB }) {
 				}}
 			>
 				{posts.map((post, i) => (
-					<div style={{ scrollSnapAlign: "end" }}>
-						<HotTakeCard key={i} title={post.title} />
+					<div style={{position:"relative"}}>
+						<div id="flexContainer" style={{ overflow:"scroll",position:"absolute",display:"flex",scrollSnapAlign: "end",width:"100%",height:"100%"}}>
+							<div  onClick={()=>{
+
+								 postListRef.current.scrollBy({top:50})
+
+								
+
+
+							 }} style={{width:"50%",height:"100vh"}}></div>
+							<div  onClick={()=>{
+								
+								postListRef.current.scrollBy({top:50})
+								
+								}}style={{width:"50%",height:"100vh"}}></div> 
+						</div>
+						
+						<HotTakeCard key={i} title={post.title} /> 
+
+						
 					</div>
+					
+					
 				))}
-			</Container>
+			</div>
 		</>
 	);
 }

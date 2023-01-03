@@ -59,6 +59,7 @@ export default function HotTakeCard({ title }) {
 							variant="outline"
 							colorScheme="teal"
 							color="#319795"
+							onClick={()=>{console.log("agree clicked")}}
 						>
 							Agree
 						</Button>
@@ -73,6 +74,7 @@ export default function HotTakeCard({ title }) {
 							variant="outline"
 							colorScheme="red"
 							color="#ff5242"
+							onClick={()=>{console.log("disagree clicked")}}
 						>
 							Disagree
 						</Button>
