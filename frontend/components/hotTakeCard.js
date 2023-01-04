@@ -14,15 +14,16 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
   const handleAgreeClick = () => {};
 
   const handleDisagreeClick = () => {};
-  console.log(title, agree.length,disagree.length)
+  //console.log(title, agree.length,disagree.length)
   const [heat, setHeat] = useState(agree.length - disagree.length);
+  //console.log([agreed,disagree])
   //console.log(agree.includes(uuid))
   //console.log(disagree.includes(uuid))
   //console.log(id, uuid)
   function agreeWithPost() {
 
     axios
-      .post("http://localhost:3001/agree", {
+      .post("http://10.0.0.126:3001/agree", {
         postID: id,
         userUUID: uuid,
       })
@@ -60,7 +61,7 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
   function disagreeWithPost() {
 
     axios
-      .post("http://localhost:3001/disagree", {
+      .post("http://10.0.0.126:3001/disagree", {
         postID: id,
         userUUID: uuid,
       })
