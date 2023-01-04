@@ -9,12 +9,12 @@ const ObjectId = Schema.ObjectId;
 // identification (auto generated)
 
 const PostSchema = new Schema({
-	title: String,
-	agree: [String],
-	disagree: [String],
-	votes: Number,
-	interactions: Number,
-	date: Date,
+	title: { types: String, required: true },
+	agree: { types: [String], required: true },
+	disagree: { types: [String], required: true },
+	votes: { types: Number, required: true, immutable: true },
+	interactions: { types: Number, required: true, immutable: true },
+	date: { types: Date, required: true, immutable: true },
 });
 
 PostSchema.pre("save", (next) => {
