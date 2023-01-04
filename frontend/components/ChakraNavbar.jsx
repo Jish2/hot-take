@@ -12,7 +12,7 @@ const NAV_ITEMS = [
 	},
 	{
 		label: "Active Communities",
-		href: "#",
+		href: "/activeCommunities",
 	},
 	{
 		label: "Careers",
@@ -20,12 +20,12 @@ const NAV_ITEMS = [
 			{
 				label: "Find a job",
 				subLabel: "Take a quick look at careers currently offered at Hot Take",
-				href: "#",
+				href: "/jobs",
 			},
 			{
 				label: "Internships",
 				subLabel: "Join our team as an Intern during the Fall, Spring or Summer season",
-				href: "#",
+				href: "/internships",
 			},
 		],
 	},

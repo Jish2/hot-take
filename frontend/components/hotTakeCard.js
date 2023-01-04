@@ -21,7 +21,6 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
   //console.log(disagree.includes(uuid))
   //console.log(id, uuid)
   function agreeWithPost() {
-
     axios
       .post("http://10.0.0.126:3001/agree", {
         postID: id,
@@ -57,9 +56,8 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
         console.log(error);
       });
   }
-  
-  function disagreeWithPost() {
 
+  function disagreeWithPost() {
     axios
       .post("http://10.0.0.126:3001/disagree", {
         postID: id,
@@ -73,18 +71,17 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
           });
         } else if (agree.includes(uuid)) {
           setHeat((prev) => {
-            
             agree.splice(agree.indexOf(uuid), 1);
-			disagree.push(uuid)
+            disagree.push(uuid);
 
-            return prev -2;
+            return prev - 2;
           });
           //our user has previously disagreed, we should now undo disagree by +2ing the number
         } else {
           setHeat((prev) => {
             disagree.push(uuid);
 
-            return prev -1;
+            return prev - 1;
           });
           //has not agreed or disagreed, just +1
         }
@@ -148,6 +145,7 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
               colorScheme="teal"
               color="#319795"
               onClick={agreeWithPost}
+			  style={{background: agree.includes(uuid) ? '#B2F5EA' : ''}}
             >
               Agree
             </Button>
@@ -163,6 +161,7 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
               colorScheme="red"
               color="#ff5242"
               onClick={disagreeWithPost}
+              style={{background: disagree.includes(uuid) ? '#FEB2B2' : ''}}
             >
               Disagree
             </Button>
