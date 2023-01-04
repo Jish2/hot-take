@@ -12,7 +12,7 @@ const NAV_ITEMS = [
 	},
 	{
 		label: "Active Communities",
-		href: "#",
+		href: "/activeCommunities",
 	},
 	{
 		label: "Careers",
@@ -20,12 +20,12 @@ const NAV_ITEMS = [
 			{
 				label: "Find a job",
 				subLabel: "Take a quick look at careers currently offered at Hot Take",
-				href: "#",
+				href: "/jobs",
 			},
 			{
 				label: "Internships",
 				subLabel: "Join our team as an Intern during the Fall, Spring or Summer season",
-				href: "#",
+				href: "/internships",
 			},
 		],
 	},
@@ -57,17 +57,22 @@ export default function WithSubnavigation() {
 						/>
 					</Flex>
 					<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-						<HStack spacing="6px">
-							<Icon as={AiFillFire} w={4} h={4} />
-							<Text
-								textAlign={useBreakpointValue({ base: "center", md: "left" })}
-								fontFamily={"heading"}
-								as="b"
-								color={useColorModeValue("gray.800", "white")}
-							>
-								{LOGO_TEXT}
-							</Text>
-						</HStack>
+						<Link href={"/"}>
+							<HStack spacing="6px">
+								<Icon as={AiFillFire} w={4} h={4} />
+								<Text
+									textAlign={useBreakpointValue({ base: "center", md: "left" })}
+									fontFamily={"heading"}
+									
+									as="b"
+									color={useColorModeValue("gray.800", "white")}
+								>
+									{LOGO_TEXT}
+								</Text>
+							</HStack>
+						
+						</Link>
+						
 
 						<Flex display={{ base: "none", md: "flex" }} ml={10}>
 							<DesktopNav />
