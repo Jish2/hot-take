@@ -1,12 +1,82 @@
 import React from "react";
+import { useState } from "react";
 //prettier-ignore
 import { Stack, Heading, Divider, ButtonGroup, Button, Image, Text, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer } from "@chakra-ui/react";
 import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsExclamationTriangle } from "react-icons/bs";
+import axios, { isCancel, AxiosError } from "axios";
 
-export default function HotTakeCard({ title }) {
+export default function HotTakeCard({ title, agree, disagree, id,uuid}) {
+
+	//console.log(agree.length)
 	const handleAgreeClick = () => {};
 
 	const handleDisagreeClick = () => {};
+	const [heat, setHeat] = useState(agree.length-disagree.length)
+	//console.log(id, uuid)
+	function agreeWithPost(){
+		console.log(agree.includes(uuid))
+
+
+		axios
+			.post("http://localhost:3001/agree", {
+				postID: id,
+				userUUID: uuid
+			})
+			.then(function (response) {
+				if (agree.includes(uuid)){
+					setHeat((prev)=>{
+						agree.push(id)
+						return prev-1
+					})
+					//our user has previously agreed, we should now undo the agree by -1ing from the number
+
+				}
+				else if (disagree.includes(uuid)){
+					setHeat((prev)=>{
+						agree.push(id)
+
+						return prev+2
+					})
+					//our user has previously disagreed, we should now undo disagree by +2ing the number
+
+
+				}
+				else{
+					setHeat((prev)=>{
+						agree.push(id)
+
+						return prev+1
+					})
+					//has not agreed or disagreed, just +1
+
+				}
+
+				//console.log(response)
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+
+
+
+	}
+	function disagreeWithPost(){
+
+		axios
+			.post("http://localhost:3001/disagree", {
+				postID: id,
+				userUUID: uuid
+			})
+			.then(function (response) {
+				console.log(response)
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+
+
+
+	}
 
 	return (
 		<div
@@ -59,22 +129,23 @@ export default function HotTakeCard({ title }) {
 							variant="outline"
 							colorScheme="teal"
 							color="#319795"
-							onClick={()=>{console.log("agree clicked")}}
+							onClick={agreeWithPost}
 						>
 							Agree
 						</Button>
 						<Spacer />
 						<Button disabled variant="outline" color="black" colorScheme="gray">
-							1.0k
+							{heat}
 						</Button>
 						<Spacer />
 						<Button
+							
 							width="125px"
 							rightIcon={<BsFillHandThumbsDownFill />}
 							variant="outline"
 							colorScheme="red"
 							color="#ff5242"
-							onClick={()=>{console.log("disagree clicked")}}
+							onClick={disagreeWithPost}
 						>
 							Disagree
 						</Button>

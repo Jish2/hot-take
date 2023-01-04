@@ -7,15 +7,19 @@ export default function UploadHotTake({ isOpen, onClose }) {
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		axios
-			.post("http://localhost:3001/post", {
+			.post("http://10.0.0.126:3001/post", {
 				title: input.current.value,
 			})
 			.then(function (response) {
-				location.reload();
+				//window.location = window.location
+
+				window.location.reload(true);
 			})
 			.catch(function (error) {
 				console.log(error);
 			});
+			//window.location.href = window.location.href
+
 	};
 	const input = useRef(null);
 
@@ -32,7 +36,7 @@ export default function UploadHotTake({ isOpen, onClose }) {
 						</ModalBody>
 
 						<ModalFooter>
-							<Button colorScheme="blue" type="submit">
+							<Button colorScheme="teal" type="submit">
 								Post to UCI
 							</Button>
 						</ModalFooter>
