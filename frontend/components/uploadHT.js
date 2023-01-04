@@ -7,7 +7,7 @@ export default function UploadHotTake({ isOpen, onClose }) {
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		axios
-			.post("http://10.0.0.126:3001/post", {
+			.post("http://localhost:3001/post", {
 				title: input.current.value,
 			})
 			.then(function (response) {
