@@ -22,7 +22,7 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
   //console.log(id, uuid)
   function agreeWithPost() {
     axios
-      .post("http://10.0.0.126:3001/agree", {
+      .post("http://localhost:3001/agree", {
         postID: id,
         userUUID: uuid,
       })
@@ -59,7 +59,7 @@ export default function HotTakeCard({ title, agree, disagree, id, uuid }) {
 
   function disagreeWithPost() {
     axios
-      .post("http://10.0.0.126:3001/disagree", {
+      .post("http://localhost:3001/disagree", {
         postID: id,
         userUUID: uuid,
       })
