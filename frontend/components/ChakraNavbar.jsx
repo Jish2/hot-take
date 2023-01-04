@@ -57,18 +57,22 @@ export default function WithSubnavigation() {
 						/>
 					</Flex>
 					<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-						<HStack spacing="6px">
-							<Icon as={AiFillFire} w={4} h={4} />
-							<Text
-								textAlign={useBreakpointValue({ base: "center", md: "left" })}
-								fontFamily={"heading"}
-								
-								as="b"
-								color={useColorModeValue("gray.800", "white")}
-							>
-								{LOGO_TEXT}
-							</Text>
-						</HStack>
+						<Link href={"/"}>
+							<HStack spacing="6px">
+								<Icon as={AiFillFire} w={4} h={4} />
+								<Text
+									textAlign={useBreakpointValue({ base: "center", md: "left" })}
+									fontFamily={"heading"}
+									
+									as="b"
+									color={useColorModeValue("gray.800", "white")}
+								>
+									{LOGO_TEXT}
+								</Text>
+							</HStack>
+						
+						</Link>
+						
 
 						<Flex display={{ base: "none", md: "flex" }} ml={10}>
 							<DesktopNav />
