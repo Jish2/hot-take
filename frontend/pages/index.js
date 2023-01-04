@@ -35,7 +35,7 @@ export default function Home({ postsFromDB }) {
 	// const scrollRef = useRef(null);
 	// useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	
+	const [uuid, setUUID] = useState(null)
 	const postListRef = useRef(null)
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
@@ -43,11 +43,14 @@ export default function Home({ postsFromDB }) {
 		console.log(postsFromDB);
 
 		if (localStorage.getItem("uuid") == null) {
-			console.log("UUID has not been found, creating UUID");
+			//console.log("UUID has not been found, creating UUID");
 			localStorage.setItem("uuid", uuidv4());
+			setUUID(localStorage.getItem("uuid"))
+		}else{
+			//console.log("UUID: "+localStorage.getItem("uuid"))
+			setUUID(localStorage.getItem("uuid"))
 		}
 	}, []);
-
 	const [posts, setPosts] = useState(postsFromDB);
 
 	return (
@@ -102,7 +105,7 @@ export default function Home({ postsFromDB }) {
 								}}style={{width:"50%",height:"100vh"}}></div> 
 						</div>
 						
-						<HotTakeCard key={i} title={post.title} /> 
+						<HotTakeCard key={i} title={post.title} agree={post.agree} disagree={post.disagree} id={post._id} uuid={uuid}/> 
 
 						
 					</div>
