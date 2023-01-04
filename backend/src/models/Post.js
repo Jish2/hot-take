@@ -12,7 +12,17 @@ const PostSchema = new Schema({
 	title: String,
 	agree: [String],
 	disagree: [String],
+	votes: Number,
+	interactions: Number,
 	date: Date,
+});
+
+PostSchema.pre("save", (next) => {
+	agreeLength = this.agree.length;
+	disagreeLength = this.disagree.length;
+	this.votes = agreeLength - disagreeLength;
+	this.interactions = agreeLength + disagreeLength;
+	next();
 });
 
 const PostModel = mongoose.model("Post", PostSchema);
