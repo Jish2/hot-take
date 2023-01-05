@@ -7,12 +7,13 @@ import { BsPlusLg } from "react-icons/bs";
 import { PostCard } from "../components/PostCard";
 import { CreatePost } from "../components/CreatePost";
 import { Navbar } from "../components/Navbar";
-
-import { v4 as uuidv4 } from "uuid";
-
+// Styling
 import styles from "../styles/Home.module.css";
-
+// Dependencies
+import { v4 as uuidv4 } from "uuid";
 import ReactGA from "react-ga";
+
+// Google Analytics ID
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
@@ -20,7 +21,6 @@ export async function getServerSideProps() {
 	// You can use any data fetching library
 	const res = await fetch("https://api.hottake.gg/posts");
 	const postsFromDB = await res.json();
-	//console.log(postsFromDB)
 
 	// By returning { props: { posts } }, the Blog component
 	// will receive `posts` as a prop at build time
@@ -32,21 +32,23 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ postsFromDB }) {
+	// Array of refs to reference each post
 	const refs = useRef(Array(postsFromDB.length).fill(React.createRef()));
 
-	const [animated, setAnimated] = useState({ left: false, right: false });
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	// states
+	const [animated, setAnimated] = useState({ left: false, right: false }); // Left and Right flashing animations
 	const [uuid, setUUID] = useState(null);
-	const scrollContainerRef = useRef(null);
-	//const posts = await getPosts();
-	//on load, check if the user has a uuid stored
+	const scrollContainerRef = useRef(null); // To access scroll container containing posts
+	const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
+
 	useEffect(() => {
+		// Google Analytics initialization
 		ReactGA.initialize(TRACKING_ID);
 		ReactGA.pageview(window.location.pathname);
-		// console.log(postsFromDB);
-		// console.log(refs);
+
+		// Check if user has visited already
 		if (localStorage.getItem("uuid") == null) {
-			//console.log("UUID has not been found, creating UUID");
+			// If not, add UUID to local storage.
 			localStorage.setItem("uuid", uuidv4());
 			setUUID(localStorage.getItem("uuid"));
 		} else {
