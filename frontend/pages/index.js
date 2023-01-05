@@ -59,7 +59,7 @@ export default function Home({ postsFromDB }) {
 				style={{
 					zIndex: "999",
 					height: "48px",
-					aspectRatio: "1/1",
+					// aspectRatio: "1/1",
 					borderRadius: "100%",
 					position: "fixed",
 					right: "18px",
