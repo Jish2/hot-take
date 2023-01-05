@@ -9,11 +9,10 @@ import WithSubnavigation from "../components/ChakraNavbar";
 import { v4 as uuidv4 } from "uuid";
 
 import styles from "../styles/Home.module.css";
-
 import ReactGA from 'react-ga';
   const TRACKING_ID = "UA-253199381-1" // OUR_TRACKING_ID
-  ReactGA.initialize(TRACKING_ID);
-  ReactGA.pageview(window.location.pathname);
+ 
+
 
 export async function getServerSideProps() {
 	// Call an external API endpoint to get posts.
@@ -34,7 +33,8 @@ export async function getServerSideProps() {
 export default function Home({ postsFromDB }) {
 
   
-
+  ReactGA.initialize(TRACKING_ID);
+  ReactGA.pageview(window.location.pathname);
 	const refs = useRef(Array(postsFromDB.length).fill(React.createRef()));
 
 	const [animated, setAnimated] = useState({ left: false, right: false });
