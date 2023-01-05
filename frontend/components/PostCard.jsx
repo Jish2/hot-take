@@ -1,10 +1,27 @@
+//prettier-ignore-start
 import React, { forwardRef, useState, useImperativeHandle } from "react";
-//prettier-ignore
-import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer, Text, Icon } from "@chakra-ui/react";
+// UI Imports
+import {
+	Stack,
+	Input,
+	Divider,
+	Container,
+	Heading,
+	Button,
+	Card,
+	CardHeader,
+	CardBody,
+	CardFooter,
+	Tooltip,
+	Flex,
+	Spacer,
+	Text,
+	Icon,
+} from "@chakra-ui/react";
+// Icons
 import {
 	BsFillHandThumbsUpFill,
 	BsFillHandThumbsDownFill,
-	BsExclamationTriangle,
 	BsChat,
 	BsReply,
 } from "react-icons/bs";
@@ -12,16 +29,16 @@ import {
 	AiOutlineFire,
 	AiOutlineInfoCircle,
 	AiOutlineWarning,
-	AiOutlineHeart,
 	AiFillHeart,
 	AiOutlineSend,
 } from "react-icons/ai";
-
+// Dependencies
 import axios, { isCancel, AxiosError } from "axios";
+// Components
+import { PostComment } from "./PostComment";
+//prettier-ignore-end
 
-import { PostComment } from "../components/PostComment";
-
-export const HotTakeCard = forwardRef(
+export const PostCard = forwardRef(
 	(
 		{
 			title,
@@ -42,9 +59,6 @@ export const HotTakeCard = forwardRef(
 		const [commentsOpen, setCommentsOpen] = useState(false);
 
 		useImperativeHandle(ref, () => ({
-			log() {
-				testing123();
-			},
 			agree() {
 				agreeWithPost();
 			},
@@ -52,10 +66,6 @@ export const HotTakeCard = forwardRef(
 				disagreeWithPost();
 			},
 		}));
-
-		function testing123() {
-			console.log("TEST COMPLETE! " + id);
-		}
 
 		function formatNumberCompact(num) {
 			return new Intl.NumberFormat("en-GB", {
@@ -325,6 +335,7 @@ export const HotTakeCard = forwardRef(
 												<PostComment content="This post sucks!" />
 												<PostComment content="This post sucks!" />
 												<PostComment content="This post sucks!" />
+												<PostComment content="This post sucks!" />{" "}
 												<PostComment content="This post sucks!" />
 											</div>
 											<Divider />

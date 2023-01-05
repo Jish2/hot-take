@@ -1,18 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
+// UI imports
 import { useDisclosure, Button, Icon, ChakraProvider } from "@chakra-ui/react";
+// Icons
 import { BsPlusLg } from "react-icons/bs";
-
-import { HotTakeCard } from "../components/hotTakeCard";
-import UploadHotTake from "../components/uploadHT";
-import WithSubnavigation from "../components/ChakraNavbar";
+// Components
+import { PostCard } from "../components/PostCard";
+import { CreatePost } from "../components/CreatePost";
+import { Navbar } from "../components/Navbar";
 
 import { v4 as uuidv4 } from "uuid";
 
 import styles from "../styles/Home.module.css";
 
-import ReactGA from 'react-ga';
-  const TRACKING_ID = "UA-253199381-1" // OUR_TRACKING_ID
-  
+import ReactGA from "react-ga";
+const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
 	// Call an external API endpoint to get posts.
@@ -57,8 +58,8 @@ export default function Home({ postsFromDB }) {
 
 	return (
 		<>
-			<WithSubnavigation />
-			<UploadHotTake isOpen={isOpen} onClose={onClose} />
+			<Navbar />
+			<CreatePost isOpen={isOpen} onClose={onClose} />
 			<Button
 				onClick={onOpen}
 				colorScheme="teal"
@@ -109,7 +110,6 @@ export default function Home({ postsFromDB }) {
 										return { ...prev, left: true };
 									});
 
-									refs.current[i].current.log();
 									refs.current[1].current.agree();
 								}}
 								onAnimationEnd={() =>
@@ -129,7 +129,6 @@ export default function Home({ postsFromDB }) {
 										return { ...prev, right: true };
 									});
 
-									refs.current[i].current.log();
 									refs.current[i].current.disagree();
 								}}
 								onAnimationEnd={() =>
@@ -142,8 +141,7 @@ export default function Home({ postsFromDB }) {
 							></div>
 						</div>
 
-						<HotTakeCard
-							key={i}
+						<PostCard
 							title={post.title}
 							agree={post.agree}
 							disagree={post.disagree}

@@ -3,7 +3,7 @@ import { React, useState, useRef } from "react";
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
 import axios, { isCancel, AxiosError } from "axios";
 
-export default function UploadHotTake({ isOpen, onClose }) {
+export function CreatePost({ isOpen, onClose }) {
 	const API_URL = process.env.API_URL || "https://api.hottake.gg";
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
