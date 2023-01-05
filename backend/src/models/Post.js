@@ -9,17 +9,18 @@ const ObjectId = Schema.ObjectId;
 // identification (auto generated)
 
 const PostSchema = new Schema({
-	title: { types: String, required: true },
-	agree: { types: [String], required: true },
-	disagree: { types: [String], required: true },
-	votes: { types: Number, required: true, immutable: true },
-	interactions: { types: Number, required: true, immutable: true },
-	date: { types: Date, required: true, immutable: true },
+	title: { type: String, required: true },
+	agree: { type: [String], required: true },
+	disagree: { type: [String], required: true },
+	votes: { type: Number, required: true },
+	interactions: { type: Number, required: true },
+	date: { type: Date, required: true, immutable: true },
 });
 
-PostSchema.pre("save", (next) => {
-	agreeLength = this.agree.length;
-	disagreeLength = this.disagree.length;
+// middleware populates votes and interactions
+PostSchema.pre("save", function (next) {
+	let agreeLength = this.agree.length;
+	let disagreeLength = this.disagree.length;
 	this.votes = agreeLength - disagreeLength;
 	this.interactions = agreeLength + disagreeLength;
 	next();
