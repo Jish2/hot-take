@@ -13,7 +13,7 @@ import styles from "../styles/Home.module.css";
 export async function getServerSideProps() {
 	// Call an external API endpoint to get posts.
 	// You can use any data fetching library
-	const res = await fetch("http://localhost:3001/posts");
+	const res = await fetch("https://api.hottake.gg/posts");
 	const postsFromDB = await res.json();
 	//console.log(postsFromDB)
 

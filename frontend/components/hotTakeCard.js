@@ -1,13 +1,33 @@
 import React, { forwardRef, useState, useImperativeHandle } from "react";
 //prettier-ignore
 import { Stack, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer } from "@chakra-ui/react";
-import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsExclamationTriangle } from "react-icons/bs";
-import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning } from "react-icons/ai";
+import {
+	BsFillHandThumbsUpFill,
+	BsFillHandThumbsDownFill,
+	BsExclamationTriangle,
+} from "react-icons/bs";
+import {
+	AiOutlineFire,
+	AiOutlineInfoCircle,
+	AiOutlineWarning,
+} from "react-icons/ai";
 
 import axios, { isCancel, AxiosError } from "axios";
 
 export const HotTakeCard = forwardRef(
-	({ title, agree, disagree, id, uuid, setAnimated, scrollContainerRef, index }, ref) => {
+	(
+		{
+			title,
+			agree,
+			disagree,
+			id,
+			uuid,
+			setAnimated,
+			scrollContainerRef,
+			index,
+		},
+		ref
+	) => {
 		const [heat, setHeat] = useState(agree.length - disagree.length);
 
 		useImperativeHandle(ref, () => ({
@@ -40,7 +60,7 @@ export const HotTakeCard = forwardRef(
 			scrollContainerRef.current.scrollBy({ top: 50 });
 
 			axios
-				.post("http://localhost:3001/agree", {
+				.post("https://api.hottake.gg/agree", {
 					postID: id,
 					userUUID: uuid,
 				})
@@ -82,7 +102,7 @@ export const HotTakeCard = forwardRef(
 			scrollContainerRef.current.scrollBy({ top: 50 });
 
 			axios
-				.post("http://localhost:3001/disagree", {
+				.post("https://api.hottake.gg/disagree", {
 					postID: id,
 					userUUID: uuid,
 				})
@@ -147,7 +167,10 @@ export const HotTakeCard = forwardRef(
 										height: "20px",
 										padding: "0",
 									}}
-									_hover={{ bg: "none", color: "var(--chakra-colors-gray-500)" }}
+									_hover={{
+										bg: "none",
+										color: "var(--chakra-colors-gray-500)",
+									}}
 									_active={{
 										bg: "none",
 										transform: "scale(.9)",
@@ -171,7 +194,10 @@ export const HotTakeCard = forwardRef(
 										height: "20px",
 										padding: "0",
 									}}
-									_hover={{ bg: "none", color: "var(--chakra-colors-gray-500)" }}
+									_hover={{
+										bg: "none",
+										color: "var(--chakra-colors-gray-500)",
+									}}
 									_active={{
 										bg: "none",
 										transform: "scale(.9)",
@@ -206,7 +232,13 @@ export const HotTakeCard = forwardRef(
 									Agree
 								</Button>
 								<Spacer />
-								<Button leftIcon={<AiOutlineFire />} disabled variant="outline" color="black" colorScheme="gray">
+								<Button
+									leftIcon={<AiOutlineFire />}
+									disabled
+									variant="outline"
+									color="black"
+									colorScheme="gray"
+								>
 									{(() => {
 										return formatNumberCompact(heat);
 									})()}
@@ -219,7 +251,9 @@ export const HotTakeCard = forwardRef(
 									colorScheme="red"
 									color="#ff5242"
 									onClick={disagreeWithPost}
-									style={{ background: disagree.includes(uuid) ? "#FEB2B2" : "" }}
+									style={{
+										background: disagree.includes(uuid) ? "#FEB2B2" : "",
+									}}
 								>
 									Disagree
 								</Button>

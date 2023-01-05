@@ -7,7 +7,7 @@ export default function UploadHotTake({ isOpen, onClose }) {
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		axios
-			.post("http://localhost:3001/post", {
+			.post("https://api.hottake.gg/post", {
 				title: input.current.value,
 			})
 			.then(function (response) {
@@ -18,8 +18,7 @@ export default function UploadHotTake({ isOpen, onClose }) {
 			.catch(function (error) {
 				console.log(error);
 			});
-			//window.location.href = window.location.href
-
+		//window.location.href = window.location.href
 	};
 	const input = useRef(null);
 
