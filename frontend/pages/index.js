@@ -151,6 +151,7 @@ export default function Home({ postsFromDB }) {
 							scrollContainerRef={scrollContainerRef}
 							ref={refs.current[i]}
 							index={i}
+							interactions={post.interactions}
 						/>
 					</div>
 				))}
