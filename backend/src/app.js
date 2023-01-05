@@ -5,6 +5,8 @@ import express from "express";
 import mongoose from "mongoose";
 import Post from "./models/Post.js";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
+
 // initialization
 const port = process.env.PORT || 3000;
 const app = express();
@@ -16,6 +18,23 @@ app.use(
 		origin: process.env.CORS_ALLOW_FETCH || "https://*.hottake.gg/",
 	})
 );
+const createPostLimiter = rateLimit({
+	windowMs: 2 * 60 * 1000, // 1000 is a second
+	max: 1,
+	message: "Only allowed to post once every 2 minutes.",
+});
+
+const fetchPostLimiter = rateLimit({
+	windowMs: 60 * 60 * 1000, // 1000 is a second
+	max: 100,
+	message: "Only allowed to fetch up to 100 posts an hour.",
+});
+
+const voteLimiter = rateLimit({
+	windowMs: 10 * 60 * 1000, // 1000 is a second
+	max: 200,
+	message: "Only allowed to vote on up to 200 posts every 10 minutes.",
+});
 
 // HELPER FUNCTIONS
 // error handling
@@ -32,14 +51,14 @@ const remove = (value, array) => {
 };
 
 // fetch posts
-app.get("/posts", async (req, res) => {
+app.get("/posts", fetchPostLimiter, async (req, res) => {
 	// sorts collection so newest posts are first
 	const postsLists = await Post.find().sort({ date: -1 });
 	res.send(postsLists);
 });
 
 // agree function
-app.post("/agree", async (req, res) => {
+app.post("/agree", voteLimiter, async (req, res) => {
 	// console.log(req.headers);
 
 	const postID = req.body.postID;
@@ -72,7 +91,7 @@ app.post("/agree", async (req, res) => {
 });
 
 // disagree function
-app.post("/disagree", async (req, res) => {
+app.post("/disagree", voteLimiter, async (req, res) => {
 	// console.log(req.headers);
 
 	const postID = req.body.postID;
@@ -107,7 +126,7 @@ app.post("/disagree", async (req, res) => {
 // create a post :) 😁
 // TODO: implement rate limiting
 // TODO: check if post exists already? (May be unnecessary...)
-app.post("/post", async (req, res) => {
+app.post("/post", createPostLimiter, async (req, res) => {
 	// console.log(req.headers);
 	if (req.body.title.length == 0) {
 		res.status(400).send("Post content is missing");
