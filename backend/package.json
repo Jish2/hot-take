@@ -18,7 +18,8 @@
 	"scripts": {
 		"dev": "nodemon src/app.js",
 		"build": "echo nerd",
-		"start": "npx pm2 start src/app.js",
+		"start": "node src/app.js",
+		"startpm2": "npx pm2 start src/app.js",
 		"stop": "npx pm2 stop src/app.js",
 		"pretest": "eslint --ignore-path .gitignore .",
 		"test": "echo \"Error: no test specified\" && exit 1"
