@@ -1,18 +1,25 @@
 import React, { forwardRef, useState, useImperativeHandle } from "react";
 //prettier-ignore
-import { Stack, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer } from "@chakra-ui/react";
+import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer, Text, Icon } from "@chakra-ui/react";
 import {
 	BsFillHandThumbsUpFill,
 	BsFillHandThumbsDownFill,
 	BsExclamationTriangle,
+	BsChat,
+	BsReply,
 } from "react-icons/bs";
 import {
 	AiOutlineFire,
 	AiOutlineInfoCircle,
 	AiOutlineWarning,
+	AiOutlineHeart,
+	AiFillHeart,
+	AiOutlineSend,
 } from "react-icons/ai";
 
 import axios, { isCancel, AxiosError } from "axios";
+
+import { PostComment } from "../components/PostComment";
 
 export const HotTakeCard = forwardRef(
 	(
@@ -29,7 +36,10 @@ export const HotTakeCard = forwardRef(
 		},
 		ref
 	) => {
+		const API_URL = process.env.API_URL || "https://api.hottake.gg";
+
 		const [heat, setHeat] = useState(agree.length - disagree.length);
+		const [commentsOpen, setCommentsOpen] = useState(false);
 
 		useImperativeHandle(ref, () => ({
 			log() {
@@ -61,7 +71,7 @@ export const HotTakeCard = forwardRef(
 			scrollContainerRef.current.scrollBy({ top: 50 });
 
 			axios
-				.post("https://api.hottake.gg/agree", {
+				.post(`${API_URL}/agree`, {
 					postID: id,
 					userUUID: uuid,
 				})
@@ -103,7 +113,7 @@ export const HotTakeCard = forwardRef(
 			scrollContainerRef.current.scrollBy({ top: 50 });
 
 			axios
-				.post("https://api.hottake.gg/disagree", {
+				.post(`${API_URL}/disagree`, {
 					postID: id,
 					userUUID: uuid,
 				})
@@ -155,8 +165,8 @@ export const HotTakeCard = forwardRef(
 								flexDirection: "row",
 								gap: "4px",
 								position: "absolute",
-								top: "20px",
-								right: "20px",
+								top: "16px",
+								right: "16px",
 							}}
 						>
 							<Tooltip label="Report this post">
@@ -213,13 +223,12 @@ export const HotTakeCard = forwardRef(
 								</Button>
 							</Tooltip>
 						</div>
-						<CardBody>
+						<CardBody p="16px">
 							<Stack mt="6" spacing="3">
 								<Heading size="lg">{title}</Heading>
 							</Stack>
 						</CardBody>
-						{/* <Divider /> */}
-						<CardFooter>
+						<CardBody p="16px">
 							<Flex style={{ width: "100%" }} gap="6px">
 								<Button
 									width="125px"
@@ -258,6 +267,91 @@ export const HotTakeCard = forwardRef(
 								>
 									Disagree
 								</Button>
+							</Flex>
+						</CardBody>
+						<Divider />
+
+						<CardFooter p="16px">
+							<Flex w="100%" align="" direction="column" gap={2}>
+								<Flex
+									w="100%"
+									justify="center"
+									align="center"
+									gap={2}
+									onClick={() => {
+										setCommentsOpen((i) => !i);
+									}}
+								>
+									<Icon as={BsChat} />
+									<Text>Comments</Text>
+								</Flex>
+								{commentsOpen && (
+									<div>
+										<Card variant="outline">
+											<div
+												style={{
+													maxHeight: "156px",
+													overflowY: "scroll",
+													overflowX: "hidden",
+												}}
+											>
+												<PostComment content="This post sucks!" />
+												<Divider />
+												<Container m={1} ml={4} position="relative">
+													<Icon
+														w={3}
+														h={3}
+														as={AiFillHeart}
+														fill="red"
+														style={{
+															position: "absolute",
+															top: "20px",
+															right: "28px",
+														}}
+													/>
+													<Icon
+														w={3}
+														h={3}
+														as={BsReply}
+														style={{
+															position: "absolute",
+															top: "20px",
+															right: "44px",
+														}}
+													/>
+													<Text fontSize="xs">9:54 am, Jan 4</Text>
+													<Text>This post sucks!</Text>
+												</Container>
+												<PostComment content="This post sucks!" />
+												<PostComment content="This post sucks!" />
+												<PostComment content="This post sucks!" />
+												<PostComment content="This post sucks!" />
+											</div>
+											<Divider />
+
+											<CardFooter
+												style={{
+													margin: "0",
+													padding: "0",
+												}}
+											>
+												<Flex
+													direction="row"
+													w="100%"
+													justify="center"
+													align="center"
+												>
+													<Input
+														variant="filled"
+														placeholder="Comment your thoughts..."
+														style={{ margin: "8px" }}
+													/>
+													<Icon as={AiOutlineSend} h={6} w={6} mr="8px" />
+												</Flex>
+											</CardFooter>
+										</Card>
+									</div>
+								)}
 							</Flex>
 						</CardFooter>
 					</Card>
