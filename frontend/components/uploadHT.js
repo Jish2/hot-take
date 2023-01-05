@@ -4,10 +4,11 @@ import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, M
 import axios, { isCancel, AxiosError } from "axios";
 
 export default function UploadHotTake({ isOpen, onClose }) {
+	const API_URL = process.env.API_URL || "https://api.hottake.gg";
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		axios
-			.post("https://api.hottake.gg/post", {
+			.post(`${API_URL}/post`, {
 				title: input.current.value,
 			})
 			.then(function (response) {

@@ -19,9 +19,9 @@ import WithSubnavigation from "../components/ChakraNavbar";
 import { v4 as uuidv4 } from "uuid";
 
 import styles from "../styles/Home.module.css";
-import ReactGA from "react-ga";
 
   const TRACKING_ID = "UA-253199381-1" // OUR_TRACKING_ID
+  
 
 
 function sortByInteractions(arr){
