@@ -33,8 +33,7 @@ export async function getServerSideProps() {
 export default function Home({ postsFromDB }) {
 
   
-  ReactGA.initialize(TRACKING_ID);
-  ReactGA.pageview(window.location.pathname);
+  
 	const refs = useRef(Array(postsFromDB.length).fill(React.createRef()));
 
 	const [animated, setAnimated] = useState({ left: false, right: false });
@@ -44,6 +43,8 @@ export default function Home({ postsFromDB }) {
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
 	useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+  ReactGA.pageview(window.location.pathname);
 		// console.log(postsFromDB);
 		console.log(refs);
 		if (localStorage.getItem("uuid") == null) {
