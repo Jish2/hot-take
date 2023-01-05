@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Heading, Text } from "@chakra-ui/react";
-import { AiFillFire } from "react-icons/ai";
 
 import { Navbar } from "../../components/Navbar";
 export default function About() {
