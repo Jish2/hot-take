@@ -20,9 +20,9 @@ app.use(
 	})
 );
 const createPostLimiter = rateLimit({
-	windowMs: 2 * 60 * 1000, // 1000 is a second
-	max: 1,
-	message: "Only allowed to post once every 2 minutes.",
+	windowMs: 60 * 60 * 1000, // 1000 is a second
+	max: 20,
+	message: "Only allowed 20 posts per hour.",
 });
 
 const fetchPostLimiter = rateLimit({
