@@ -9,10 +9,21 @@ const ObjectId = Schema.ObjectId;
 // identification (auto generated)
 
 const PostSchema = new Schema({
-	title: String,
-	agree: [String],
-	disagree: [String],
-	date: Date,
+	title: { type: String, required: true },
+	agree: { type: [String], required: true },
+	disagree: { type: [String], required: true },
+	votes: { type: Number, required: true },
+	interactions: { type: Number, required: true },
+	date: { type: Date, required: true, immutable: true },
+});
+
+// middleware populates votes and interactions
+PostSchema.pre("save", function (next) {
+	let agreeLength = this.agree.length;
+	let disagreeLength = this.disagree.length;
+	this.votes = agreeLength - disagreeLength;
+	this.interactions = agreeLength + disagreeLength;
+	next();
 });
 
 const PostModel = mongoose.model("Post", PostSchema);

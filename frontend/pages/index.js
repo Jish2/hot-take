@@ -1,19 +1,14 @@
-"use client";
-import { Inter } from "@next/font/google";
-import { useDisclosure, Button, Container, Icon } from "@chakra-ui/react";
-import HotTakeCard from "../components/hotTakeCard";
 import React, { useState, useRef, useEffect } from "react";
-import { ChakraProvider } from "@chakra-ui/react";
+import { useDisclosure, Button, Icon, ChakraProvider } from "@chakra-ui/react";
+import { BsPlusLg } from "react-icons/bs";
+
+import { HotTakeCard } from "../components/hotTakeCard";
 import UploadHotTake from "../components/uploadHT";
 import WithSubnavigation from "../components/ChakraNavbar";
-import { BsPlusLg } from "react-icons/bs";
-import { useScrollBy } from "react-use-window-scroll";
-
-
 
 import { v4 as uuidv4 } from "uuid";
 
-const inter = Inter({ subsets: ["latin"] });
+import styles from "../styles/Home.module.css";
 
 export async function getStaticProps() {
 	// Call an external API endpoint to get posts.
@@ -32,23 +27,24 @@ export async function getStaticProps() {
 }
 
 export default function Home({ postsFromDB }) {
-	// const scrollRef = useRef(null);
-	// useScrollSnap({ ref: scrollRef, duration: 300, delay: 0 });
+	const refs = useRef(Array(postsFromDB.length).fill(React.createRef()));
+
+	const [animated, setAnimated] = useState({ left: false, right: false });
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [uuid, setUUID] = useState(null)
-	const postListRef = useRef(null)
+	const [uuid, setUUID] = useState(null);
+	const scrollContainerRef = useRef(null);
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
 	useEffect(() => {
-		console.log(postsFromDB);
-
+		// console.log(postsFromDB);
+		console.log(refs);
 		if (localStorage.getItem("uuid") == null) {
 			//console.log("UUID has not been found, creating UUID");
 			localStorage.setItem("uuid", uuidv4());
-			setUUID(localStorage.getItem("uuid"))
-		}else{
+			setUUID(localStorage.getItem("uuid"));
+		} else {
 			//console.log("UUID: "+localStorage.getItem("uuid"))
-			setUUID(localStorage.getItem("uuid"))
+			setUUID(localStorage.getItem("uuid"));
 		}
 	}, []);
 	const [posts, setPosts] = useState(postsFromDB);
@@ -60,9 +56,9 @@ export default function Home({ postsFromDB }) {
 			<Button
 				onClick={onOpen}
 				colorScheme="teal"
-				size="lg"
 				style={{
-					zIndex:"999",
+					zIndex: "999",
+					height: "48px",
 					aspectRatio: "1/1",
 					borderRadius: "100%",
 					position: "fixed",
@@ -74,7 +70,7 @@ export default function Home({ postsFromDB }) {
 			</Button>
 			<div
 				id="scrollContainer"
-				ref={postListRef}
+				ref={scrollContainerRef}
 				m={0}
 				p={0}
 				style={{
@@ -88,29 +84,71 @@ export default function Home({ postsFromDB }) {
 				}}
 			>
 				{posts.map((post, i) => (
-					<div style={{position:"relative"}}>
-						<div id="flexContainer" style={{ overflow:"scroll",position:"absolute",display:"flex",scrollSnapAlign: "end",width:"100%",height:"100%"}}>
-							<div  onClick={()=>{
+					<div key={post._id} style={{ position: "relative" }}>
+						<div
+							id="flexContainer"
+							style={{
+								overflow: "scroll",
+								position: "absolute",
+								display: "flex",
+								scrollSnapAlign: "end",
+								width: "100%",
+								height: "100%",
+							}}
+						>
+							<div
+								onClick={() => {
+									scrollContainerRef.current.scrollBy({ top: 50 });
+									setAnimated((prev) => {
+										return { ...prev, left: true };
+									});
 
-								 postListRef.current.scrollBy({top:50})
+									refs.current[i].current.log();
+									refs.current[1].current.agree();
+								}}
+								onAnimationEnd={() =>
+									setAnimated((prev) => {
+										return { ...prev, left: false };
+									})
+								}
+								style={{ width: "50%", height: "100vh" }}
+								className={animated.left ? styles.animateGreen : ""}
+							></div>
 
-								
+							<div
+								onClick={() => {
+									scrollContainerRef.current.scrollBy({ top: 50 });
 
+									setAnimated((prev) => {
+										return { ...prev, right: true };
+									});
 
-							 }} style={{width:"50%",height:"100vh"}}></div>
-							<div  onClick={()=>{
-								
-								postListRef.current.scrollBy({top:50})
-								
-								}}style={{width:"50%",height:"100vh"}}></div> 
+									refs.current[i].current.log();
+									refs.current[i].current.disagree();
+								}}
+								onAnimationEnd={() =>
+									setAnimated((prev) => {
+										return { ...prev, right: false };
+									})
+								}
+								style={{ width: "50%", height: "100vh" }}
+								className={animated.right ? styles.animateRed : ""}
+							></div>
 						</div>
-						
-						<HotTakeCard key={i} title={post.title} agree={post.agree} disagree={post.disagree} id={post._id} uuid={uuid}/> 
 
-						
+						<HotTakeCard
+							key={i}
+							title={post.title}
+							agree={post.agree}
+							disagree={post.disagree}
+							id={post._id}
+							uuid={uuid}
+							setAnimated={setAnimated}
+							scrollContainerRef={scrollContainerRef}
+							ref={refs.current[i]}
+							index={i}
+						/>
 					</div>
-					
-					
 				))}
 			</div>
 		</>

@@ -9,9 +9,6 @@ import cors from "cors";
 const port = process.env.PORT || 3000;
 const app = express();
 
-// restrict hostname requests through CORS?
-const db = "";
-
 // middleware
 app.use(express.json());
 app.use(
@@ -121,6 +118,8 @@ app.post("/post", async (req, res) => {
 			title: req.body.title,
 			agree: [],
 			disagree: [],
+			votes: 0,
+			interactions: 0,
 			date: new Date(),
 		});
 		const createdPost = await newPost.save();
