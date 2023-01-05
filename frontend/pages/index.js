@@ -12,8 +12,7 @@ import styles from "../styles/Home.module.css";
 
 import ReactGA from 'react-ga';
   const TRACKING_ID = "UA-253199381-1" // OUR_TRACKING_ID
-  ReactGA.initialize(TRACKING_ID);
-  ReactGA.pageview(window.location.pathname);
+  
 
 export async function getServerSideProps() {
 	// Call an external API endpoint to get posts.
