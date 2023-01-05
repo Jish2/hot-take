@@ -1,42 +1,17 @@
-//prettier-ignore-start
+/* prettier-ignore */
 import React, { forwardRef, useState, useImperativeHandle } from "react";
 // UI Imports
-import {
-	Stack,
-	Input,
-	Divider,
-	Container,
-	Heading,
-	Button,
-	Card,
-	CardHeader,
-	CardBody,
-	CardFooter,
-	Tooltip,
-	Flex,
-	Spacer,
-	Text,
-	Icon,
-} from "@chakra-ui/react";
+/* prettier-ignore */
+import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, Tooltip, Flex, Spacer, Text, Icon } from "@chakra-ui/react";
 // Icons
-import {
-	BsFillHandThumbsUpFill,
-	BsFillHandThumbsDownFill,
-	BsChat,
-	BsReply,
-} from "react-icons/bs";
-import {
-	AiOutlineFire,
-	AiOutlineInfoCircle,
-	AiOutlineWarning,
-	AiFillHeart,
-	AiOutlineSend,
-} from "react-icons/ai";
+/* prettier-ignore */
+import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsChat, BsReply } from "react-icons/bs";
+/* prettier-ignore */
+import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning, AiFillHeart, AiOutlineSend } from "react-icons/ai";
 // Dependencies
 import axios, { isCancel, AxiosError } from "axios";
 // Components
 import { PostComment } from "./PostComment";
-//prettier-ignore-end
 
 export const PostCard = forwardRef(
 	(
