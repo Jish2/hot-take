@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(
 	cors({
-		origin: process.env.CORS_ALLOW_FETCH || "https://*.hottake.gg/",
+		origin: process.env.CORS_ALLOW_FETCH || "https://*.hottake.gg",
 	})
 );
 const createPostLimiter = rateLimit({
