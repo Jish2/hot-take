@@ -9,6 +9,8 @@ import WithSubnavigation from "../components/ChakraNavbar";
 import { v4 as uuidv4 } from "uuid";
 
 import styles from "../styles/Home.module.css";
+import ReactGA from "react-ga";
+const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 import ReactGA from 'react-ga';
   const TRACKING_ID = "UA-253199381-1" // OUR_TRACKING_ID
@@ -41,8 +43,10 @@ export default function Home({ postsFromDB }) {
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
 	useEffect(() => {
+		ReactGA.initialize(TRACKING_ID);
+		ReactGA.pageview(window.location.pathname);
 		// console.log(postsFromDB);
-		console.log(refs);
+		// console.log(refs);
 		if (localStorage.getItem("uuid") == null) {
 			//console.log("UUID has not been found, creating UUID");
 			localStorage.setItem("uuid", uuidv4());
@@ -152,6 +156,7 @@ export default function Home({ postsFromDB }) {
 							scrollContainerRef={scrollContainerRef}
 							ref={refs.current[i]}
 							index={i}
+							interactions={post.interactions}
 						/>
 					</div>
 				))}

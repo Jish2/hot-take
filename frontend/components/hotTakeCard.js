@@ -25,6 +25,7 @@ export const HotTakeCard = forwardRef(
 			setAnimated,
 			scrollContainerRef,
 			index,
+			interactions,
 		},
 		ref
 	) => {
@@ -185,7 +186,7 @@ export const HotTakeCard = forwardRef(
 								</Button>
 							</Tooltip>
 
-							<Tooltip label={"Post ID: " + id}>
+							<Tooltip label={"Total votes: " + interactions}>
 								<Button
 									color="gray.300"
 									variant="ghost"

@@ -20,9 +20,9 @@ app.use(
 	})
 );
 const createPostLimiter = rateLimit({
-	windowMs: 2 * 60 * 1000, // 1000 is a second
-	max: 1,
-	message: "Only allowed to post once every 2 minutes.",
+	windowMs: 60 * 60 * 1000, // 1000 is a second
+	max: 20,
+	message: "Only allowed 20 posts per hour.",
 });
 
 const fetchPostLimiter = rateLimit({
@@ -53,8 +53,8 @@ const remove = (value, array) => {
 
 // fetch posts
 app.get("/posts", fetchPostLimiter, async (req, res) => {
-	// sorts collection so newest posts are first
-	const postsLists = await Post.find().sort({ date: -1 });
+	// sorts collection so most interacted with posts are first
+	const postsLists = await Post.find().sort({ interactions: -1 });
 	res.send(postsLists);
 });
 
