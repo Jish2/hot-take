@@ -1,27 +1,19 @@
+/* prettier-ignore */
 import React, { forwardRef, useState, useImperativeHandle } from "react";
-//prettier-ignore
-import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer, Text, Icon } from "@chakra-ui/react";
-import {
-	BsFillHandThumbsUpFill,
-	BsFillHandThumbsDownFill,
-	BsExclamationTriangle,
-	BsChat,
-	BsReply,
-} from "react-icons/bs";
-import {
-	AiOutlineFire,
-	AiOutlineInfoCircle,
-	AiOutlineWarning,
-	AiOutlineHeart,
-	AiFillHeart,
-	AiOutlineSend,
-} from "react-icons/ai";
-
+// UI Imports
+/* prettier-ignore */
+import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, Tooltip, Flex, Spacer, Text, Icon } from "@chakra-ui/react";
+// Icons
+/* prettier-ignore */
+import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsChat, BsReply } from "react-icons/bs";
+/* prettier-ignore */
+import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning, AiFillHeart, AiOutlineSend } from "react-icons/ai";
+// Dependencies
 import axios, { isCancel, AxiosError } from "axios";
+// Components
+import { PostComment } from "./PostComment";
 
-import { PostComment } from "../components/PostComment";
-
-export const HotTakeCard = forwardRef(
+export const PostCard = forwardRef(
 	(
 		{
 			title,
@@ -42,9 +34,6 @@ export const HotTakeCard = forwardRef(
 		const [commentsOpen, setCommentsOpen] = useState(false);
 
 		useImperativeHandle(ref, () => ({
-			log() {
-				testing123();
-			},
 			agree() {
 				agreeWithPost();
 			},
@@ -52,10 +41,6 @@ export const HotTakeCard = forwardRef(
 				disagreeWithPost();
 			},
 		}));
-
-		function testing123() {
-			console.log("TEST COMPLETE! " + id);
-		}
 
 		function formatNumberCompact(num) {
 			return new Intl.NumberFormat("en-GB", {
@@ -325,6 +310,7 @@ export const HotTakeCard = forwardRef(
 												<PostComment content="This post sucks!" />
 												<PostComment content="This post sucks!" />
 												<PostComment content="This post sucks!" />
+												<PostComment content="This post sucks!" />{" "}
 												<PostComment content="This post sucks!" />
 											</div>
 											<Divider />
