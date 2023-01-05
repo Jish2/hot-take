@@ -1,6 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDisclosure, Button, Icon, ChakraProvider } from "@chakra-ui/react";
 import { BsPlusLg } from "react-icons/bs";
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+} from '@chakra-ui/react'
 
 import { HotTakeCard } from "../components/hotTakeCard";
 import UploadHotTake from "../components/uploadHT";
@@ -11,10 +21,16 @@ import { v4 as uuidv4 } from "uuid";
 import styles from "../styles/Home.module.css";
 import ReactGA from "react-ga";
 
-import ReactGA from 'react-ga';
   const TRACKING_ID = "UA-253199381-1" // OUR_TRACKING_ID
-  ReactGA.initialize(TRACKING_ID);
-  ReactGA.pageview(window.location.pathname);
+
+
+function sortByInteractions(arr){
+  arr = arr.sort((a,b)=>{
+    return a.interactions-b.interactions
+  })
+  return arr
+}
+  
 
 export async function getServerSideProps() {
 	// Call an external API endpoint to get posts.
@@ -39,6 +55,8 @@ export default function Home({ postsFromDB }) {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [uuid, setUUID] = useState(null);
 	const scrollContainerRef = useRef(null);
+  const [posts, setPosts] = useState(postsFromDB);
+  console.log(posts)
 	//const posts = await getPosts();
 	//on load, check if the user has a uuid stored
 	useEffect(() => {
@@ -55,11 +73,16 @@ export default function Home({ postsFromDB }) {
 			setUUID(localStorage.getItem("uuid"));
 		}
 	}, []);
-	const [posts, setPosts] = useState(postsFromDB);
+  useEffect(() => {
+		
+	}, [posts]);
+	
 
 	return (
 		<>
 			<WithSubnavigation />
+      
+
 			<UploadHotTake isOpen={isOpen} onClose={onClose} />
 			<Button
 				onClick={onOpen}
@@ -82,6 +105,7 @@ export default function Home({ postsFromDB }) {
 				m={0}
 				p={0}
 				style={{
+          position:"relative",
 					marginLeft: "auto",
 					marginRight: "auto",
 					height: "100vh",
@@ -91,8 +115,54 @@ export default function Home({ postsFromDB }) {
 					scrollBehavior: "smooth",
 				}}
 			>
+        
+        
+       
 				{posts.map((post, i) => (
 					<div key={post._id} style={{ position: "relative" }}>
+
+          <Menu>
+            <MenuButton style={{position:"fixed" ,bottom:"25px", left:"18px", zIndex:"999", borderRadius:"18px"}} as={Button}>
+              Sort by
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={()=>{
+
+                let postsCopy = [...posts]
+                postsCopy = postsCopy.sort((a,b)=>{
+                  let dateA = Date(a.date)
+                  let dateB = Date(b.date)
+                  return dateA-dateB
+                 
+                })
+                setPosts((prev=>{
+
+                  return prev
+                
+                  
+                }))
+
+
+
+                let d = Date(post.date)
+                console.log(d)
+
+              }}>Newest</MenuItem>
+              <MenuItem onClick={()=>{
+                  let postsCopy = [...posts]
+                  postsCopy = postsCopy.sort((a,b)=>{
+                    return b.interactions-a.interactions
+                  })
+                  setPosts((prev)=>{
+                    return postsCopy
+                  })
+               
+              }}>Hottest</MenuItem>
+              <MenuItem>Most agreed</MenuItem>
+              <MenuItem>Most disagreed</MenuItem>
+            </MenuList>
+          </Menu>
+
 						<div
 							id="flexContainer"
 							style={{
@@ -102,6 +172,7 @@ export default function Home({ postsFromDB }) {
 								scrollSnapAlign: "end",
 								width: "100%",
 								height: "100%",
+                
 							}}
 						>
 							<div
