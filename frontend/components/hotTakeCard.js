@@ -127,7 +127,7 @@ export const HotTakeCard = forwardRef(
 						alignItems: "center",
 					}}
 				>
-					<Card variant="outline" bg="white" w="90%">
+					<Card variant="outline" bg="white" w="90%" maxW="400px">
 						<div
 							style={{
 								display: "flex",
