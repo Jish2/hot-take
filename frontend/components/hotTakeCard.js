@@ -188,7 +188,7 @@ export const HotTakeCard = forwardRef(
 						</div>
 						<CardBody>
 							<Stack mt="6" spacing="3">
-								<Heading size="lg">{index + " " + title}</Heading>
+								<Heading size="lg">{title}</Heading>
 							</Stack>
 						</CardBody>
 						{/* <Divider /> */}
