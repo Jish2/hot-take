@@ -54,7 +54,7 @@ const remove = (value, array) => {
 // fetch posts
 app.get("/posts", fetchPostLimiter, async (req, res) => {
 	// sorts collection so most interacted with posts are first
-	const postsLists = await Post.find().sort({ interactions: -1 });
+	const postsLists = await Post.find().sort({ date: -1 });
 	res.send(postsLists);
 });
 
