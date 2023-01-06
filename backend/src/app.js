@@ -104,7 +104,7 @@ app.post("/agree", voteLimiter, async (req, res) => {
 					} else {
 						post.agree.push(user);
 					}
-					post.save((err, result) => {
+					post.update((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
@@ -141,7 +141,7 @@ app.post("/disagree", voteLimiter, async (req, res) => {
 					} else {
 						post.disagree.push(user);
 					}
-					post.save((err, result) => {
+					post.update((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});

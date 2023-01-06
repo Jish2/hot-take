@@ -26,6 +26,14 @@ PostSchema.pre("save", function (next) {
 	next();
 });
 
+PostSchema.pre("update", function (next) {
+	let agreeLength = this.agree.length;
+	let disagreeLength = this.disagree.length;
+	this.votes = agreeLength - disagreeLength;
+	this.interactions = agreeLength + disagreeLength;
+	next();
+});
+
 const PostModel = mongoose.model("Post", PostSchema);
 
 export default PostModel;
