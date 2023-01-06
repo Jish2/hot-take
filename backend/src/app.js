@@ -92,7 +92,7 @@ app.post("/agree", voteLimiter, (req, res) => {
 		} else if (!user) {
 			res.status(400).send("Agreement failed, no user registered.");
 		} else {
-			Post.findById(postID, (err, post) => {
+			Post.findById(postID, async (err, post) => {
 				if (err) handleError(err); // error handle
 				else {
 					// check if includes....
@@ -104,7 +104,7 @@ app.post("/agree", voteLimiter, (req, res) => {
 					} else {
 						post.agree.push(user);
 					}
-					post.save((err, result) => {
+					await post.save((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
@@ -129,7 +129,7 @@ app.post("/disagree", voteLimiter, (req, res) => {
 		} else if (!user) {
 			res.status(400).send("Disagreement failed, no user registered.");
 		} else {
-			Post.findById(postID, (err, post) => {
+			Post.findById(postID, async (err, post) => {
 				if (err) handleError(err); // error handle
 				else {
 					// check if includes....
@@ -141,7 +141,7 @@ app.post("/disagree", voteLimiter, (req, res) => {
 					} else {
 						post.disagree.push(user);
 					}
-					post.save((err, result) => {
+					await post.save((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
