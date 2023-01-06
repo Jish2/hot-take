@@ -1,11 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 // UI imports
-import { useDisclosure, Button, Icon, ChakraProvider } from "@chakra-ui/react";
+import {
+	useDisclosure,
+	Button,
+	Icon,
+	Flex,
+	Text,
+	ChakraProvider,
+} from "@chakra-ui/react";
 // Icons
-import { BsPlusLg } from "react-icons/bs";
+import {
+	BsPlusLg,
+	BsSortNumericUp,
+	BsFillStarFill,
+	BsSortNumericDownAlt,
+	BsShuffle,
+	BsFillHandThumbsUpFill,
+	BsFillHandThumbsDownFill,
+} from "react-icons/bs";
 // Components
 import { PostCard } from "../components/PostCard";
-import { CreatePost } from "../components/CreatePost";
+import { CreatePostModal } from "../components/CreatePostModal";
 import { Navbar } from "../components/Navbar";
 // Styling
 import styles from "../styles/Home.module.css";
@@ -32,6 +47,17 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ postsFromDB }) {
+	// key for sorting button
+	const SORT_ICONS = [
+		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
+		{ icon: BsFillStarFill, name: "Best", w: 4, h: 4 },
+		{ icon: BsSortNumericUp, name: "Old", w: 6, h: 6 },
+		{ icon: BsShuffle, name: "Random", w: 6, h: 6 },
+		{ icon: BsFillHandThumbsDownFill, name: "Disagreed", w: 5, h: 5 },
+		{ icon: BsFillHandThumbsUpFill, name: "Agreed", w: 5, h: 5 },
+	];
+	const [sortMethod, setSortMethod] = useState(0);
+
 	// Array of refs to reference each post
 	const refs = useRef(Array(postsFromDB.length).fill(React.createRef()));
 
@@ -61,13 +87,14 @@ export default function Home({ postsFromDB }) {
 	return (
 		<>
 			<Navbar />
-			<CreatePost isOpen={isOpen} onClose={onClose} />
+			<CreatePostModal isOpen={isOpen} onClose={onClose} />
 			<Button
 				onClick={onOpen}
 				colorScheme="teal"
 				style={{
 					zIndex: "999",
 					height: "48px",
+					width: "48px",
 					// aspectRatio: "1/1",
 					borderRadius: "100%",
 					position: "fixed",
@@ -77,6 +104,52 @@ export default function Home({ postsFromDB }) {
 			>
 				<Icon as={BsPlusLg} w={4} h={4} color="white" />
 			</Button>
+			<Flex
+				justify="center"
+				align="center"
+				gap="6px"
+				style={{
+					zIndex: "999",
+					position: "fixed",
+					left: "18px",
+					bottom: "18px",
+				}}
+			>
+				<Button
+					onClick={() => {
+						setSortMethod((prev) => {
+							if (prev + 1 > SORT_ICONS.length - 1) return 0;
+							else return prev + 1;
+						});
+					}}
+					colorScheme="gray"
+					style={{
+						background: "#718096",
+						height: "48px",
+						width: "48px",
+
+						borderRadius: "25%",
+					}}
+				>
+					<Icon
+						as={SORT_ICONS[sortMethod].icon}
+						w={SORT_ICONS[sortMethod].w}
+						h={SORT_ICONS[sortMethod].h}
+						color="white"
+					/>
+				</Button>
+				<Text
+					style={{
+						background: "white",
+						padding: "6px",
+						borderRadius: ".5em",
+					}}
+					fontSize="large"
+				>
+					Sort by {SORT_ICONS[sortMethod].name}
+				</Text>
+			</Flex>
+
 			<div
 				id="scrollContainer"
 				ref={scrollContainerRef}

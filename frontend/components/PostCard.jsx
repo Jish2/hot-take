@@ -32,6 +32,8 @@ export const PostCard = forwardRef(
 
 		const [heat, setHeat] = useState(agree.length - disagree.length);
 		const [commentsOpen, setCommentsOpen] = useState(false);
+		const [reportTooltip, setReportTooltip] = useState(false);
+		const [infoTooltip, setInfoTooltip] = useState(false);
 
 		useImperativeHandle(ref, () => ({
 			agree() {
@@ -154,8 +156,11 @@ export const PostCard = forwardRef(
 								right: "16px",
 							}}
 						>
-							<Tooltip label="Report this post">
+							<Tooltip label="Report this post" isOpen={reportTooltip}>
 								<Button
+									onMouseEnter={() => setReportTooltip(true)}
+									onMouseLeave={() => setReportTooltip(false)}
+									onClick={() => setReportTooltip(true)}
 									color="gray.300"
 									variant="ghost"
 									style={{
@@ -181,8 +186,16 @@ export const PostCard = forwardRef(
 								</Button>
 							</Tooltip>
 
-							<Tooltip label={"Total votes: " + interactions}>
+							<Tooltip
+								label={"Total votes: " + interactions}
+								isOpen={infoTooltip}
+							>
 								<Button
+									onMouseEnter={() => setInfoTooltip(true)}
+									onMouseLeave={() => setInfoTooltip(false)}
+									onClick={() => {
+										setInfoTooltip(true);
+									}}
 									color="gray.300"
 									variant="ghost"
 									style={{
@@ -275,12 +288,14 @@ export const PostCard = forwardRef(
 										<Card variant="outline">
 											<div
 												style={{
-													maxHeight: "156px",
+													maxHeight: "176px",
 													overflowY: "scroll",
 													overflowX: "hidden",
 												}}
 											>
 												<PostComment content="This post sucks!" />
+												<PostComment content="sadas" />
+												<PostComment content="defiently two ugly bsfs 💀" />
 												<Divider />
 												<Container m={1} ml={4} position="relative">
 													<Icon
@@ -304,14 +319,12 @@ export const PostCard = forwardRef(
 															right: "44px",
 														}}
 													/>
-													<Text fontSize="xs">9:54 am, Jan 4</Text>
-													<Text>This post sucks!</Text>
+													<Text fontSize="xs">10:01 am, Jan 5</Text>
+													<Text>u just coping</Text>
 												</Container>
+												<PostComment content="😭😭😭" time="10:09 am, Jan 5" />
 												<PostComment content="This post sucks!" />
-												<PostComment content="This post sucks!" />
-												<PostComment content="This post sucks!" />
-												<PostComment content="This post sucks!" />{" "}
-												<PostComment content="This post sucks!" />
+												<PostComment content="aa" />
 											</div>
 											<Divider />
 

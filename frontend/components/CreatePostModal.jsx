@@ -3,7 +3,7 @@ import { React, useState, useRef } from "react";
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
 import axios, { isCancel, AxiosError } from "axios";
 
-export function CreatePost({ isOpen, onClose }) {
+export function CreatePostModal({ isOpen, onClose }) {
 	const API_URL = process.env.API_URL || "https://api.hottake.gg";
 	// ref for input
 	const input = useRef(null);
