@@ -55,18 +55,30 @@ const remove = (value, array) => {
 // fetch posts
 app.get("/posts", fetchPostLimiter, async (req, res) => {
 	// sorts collection so most interacted with posts are first
+	// console.log(req.body);
+	// console.log(req.query);
+
 	let postsLists = [];
 	try {
-		const method = req.body.method;
+		const method = req.query.method;
 		switch (method) {
-			case "best":
-				postsLists = await Post.find().sort({ interactions: -1 });
-				break;
 			case "new":
 				postsLists = await Post.find().sort({ date: -1 });
 				break;
+			case "popular":
+				postsLists = await Post.find().sort({ interactions: -1 });
+				break;
 			case "old":
 				postsLists = await Post.find().sort({ date: 1 });
+				break;
+			case "random":
+				postsLists = await Post.find().sort({ _id: 1 });
+				break;
+			case "disagreed":
+				postsLists = await Post.find().sort({ votes: 1 });
+				break;
+			case "agreed":
+				postsLists = await Post.find().sort({ votes: -1 });
 				break;
 			default:
 				// fallback to sorting by new
@@ -81,7 +93,7 @@ app.get("/posts", fetchPostLimiter, async (req, res) => {
 });
 
 // agree function
-app.post("/agree", voteLimiter, async (req, res) => {
+app.post("/agree", voteLimiter, (req, res) => {
 	// console.log(req.headers);
 	try {
 		const postID = req.body.postID;
@@ -92,7 +104,7 @@ app.post("/agree", voteLimiter, async (req, res) => {
 		} else if (!user) {
 			res.status(400).send("Agreement failed, no user registered.");
 		} else {
-			Post.findById(postID, (err, post) => {
+			Post.findById(postID, async (err, post) => {
 				if (err) handleError(err); // error handle
 				else {
 					// check if includes....
@@ -104,7 +116,7 @@ app.post("/agree", voteLimiter, async (req, res) => {
 					} else {
 						post.agree.push(user);
 					}
-					post.save((err, result) => {
+					await post.save((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
@@ -118,7 +130,7 @@ app.post("/agree", voteLimiter, async (req, res) => {
 });
 
 // disagree function
-app.post("/disagree", voteLimiter, async (req, res) => {
+app.post("/disagree", voteLimiter, (req, res) => {
 	// console.log(req.headers);
 	try {
 		const postID = req.body.postID;
@@ -129,7 +141,7 @@ app.post("/disagree", voteLimiter, async (req, res) => {
 		} else if (!user) {
 			res.status(400).send("Disagreement failed, no user registered.");
 		} else {
-			Post.findById(postID, (err, post) => {
+			Post.findById(postID, async (err, post) => {
 				if (err) handleError(err); // error handle
 				else {
 					// check if includes....
@@ -141,7 +153,7 @@ app.post("/disagree", voteLimiter, async (req, res) => {
 					} else {
 						post.disagree.push(user);
 					}
-					post.save((err, result) => {
+					await post.save((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
@@ -150,7 +162,7 @@ app.post("/disagree", voteLimiter, async (req, res) => {
 		}
 	} catch (error) {
 		console.error(error);
-		res.status(200).send(error);
+		res.status(400).send(error);
 	}
 });
 
@@ -177,7 +189,7 @@ app.post("/post", createPostLimiter, async (req, res) => {
 		}
 	} catch (error) {
 		console.error(error);
-		res.status(200).send(error);
+		res.status(400).send(error);
 	}
 });
 
