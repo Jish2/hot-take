@@ -18,7 +18,7 @@ export const PostComment = ({ content, time }) => {
 						right: "16px",
 					}}
 				/>
-				<Text fontSize="xs">9:54 am, Jan 4</Text>
+				<Text fontSize="xs">{time || "10:06 am, Jan 5"}</Text>
 				<Text>{content}</Text>
 			</Container>
 		</>
