@@ -3,8 +3,11 @@ import { React, useState, useRef } from "react";
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
 import axios, { isCancel, AxiosError } from "axios";
 
-export default function UploadHotTake({ isOpen, onClose }) {
+export function CreatePostModal({ isOpen, onClose }) {
 	const API_URL = process.env.API_URL || "https://api.hottake.gg";
+	// ref for input
+	const input = useRef(null);
+
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		axios
@@ -12,16 +15,15 @@ export default function UploadHotTake({ isOpen, onClose }) {
 				title: input.current.value,
 			})
 			.then(function (response) {
-				//window.location = window.location
-
+				// reload to refetch
+				// TODO: Change this to redirect to hottake.gg/post_id
 				window.location.reload(true);
 			})
 			.catch(function (error) {
+				// implement error state
 				console.log(error);
 			});
-		//window.location.href = window.location.href
 	};
-	const input = useRef(null);
 
 	return (
 		<>

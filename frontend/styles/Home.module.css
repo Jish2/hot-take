@@ -143,7 +143,11 @@
 	inset: 0;
 	padding: 1px;
 	border-radius: var(--border-radius);
-	background: linear-gradient(to bottom right, rgba(var(--tile-start-rgb), 1), rgba(var(--tile-end-rgb), 1));
+	background: linear-gradient(
+		to bottom right,
+		rgba(var(--tile-start-rgb), 1),
+		rgba(var(--tile-end-rgb), 1)
+	);
 	background-clip: content-box;
 }
 
@@ -222,7 +226,11 @@
 		border-radius: 0;
 		border: none;
 		border-bottom: 1px solid rgba(var(--callout-border-rgb), 0.25);
-		background: linear-gradient(to bottom, rgba(var(--background-start-rgb), 1), rgba(var(--callout-rgb), 0.5));
+		background: linear-gradient(
+			to bottom,
+			rgba(var(--background-start-rgb), 1),
+			rgba(var(--callout-rgb), 0.5)
+		);
 		background-clip: padding-box;
 		backdrop-filter: blur(24px);
 	}
@@ -233,7 +241,11 @@
 		inset: auto 0 0;
 		padding: 2rem;
 		height: 200px;
-		background: linear-gradient(to bottom, transparent 0%, rgb(var(--background-end-rgb)) 40%);
+		background: linear-gradient(
+			to bottom,
+			transparent 0%,
+			rgb(var(--background-end-rgb)) 40%
+		);
 		z-index: 1;
 	}
 }
@@ -273,6 +285,10 @@
 	animation: redAnimation 0.5s ease-out backwards;
 }
 
+.animateBlack {
+	animation: blackAnimation 0.5s ease-out backwards;
+}
+
 @keyframes greenAnimation {
 	0% {
 		background: #b2f5ea;
@@ -285,6 +301,15 @@
 @keyframes redAnimation {
 	0% {
 		background: #feb2b2;
+	}
+	50% {
+		background: white;
+	}
+}
+
+@keyframes blackAnimation {
+	0% {
+		background: black;
 	}
 	50% {
 		background: white;

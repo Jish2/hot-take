@@ -11,12 +11,13 @@ import rateLimit from "express-rate-limit";
 const port = process.env.PORT || 3000;
 const app = express();
 
+const CORS_URL =
+	process.env.CORS_ALLOW_FETCH || /https?:\/\/([a-z0-9]+[.])*hottake[.]gg/;
 // middleware
 app.use(express.json());
 app.use(
 	cors({
-		// origin: process.env.CORS_ALLOW_FETCH || "https://*.hottake.gg",
-		origin: /https?:\/\/([a-z0-9]+[.])*hottake[.]gg/,
+		origin: CORS_URL,
 	})
 );
 const createPostLimiter = rateLimit({
@@ -54,96 +55,129 @@ const remove = (value, array) => {
 // fetch posts
 app.get("/posts", fetchPostLimiter, async (req, res) => {
 	// sorts collection so most interacted with posts are first
-	const postsLists = await Post.find().sort({ date: -1 });
-	res.send(postsLists);
+	let postsLists = [];
+	try {
+		const method = req.body.method;
+		switch (method) {
+			case "best":
+				postsLists = await Post.find().sort({ interactions: -1 });
+				break;
+			case "new":
+				postsLists = await Post.find().sort({ date: -1 });
+				break;
+			case "old":
+				postsLists = await Post.find().sort({ date: 1 });
+				break;
+			default:
+				// fallback to sorting by new
+				postsLists = await Post.find().sort({ date: -1 });
+				break;
+		}
+		res.send(postsLists);
+	} catch (error) {
+		console.error(error);
+		res.status(400).send(error);
+	}
 });
 
 // agree function
 app.post("/agree", voteLimiter, async (req, res) => {
 	// console.log(req.headers);
+	try {
+		const postID = req.body.postID;
+		const user = req.body.userUUID;
 
-	const postID = req.body.postID;
-	const user = req.body.userUUID;
-
-	if (!postID) {
-		res.status(400).send("Agreement failed, no post included.");
-	} else if (!user) {
-		res.status(400).send("Agreement failed, no user registered.");
-	} else {
-		Post.findById(postID, (err, post) => {
-			if (err) handleError(err); // error handle
-			else {
-				// check if includes....
-				if (post.agree.includes(user)) {
-					post.agree = remove(user, post.agree);
-				} else if (post.disagree.includes(user)) {
-					post.disagree = remove(user, post.disagree);
-					post.agree.push(user);
-				} else {
-					post.agree.push(user);
+		if (!postID) {
+			res.status(400).send("Agreement failed, no post included.");
+		} else if (!user) {
+			res.status(400).send("Agreement failed, no user registered.");
+		} else {
+			Post.findById(postID, (err, post) => {
+				if (err) handleError(err); // error handle
+				else {
+					// check if includes....
+					if (post.agree.includes(user)) {
+						post.agree = remove(user, post.agree);
+					} else if (post.disagree.includes(user)) {
+						post.disagree = remove(user, post.disagree);
+						post.agree.push(user);
+					} else {
+						post.agree.push(user);
+					}
+					post.save((err, result) => {
+						if (err) handleError(err);
+						else res.status(200).send(result);
+					});
 				}
-				post.save((err, result) => {
-					if (err) handleError(err);
-					else res.status(200).send(result);
-				});
-			}
-		});
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(400).send(error);
 	}
 });
 
 // disagree function
 app.post("/disagree", voteLimiter, async (req, res) => {
 	// console.log(req.headers);
+	try {
+		const postID = req.body.postID;
+		const user = req.body.userUUID;
 
-	const postID = req.body.postID;
-	const user = req.body.userUUID;
-
-	if (!postID) {
-		res.status(400).send("Disagreement failed, no post included.");
-	} else if (!user) {
-		res.status(400).send("Disagreement failed, no user registered.");
-	} else {
-		Post.findById(postID, (err, post) => {
-			if (err) handleError(err); // error handle
-			else {
-				// check if includes....
-				if (post.agree.includes(user)) {
-					post.agree = remove(user, post.agree);
-					post.disagree.push(user);
-				} else if (post.disagree.includes(user)) {
-					post.disagree = remove(user, post.disagree);
-				} else {
-					post.disagree.push(user);
+		if (!postID) {
+			res.status(400).send("Disagreement failed, no post included.");
+		} else if (!user) {
+			res.status(400).send("Disagreement failed, no user registered.");
+		} else {
+			Post.findById(postID, (err, post) => {
+				if (err) handleError(err); // error handle
+				else {
+					// check if includes....
+					if (post.agree.includes(user)) {
+						post.agree = remove(user, post.agree);
+						post.disagree.push(user);
+					} else if (post.disagree.includes(user)) {
+						post.disagree = remove(user, post.disagree);
+					} else {
+						post.disagree.push(user);
+					}
+					post.save((err, result) => {
+						if (err) handleError(err);
+						else res.status(200).send(result);
+					});
 				}
-				post.save((err, result) => {
-					if (err) handleError(err);
-					else res.status(200).send(result);
-				});
-			}
-		});
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(200).send(error);
 	}
 });
 
 // create a post :) 😁
-// TODO: implement rate limiting
 // TODO: check if post exists already? (May be unnecessary...)
 app.post("/post", createPostLimiter, async (req, res) => {
 	// console.log(req.headers);
-	if (req.body.title.length == 0) {
-		res.status(400).send("Post content is missing");
-	} else if (req.body.title.length <= 5) {
-		res.status(400).send("Post must be longer than 5 characters");
-	} else {
-		const newPost = new Post({
-			title: req.body.title,
-			agree: [],
-			disagree: [],
-			votes: 0,
-			interactions: 0,
-			date: new Date(),
-		});
-		const createdPost = await newPost.save();
-		res.status(200).send(createdPost);
+	try {
+		if (req.body.title.length == 0) {
+			res.status(400).send("Post content is missing");
+		} else if (req.body.title.length <= 5) {
+			res.status(400).send("Post must be longer than 5 characters");
+		} else {
+			const newPost = new Post({
+				title: req.body.title,
+				agree: [],
+				disagree: [],
+				votes: 0,
+				interactions: 0,
+				date: new Date(),
+			});
+			const createdPost = await newPost.save();
+			res.status(200).send(createdPost);
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(200).send(error);
 	}
 });
 

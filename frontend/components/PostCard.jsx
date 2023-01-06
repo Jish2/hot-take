@@ -1,27 +1,19 @@
+/* prettier-ignore */
 import React, { forwardRef, useState, useImperativeHandle } from "react";
-//prettier-ignore
-import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer, Text, Icon } from "@chakra-ui/react";
-import {
-	BsFillHandThumbsUpFill,
-	BsFillHandThumbsDownFill,
-	BsExclamationTriangle,
-	BsChat,
-	BsReply,
-} from "react-icons/bs";
-import {
-	AiOutlineFire,
-	AiOutlineInfoCircle,
-	AiOutlineWarning,
-	AiOutlineHeart,
-	AiFillHeart,
-	AiOutlineSend,
-} from "react-icons/ai";
-
+// UI Imports
+/* prettier-ignore */
+import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, Tooltip, Flex, Spacer, Text, Icon } from "@chakra-ui/react";
+// Icons
+/* prettier-ignore */
+import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsChat, BsReply } from "react-icons/bs";
+/* prettier-ignore */
+import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning, AiFillHeart, AiOutlineSend } from "react-icons/ai";
+// Dependencies
 import axios, { isCancel, AxiosError } from "axios";
+// Components
+import { PostComment } from "./PostComment";
 
-import { PostComment } from "../components/PostComment";
-
-export const HotTakeCard = forwardRef(
+export const PostCard = forwardRef(
 	(
 		{
 			title,
@@ -40,11 +32,10 @@ export const HotTakeCard = forwardRef(
 
 		const [heat, setHeat] = useState(agree.length - disagree.length);
 		const [commentsOpen, setCommentsOpen] = useState(false);
+		const [reportTooltip, setReportTooltip] = useState(false);
+		const [infoTooltip, setInfoTooltip] = useState(false);
 
 		useImperativeHandle(ref, () => ({
-			log() {
-				testing123();
-			},
 			agree() {
 				agreeWithPost();
 			},
@@ -52,10 +43,6 @@ export const HotTakeCard = forwardRef(
 				disagreeWithPost();
 			},
 		}));
-
-		function testing123() {
-			console.log("TEST COMPLETE! " + id);
-		}
 
 		function formatNumberCompact(num) {
 			return new Intl.NumberFormat("en-GB", {
@@ -169,8 +156,11 @@ export const HotTakeCard = forwardRef(
 								right: "16px",
 							}}
 						>
-							<Tooltip label="Report this post">
+							<Tooltip label="Report this post" isOpen={reportTooltip}>
 								<Button
+									onMouseEnter={() => setReportTooltip(true)}
+									onMouseLeave={() => setReportTooltip(false)}
+									onClick={() => setReportTooltip(true)}
 									color="gray.300"
 									variant="ghost"
 									style={{
@@ -196,8 +186,16 @@ export const HotTakeCard = forwardRef(
 								</Button>
 							</Tooltip>
 
-							<Tooltip label={"Total votes: " + interactions}>
+							<Tooltip
+								label={"Total votes: " + interactions}
+								isOpen={infoTooltip}
+							>
 								<Button
+									onMouseEnter={() => setInfoTooltip(true)}
+									onMouseLeave={() => setInfoTooltip(false)}
+									onClick={() => {
+										setInfoTooltip(true);
+									}}
 									color="gray.300"
 									variant="ghost"
 									style={{
@@ -290,12 +288,14 @@ export const HotTakeCard = forwardRef(
 										<Card variant="outline">
 											<div
 												style={{
-													maxHeight: "156px",
+													maxHeight: "176px",
 													overflowY: "scroll",
 													overflowX: "hidden",
 												}}
 											>
 												<PostComment content="This post sucks!" />
+												<PostComment content="sadas" />
+												<PostComment content="defiently two ugly bsfs 💀" />
 												<Divider />
 												<Container m={1} ml={4} position="relative">
 													<Icon
@@ -319,13 +319,12 @@ export const HotTakeCard = forwardRef(
 															right: "44px",
 														}}
 													/>
-													<Text fontSize="xs">9:54 am, Jan 4</Text>
-													<Text>This post sucks!</Text>
+													<Text fontSize="xs">10:01 am, Jan 5</Text>
+													<Text>u just coping</Text>
 												</Container>
+												<PostComment content="😭😭😭" time="10:09 am, Jan 5" />
 												<PostComment content="This post sucks!" />
-												<PostComment content="This post sucks!" />
-												<PostComment content="This post sucks!" />
-												<PostComment content="This post sucks!" />
+												<PostComment content="aa" />
 											</div>
 											<Divider />
 
