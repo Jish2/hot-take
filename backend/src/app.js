@@ -81,7 +81,7 @@ app.get("/posts", fetchPostLimiter, async (req, res) => {
 });
 
 // agree function
-app.post("/agree", voteLimiter, async (req, res) => {
+app.post("/agree", voteLimiter, (req, res) => {
 	// console.log(req.headers);
 	try {
 		const postID = req.body.postID;
@@ -104,7 +104,7 @@ app.post("/agree", voteLimiter, async (req, res) => {
 					} else {
 						post.agree.push(user);
 					}
-					post.update((err, result) => {
+					post.save((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
@@ -118,7 +118,7 @@ app.post("/agree", voteLimiter, async (req, res) => {
 });
 
 // disagree function
-app.post("/disagree", voteLimiter, async (req, res) => {
+app.post("/disagree", voteLimiter, (req, res) => {
 	// console.log(req.headers);
 	try {
 		const postID = req.body.postID;
@@ -141,7 +141,7 @@ app.post("/disagree", voteLimiter, async (req, res) => {
 					} else {
 						post.disagree.push(user);
 					}
-					post.update((err, result) => {
+					post.save((err, result) => {
 						if (err) handleError(err);
 						else res.status(200).send(result);
 					});
@@ -150,7 +150,7 @@ app.post("/disagree", voteLimiter, async (req, res) => {
 		}
 	} catch (error) {
 		console.error(error);
-		res.status(200).send(error);
+		res.status(400).send(error);
 	}
 });
 
@@ -177,7 +177,7 @@ app.post("/post", createPostLimiter, async (req, res) => {
 		}
 	} catch (error) {
 		console.error(error);
-		res.status(200).send(error);
+		res.status(400).send(error);
 	}
 });
 
