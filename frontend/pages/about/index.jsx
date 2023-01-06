@@ -55,6 +55,14 @@ export default function About() {
 						</Button>
 					</div>
 				</div>
+
+				<Text mt={10} style={{ textAlign: "center" }}>
+					HotTake does NOT condone transphobia, homophobia, racism, sexism, or
+					any bigotry. "Hot takes" are encouraged, but this is not inclusive of
+					hate speech, and usage of hate speech will result in post removal and
+					banishment from hottake.gg
+				</Text>
+
 				<Text mt={10} style={{ textAlign: "center" }}>
 					HotTake was founded in December of 2022, by founders Ibrahim Shah, and
 					Joshua Goon. Ibrahim Shah attends the University of California,
