@@ -55,18 +55,30 @@ const remove = (value, array) => {
 // fetch posts
 app.get("/posts", fetchPostLimiter, async (req, res) => {
 	// sorts collection so most interacted with posts are first
+	// console.log(req.body);
+	// console.log(req.query);
+
 	let postsLists = [];
 	try {
-		const method = req.body.method;
+		const method = req.query.method;
 		switch (method) {
-			case "best":
-				postsLists = await Post.find().sort({ interactions: -1 });
-				break;
 			case "new":
 				postsLists = await Post.find().sort({ date: -1 });
 				break;
+			case "popular":
+				postsLists = await Post.find().sort({ interactions: -1 });
+				break;
 			case "old":
 				postsLists = await Post.find().sort({ date: 1 });
+				break;
+			case "random":
+				postsLists = await Post.find().sort({ _id: 1 });
+				break;
+			case "disagreed":
+				postsLists = await Post.find().sort({ votes: 1 });
+				break;
+			case "agreed":
+				postsLists = await Post.find().sort({ votes: -1 });
 				break;
 			default:
 				// fallback to sorting by new
