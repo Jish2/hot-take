@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, useImperativeHandle } from "react";
 //prettier-ignore
-import { Stack, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer } from "@chakra-ui/react";
+import { Text, Stack, Heading, Button, Card, CardHeader, CardBody, CardFooter, HStack, Tooltip, Center, Flex, Box, Spacer } from "@chakra-ui/react";
 import {
 	BsFillHandThumbsUpFill,
 	BsFillHandThumbsDownFill,
