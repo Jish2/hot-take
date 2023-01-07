@@ -15,7 +15,9 @@ const PostSchema = new Schema({
 	votes: { type: Number, required: true },
 	interactions: { type: Number, required: true },
 	date: { type: Date, required: true, immutable: true },
-});
+},
+
+);
 
 // middleware populates votes and interactions
 PostSchema.pre("save", function (next) {
