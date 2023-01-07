@@ -230,7 +230,7 @@ export const HotTakeCard = forwardRef(
 									onClick={agreeWithPost}
 									style={{ background: agree.includes(uuid) ? "#B2F5EA" : "" }}
 								>
-									Agree
+									<Text fontSize={{base:'12px',sm:'15px'}}>{agree.length} Agree</Text>
 								</Button>
 								<Spacer />
 								<Button
@@ -256,7 +256,7 @@ export const HotTakeCard = forwardRef(
 										background: disagree.includes(uuid) ? "#FEB2B2" : "",
 									}}
 								>
-									Disagree
+									<Text fontSize={{base:'12px',sm:'15px'}}>{disagree.length} Disagree</Text>
 								</Button>
 							</Flex>
 						</CardFooter>
