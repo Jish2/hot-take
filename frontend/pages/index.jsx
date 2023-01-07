@@ -19,7 +19,9 @@ import axios from "axios";
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
-	const res = await fetch("https://api.hottake.gg/posts");
+	// Call an external API endpoint to get posts.
+	// You can use any data fetching library
+	const res = await fetch("http://localhost:3001/posts");
 	const postsFromDB = await res.json();
 	return { props: { postsFromDB } };
 }
