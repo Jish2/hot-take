@@ -1,23 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 // UI imports
-import {
-	useDisclosure,
-	Button,
-	Icon,
-	Flex,
-	Text,
-	ChakraProvider,
-} from "@chakra-ui/react";
+// prettier-ignore
+import { useDisclosure, Button, Icon, Flex, Text, ChakraProvider } from "@chakra-ui/react";
 // Icons
-import {
-	BsPlusLg,
-	BsSortNumericUp,
-	BsFillStarFill,
-	BsSortNumericDownAlt,
-	BsShuffle,
-	BsFillHandThumbsUpFill,
-	BsFillHandThumbsDownFill,
-} from "react-icons/bs";
+// prettier-ignore
+import { BsPlusLg, BsSortNumericUp, BsFillStarFill, BsSortNumericDownAlt, BsShuffle, BsFillHandThumbsUpFill, BsFillHandThumbsDownFill } from "react-icons/bs";
 // Components
 import { PostCard } from "../components/PostCard";
 import { CreatePostModal } from "../components/CreatePostModal";
@@ -27,7 +14,7 @@ import styles from "../styles/Home.module.css";
 // Dependencies
 import { v4 as uuidv4 } from "uuid";
 import ReactGA from "react-ga";
-
+import axios from "axios";
 // Google Analytics ID
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
@@ -36,21 +23,29 @@ export async function getServerSideProps() {
 	// You can use any data fetching library
 	const res = await fetch("http://localhost:3001/posts");
 	const postsFromDB = await res.json();
+	return { props: { postsFromDB } };
+}
 
-	// By returning { props: { posts } }, the Blog component
-	// will receive `posts` as a prop at build time
-	return {
-		props: {
-			postsFromDB,
-		},
-	};
+async function fetchPosts(type) {
+	// "https://api.hottake.gg/posts"
+	try {
+		// console.log(type);
+		const response = await axios.get(
+			`http://localhost:3001/posts?method=${type}`
+		);
+
+		// console.log(response.data[0]);
+		return response;
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 export default function Home({ postsFromDB }) {
 	// key for sorting button
 	const SORT_ICONS = [
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
-		{ icon: BsFillStarFill, name: "Best", w: 4, h: 4 },
+		{ icon: BsFillStarFill, name: "Popular", w: 4, h: 4 },
 		{ icon: BsSortNumericUp, name: "Old", w: 6, h: 6 },
 		{ icon: BsShuffle, name: "Random", w: 6, h: 6 },
 		{ icon: BsFillHandThumbsDownFill, name: "Disagreed", w: 5, h: 5 },
@@ -58,14 +53,12 @@ export default function Home({ postsFromDB }) {
 	];
 	const [sortMethod, setSortMethod] = useState(0);
 
-	// Array of refs to reference each post
-	const refs = useRef(Array(postsFromDB.length).fill(React.createRef()));
-
 	// states
 	const [animated, setAnimated] = useState({ left: false, right: false }); // Left and Right flashing animations
 	const [uuid, setUUID] = useState(null);
 	const scrollContainerRef = useRef(null); // To access scroll container containing posts
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
+	const [posts, setPosts] = useState(postsFromDB);
 
 	useEffect(() => {
 		// Google Analytics initialization
@@ -82,7 +75,6 @@ export default function Home({ postsFromDB }) {
 			setUUID(localStorage.getItem("uuid"));
 		}
 	}, []);
-	const [posts, setPosts] = useState(postsFromDB);
 
 	return (
 		<>
@@ -118,9 +110,21 @@ export default function Home({ postsFromDB }) {
 				<Button
 					onClick={() => {
 						setSortMethod((prev) => {
-							if (prev + 1 > SORT_ICONS.length - 1) return 0;
-							else return prev + 1;
+							if (prev + 1 > SORT_ICONS.length - 1) {
+								return 0;
+							} else return prev + 1;
 						});
+						fetchPosts(
+							SORT_ICONS[
+								(sortMethod + 1) % SORT_ICONS.length
+							].name.toLowerCase()
+						).then((res) => setPosts(res.data));
+						setTimeout(() => {
+							scrollContainerRef.current.scrollTo({
+								top: 0,
+								behavior: "smooth",
+							});
+						}, 250);
 					}}
 					colorScheme="gray"
 					style={{
@@ -170,7 +174,7 @@ export default function Home({ postsFromDB }) {
 						<div
 							id="flexContainer"
 							style={{
-								overflow: "scroll",
+								overflow: "hidden",
 								position: "absolute",
 								display: "flex",
 								scrollSnapAlign: "end",
@@ -184,8 +188,6 @@ export default function Home({ postsFromDB }) {
 									setAnimated((prev) => {
 										return { ...prev, left: true };
 									});
-
-									refs.current[1].current.agree();
 								}}
 								onAnimationEnd={() =>
 									setAnimated((prev) => {
@@ -203,8 +205,6 @@ export default function Home({ postsFromDB }) {
 									setAnimated((prev) => {
 										return { ...prev, right: true };
 									});
-
-									refs.current[i].current.disagree();
 								}}
 								onAnimationEnd={() =>
 									setAnimated((prev) => {
@@ -217,16 +217,15 @@ export default function Home({ postsFromDB }) {
 						</div>
 
 						<PostCard
-							title={post.title}
-							agree={post.agree}
-							disagree={post.disagree}
-							id={post._id}
+							// title={post.title}
+							// agree={post.agree}
+							// disagree={post.disagree}
+							// id={post._id}
+							// interactions={post.interactions}
+							{...post}
 							uuid={uuid}
 							setAnimated={setAnimated}
 							scrollContainerRef={scrollContainerRef}
-							ref={refs.current[i]}
-							index={i}
-							interactions={post.interactions}
 						/>
 					</div>
 				))}
