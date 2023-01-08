@@ -29,7 +29,7 @@ export const HotTakeCard = forwardRef(
 		},
 		ref
 	) => {
-		const [heat, setHeat] = useState(agree.length - disagree.length);
+		const [heat, setHeat] = useState(agree.length + disagree.length);
 
 		useImperativeHandle(ref, () => ({
 			log() {
