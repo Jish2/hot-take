@@ -270,7 +270,7 @@ export const PostCard = forwardRef(
                 onClick={agreeWithPost}
                 style={{ background: agree.includes(uuid) ? "#B2F5EA" : "" }}
               >
-               {agree.length} Agree
+               <Text fontSize={{base:'12px', sm:'15px'}}>{agree.length} Agree</Text>
               </Button>
               <Spacer />
               <Button
@@ -287,7 +287,7 @@ export const PostCard = forwardRef(
               <Spacer />
               <Button
                 width="125px"
-                rightIcon={<BsFillHandThumbsDownFill />}
+                rightIcon={<BsFillHandThumbsDownFill  />}
                 variant="outline"
                 colorScheme="red"
                 color="#ff5242"
@@ -296,7 +296,7 @@ export const PostCard = forwardRef(
                   background: disagree.includes(uuid) ? "#FEB2B2" : "",
                 }}
               >
-                {disagree.length} Disagree
+                <Text fontSize={{base:'12px', sm:'15px'}}>{disagree.length} Disagree</Text>
               </Button>
             </Flex>
             {/* //agree heat disagree div ends */}
