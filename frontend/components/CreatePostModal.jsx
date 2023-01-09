@@ -3,7 +3,11 @@ import { React, useState, useRef } from "react";
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
 import axios, { isCancel, AxiosError } from "axios";
 
+import { useErrorToast } from "../hooks/useErrorToast";
+
 export function CreatePostModal({ isOpen, onClose }) {
+	const { addToast } = useErrorToast();
+
 	const API_URL = process.env.API_URL || "https://api.hottake.gg";
 	// ref for input
 	const input = useRef(null);
@@ -21,7 +25,8 @@ export function CreatePostModal({ isOpen, onClose }) {
 			})
 			.catch(function (error) {
 				// implement error state
-				console.log(error);
+				console.error(error);
+				addToast(error.message);
 			});
 	};
 
@@ -30,11 +35,11 @@ export function CreatePostModal({ isOpen, onClose }) {
 			<Modal isOpen={isOpen} onClose={onClose} motionPreset="scale" isCentered>
 				<ModalOverlay />
 				<ModalContent style={{ width: "90%" }}>
-					<ModalHeader>Share a hot take of up to 140 words!</ModalHeader>
+					<ModalHeader>Share a hot take!</ModalHeader>
 					<ModalCloseButton />
 					<form onSubmit={handlePostSubmit}>
 						<ModalBody>
-							<Textarea ref={input} placeholder="Share your hot take" />
+							<Textarea ref={input} placeholder="Share a hot take of up to 140 words!" />
 						</ModalBody>
 
 						<ModalFooter>
