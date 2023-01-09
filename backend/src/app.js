@@ -3,20 +3,19 @@ dotenv.config();
 
 import express from "express";
 import mongoose from "mongoose";
+// schemas
 import Post from "./models/Post.js";
 import Comment from "./models/Comment.js";
-import Reply from "./models/Reply.js";
-
+import ReplySchema from "./models/Reply.js";
+// additional packages
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-import ReplySchema from "./models/Reply.js";
 
 // initialization
 const port = process.env.PORT || 3000;
 const app = express();
 
-const CORS_URL =
-	process.env.CORS_ALLOW_FETCH || /https?:\/\/([a-z0-9]+[.])*hottake[.]gg/;
+const CORS_URL = process.env.CORS_ALLOW_FETCH || /https?:\/\/([a-z0-9]+[.])*hottake[.]gg/;
 // middleware
 app.use(express.json());
 app.use(
@@ -56,8 +55,8 @@ const remove = (value, array) => {
 	});
 };
 
-// fetch posts
-app.get("/posts", fetchPostLimiter, async (req, res) => {
+// fetch posts // fetchPostLimiter,
+app.get("/posts", async (req, res) => {
 	// sorts collection so most interacted with posts are first
 	let postsLists = {};
 	try {
@@ -82,8 +81,9 @@ app.get("/posts", fetchPostLimiter, async (req, res) => {
 				postsLists = { date: 1 };
 				break;
 			case "random":
-				postsLists = { _id: 1 };
-				break;
+				const results = await Post.aggregate([{ $sample: { size: limit } }]);
+				res.send(results);
+				return;
 			case "disagreed":
 				postsLists = { votes: 1 };
 				break;
@@ -94,10 +94,7 @@ app.get("/posts", fetchPostLimiter, async (req, res) => {
 				// fallback to sorting by new
 				postsLists = { date: -1 };
 		}
-		const results = await Post.find()
-			.limit(limit)
-			.skip(offset)
-			.sort(postsLists);
+		const results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 		res.send(results);
 	} catch (error) {
 		console.error(error);
@@ -259,6 +256,8 @@ app.post("/post", createPostLimiter, async (req, res) => {
 			res.status(400).send("Post content is missing");
 		} else if (req.body.title.length <= 5) {
 			res.status(400).send("Post must be longer than 5 characters");
+		} else if (req.body.title.length > 140) {
+			res.status(400).send("Post must be less than 140 characters");
 		} else {
 			const newPost = new Post({
 				title: req.body.title,
