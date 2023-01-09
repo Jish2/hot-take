@@ -22,6 +22,8 @@ import {
 import { PostCard } from "../components/PostCard";
 import { CreatePostModal } from "../components/CreatePostModal";
 import { Navbar } from "../components/Navbar";
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 // Styling
 import styles from "../styles/Home.module.css";
 // Dependencies
@@ -34,7 +36,7 @@ const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 export async function getServerSideProps() {
 	// Call an external API endpoint to get posts.
 	// You can use any data fetching library
-	const res = await fetch("http://localhost:3001/posts");
+	const res = await fetch("http://localhost:3001/posts?offset="+0);
 	const postsFromDB = await res.json();
 
 	// By returning { props: { posts } }, the Blog component
@@ -83,6 +85,22 @@ export default function Home({ postsFromDB }) {
 		}
 	}, []);
 	const [posts, setPosts] = useState(postsFromDB);
+
+	async function loadMore() {
+		console.log("Loading")
+		const res = await fetch('http://localhost:3001/posts?offset='+posts.length)
+		const loadedPosts = await res.json();
+		if (loadedPosts.length == 0){
+			setHasMorePosts(false)
+		}
+		setPosts((prev)=>{
+			//const newPosts = [...prev, loadedPosts]
+			return [...prev,...loadedPosts]
+
+		})
+
+
+	}	
 
 	return (
 		<>
@@ -150,7 +168,18 @@ export default function Home({ postsFromDB }) {
 				</Text>
 			</Flex>
 
-			<div
+			
+				<InfiniteScroll
+
+				
+
+					dataLength={posts.length}
+					next={loadMore}
+					hasMore={true}
+					loader={<h4>loading</h4>}
+					scrollableTarget="scrollContainer"
+				>
+<div
 				id="scrollContainer"
 				ref={scrollContainerRef}
 				m={0}
@@ -180,12 +209,13 @@ export default function Home({ postsFromDB }) {
 						>
 							<div
 								onClick={() => {
+									console.log(post.agree)
 									scrollContainerRef.current.scrollBy({ top: 50 });
 									setAnimated((prev) => {
 										return { ...prev, left: true };
 									});
 
-									refs.current[1].current.agree();
+									//refs.current[1].current.agree();
 								}}
 								onAnimationEnd={() =>
 									setAnimated((prev) => {
@@ -204,7 +234,7 @@ export default function Home({ postsFromDB }) {
 										return { ...prev, right: true };
 									});
 
-									refs.current[i].current.disagree();
+									//refs.current[i].current.disagree();
 								}}
 								onAnimationEnd={() =>
 									setAnimated((prev) => {
@@ -230,7 +260,12 @@ export default function Home({ postsFromDB }) {
 						/>
 					</div>
 				))}
-			</div>
+
+</div>
+
+				</InfiniteScroll>
+				
+			
 		</>
 	);
 }

@@ -30,6 +30,8 @@ export const PostCard = forwardRef(
     },
     ref
   ) => {
+
+
     const API_URL = process.env.API_URL || "https://api.hottake.gg";
 
     const [heat, setHeat] = useState(agree.length - disagree.length);
