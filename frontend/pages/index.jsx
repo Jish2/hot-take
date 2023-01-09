@@ -87,6 +87,7 @@ export default function Home({ postsFromDB }) {
 	const [posts, setPosts] = useState(postsFromDB);
 
 	async function loadMore() {
+		console.log("Loading")
 		const res = await fetch('http://localhost:3001/posts?offset='+posts.length)
 		const loadedPosts = await res.json();
 		if (loadedPosts.length == 0){
@@ -167,7 +168,18 @@ export default function Home({ postsFromDB }) {
 				</Text>
 			</Flex>
 
-			<div
+			
+				<InfiniteScroll
+
+				
+
+					dataLength={posts.length}
+					next={loadMore}
+					hasMore={true}
+					loader={<h4>loading</h4>}
+					scrollableTarget="scrollContainer"
+				>
+<div
 				id="scrollContainer"
 				ref={scrollContainerRef}
 				m={0}
@@ -182,25 +194,6 @@ export default function Home({ postsFromDB }) {
 					scrollBehavior: "smooth",
 				}}
 			>
-				<InfiniteScroll
-
-					style={{
-						marginLeft: "auto",
-						marginRight: "auto",
-						height: "100vh",
-						width: "100vw",
-						scrollSnapType: "y mandatory",
-						overflowY: "scroll",
-						scrollBehavior: "smooth",
-					}}
-
-					dataLength={posts.length}
-					next={loadMore}
-					hasMore={true}
-					loader={<h4>loading</h4>}
-					scrollableTarget="scrollContainer"
-				>
-
 				{posts.map((post, i) => (
 					<div key={post._id} style={{ position: "relative" }}>
 						<div
@@ -268,11 +261,11 @@ export default function Home({ postsFromDB }) {
 					</div>
 				))}
 
-
+</div>
 
 				</InfiniteScroll>
 				
-			</div>
+			
 		</>
 	);
 }
