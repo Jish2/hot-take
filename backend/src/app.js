@@ -66,7 +66,7 @@ app.get("/posts", async (req, res) => {
 
 		// catch invalid values
 		if (limit < 0 || offset < 0) {
-			res.status(400).send("FUCK U");
+			res.status(400).send("***REMOVED***");
 			return;
 		}
 
@@ -128,7 +128,7 @@ app.post("/agree", voteLimiter, (req, res) => {
 					}
 					await post.save((err, result) => {
 						if (err) handleError(err);
-						else res.status(400).send(result);
+						else res.status(200).send(result);
 					});
 				}
 			});
@@ -176,42 +176,41 @@ app.post("/disagree", voteLimiter, (req, res) => {
 	}
 });
 
-app.post("/reply", async (req, res) => {
-	//we need content
-	//we need commentID
+// app.post("/reply", async (req, res) => {
+// 	//we need content
+// 	//we need commentID
 
-	try {
-		if (req.body.content.length == 0) {
-			res.status(400).send("Missing reply content");
-		} else if (req.body.commentID.length == 0) {
-			res.status(400).send("Missing parent comment ID");
-		} else {
-			// const reply = new Reply({
-			// 	content:req.body.content,
-			// 	commentID:req.body.commentID
-			// })
-			//const createdReply = await reply.save();
-			//creating the reply and saving it to the reply collection in the database
+// 	try {
+// 		if (req.body.content.length == 0) {
+// 			res.status(400).send("Missing reply content");
+// 		} else if (req.body.commentID.length == 0) {
+// 			res.status(400).send("Missing parent comment ID");
+// 		} else {
+// 			// const reply = new Reply({
+// 			// 	content:req.body.content,
+// 			// 	commentID:req.body.commentID
+// 			// })
+// 			//const createdReply = await reply.save();
+// 			//creating the reply and saving it to the reply collection in the database
 
-			//createdReply = JSON.stringify(createdReply)
-			const parentComment = await Comment.findOne({ _id: req.body.commentID });
-			//finding the parentComment in the database using provided parent comment ID
+// 			//createdReply = JSON.stringify(createdReply)
+// 			const parentComment = await Comment.findOne({ _id: req.body.commentID });
+// 			//finding the parentComment in the database using provided parent comment ID
 
-			parentComment.replies.push({ date: Date(), content: req.body.content });
-			const savedComment = await parentComment.save();
-			res.status(200).send(savedComment);
-		}
-	} catch (error) {
-		res.status(400).send(error);
-	}
-});
+// 			parentComment.replies.push({ date: Date(), content: req.body.content });
+// 			const savedComment = await parentComment.save();
+// 			res.status(200).send(savedComment);
+// 		}
+// 	} catch (error) {
+// 		res.status(400).send(error);
+// 	}
+// });
 
 app.get("/comment", async (req, res) => {
 	try {
 		if (req.query.postID.length == 0) {
 			res.status(400).send("Please provide an id");
 		} else {
-			console.log(req.body);
 
 			const comments = await Comment.find({ postID: req.query.postID });
 			res.status(200).send(comments);
@@ -225,7 +224,11 @@ app.post("/comment", async (req, res) => {
 	try {
 		if (req.body.content.length == 0) {
 			res.status(400).send("comment content is missing");
-		} else if (req.body.postID.length == 0) {
+		} else if(req.body.content.length > 140){
+			res.status(400).send("Post is above 140 characters")
+			//we need to send the actual errors 
+		}
+		else if (req.body.postID.length == 0) {
 			res.status(400).send("parent post id is missing");
 		}
 		// } else if (req.body.children.length == 0){
@@ -243,7 +246,7 @@ app.post("/comment", async (req, res) => {
 		}
 	} catch (error) {
 		console.error(error);
-		res.status(200).send(error);
+		res.status(400).send(error);
 	}
 });
 
