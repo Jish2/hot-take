@@ -23,9 +23,9 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 	const { addToast } = useErrorToast();
 
-	const API_URL = process.env.API_URL || "https://api.hottake.gg";
+	const API_URL = 'http://localhost:3001';
 
-	const [heat, setHeat] = useState(agree.length - disagree.length);
+	const [heat, setHeat] = useState(agree.length + disagree.length);
 	const [commentsOpen, setCommentsOpen] = useState(false);
 	const [reportTooltip, setReportTooltip] = useState(false);
 	const [infoTooltip, setInfoTooltip] = useState(false);
@@ -34,12 +34,23 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 	async function fetchComments() {
 		// on startup fetch comments
-		const res = await fetch("http://localhost:3001/comment?postID=" + _id);
-		const commentsFromDB = await res.json();
-		if (commentsFromDB.length !== 0) {
-			setComments(commentsFromDB.map((item) => item.content));
+		try{
+
+			const res = await fetch("http://localhost:3001/comment?postID=" + _id);
+			const commentsFromDB = await res.json();
+			if (commentsFromDB.length !== 0) {
+			setComments(commentsFromDB.map((item) => item));
 			// console.log(comments);
 		}
+
+		}
+		catch(e){
+			console.error(e)
+			addToast(e.message)
+
+
+		}
+		
 	}
 
 	useEffect(() => {
@@ -243,8 +254,9 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 											overflowX: "hidden",
 										}}
 									>
+										
 										{comments.map((comment) => {
-											return <PostComment key={comment._id} content={comment} />;
+											return <PostComment key={comment._id} content={comment.content} time={comment.date} />;
 										})}
 
 										{/* <Divider />
