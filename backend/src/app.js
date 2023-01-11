@@ -211,7 +211,6 @@ app.get("/comment", async (req, res) => {
 		if (req.query.postID.length == 0) {
 			res.status(400).send("Please provide an id");
 		} else {
-
 			const comments = await Comment.find({ postID: req.query.postID });
 			res.status(200).send(comments);
 		}
@@ -224,11 +223,10 @@ app.post("/comment", async (req, res) => {
 	try {
 		if (req.body.content.length == 0) {
 			res.status(400).send("comment content is missing");
-		} else if(req.body.content.length > 140){
-			res.status(400).send("Post is above 140 characters")
-			//we need to send the actual errors 
-		}
-		else if (req.body.postID.length == 0) {
+		} else if (req.body.content.length > 140) {
+			res.status(400).send("Post is above 140 characters");
+			//we need to send the actual errors
+		} else if (req.body.postID.length == 0) {
 			res.status(400).send("parent post id is missing");
 		}
 		// } else if (req.body.children.length == 0){

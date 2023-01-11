@@ -39,7 +39,7 @@ export function CreatePostModal({ isOpen, onClose }) {
 					<ModalCloseButton />
 					<form onSubmit={handlePostSubmit}>
 						<ModalBody>
-							<Textarea ref={input} placeholder="Share a hot take of up to 140 words!" />
+							<Textarea ref={input} placeholder="Share a hot take of up to 140 characters!" />
 						</ModalBody>
 
 						<ModalFooter>
