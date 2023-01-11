@@ -8,14 +8,13 @@ const ObjectId = Schema.ObjectId;
 // agree and disagree
 // identification (auto generated)
 
-const ReplySchema = new Schema({ 
-    content: {type: String, required:true},
-    commentID: {type:String, required:true},
-
-},{ timestamps: true });
-
-
-
+const ReplySchema = new Schema(
+	{
+		content: { type: String, required: true },
+		commentID: { type: String, required: true },
+	},
+	{ timestamps: true }
+);
 
 const ReplyModel = mongoose.model("Reply", ReplySchema);
 
