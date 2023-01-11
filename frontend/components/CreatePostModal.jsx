@@ -7,13 +7,15 @@ import { useErrorToast } from "../hooks/useErrorToast";
 
 export function CreatePostModal({ isOpen, onClose }) {
 	const { addToast } = useErrorToast();
+	const [isCreateLoading, setIsCreateLoading] = useState(false);
 
-	const API_URL = process.env.API_URL || "https://api.hottake.gg";
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
 	// ref for input
 	const input = useRef(null);
 
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
+		setIsCreateLoading(true);
 		axios
 			.post(`${API_URL}/post`, {
 				title: input.current.value,
@@ -21,12 +23,14 @@ export function CreatePostModal({ isOpen, onClose }) {
 			.then(function (response) {
 				// reload to refetch
 				// TODO: Change this to redirect to hottake.gg/post_id
+				setIsCreateLoading(false);
 				window.location.reload(true);
 			})
 			.catch(function (error) {
 				// implement error state
 				console.error(error);
-				addToast(error.message);
+				addToast(error.response.data || error.message);
+				setIsCreateLoading(false);
 			});
 	};
 
@@ -43,7 +47,7 @@ export function CreatePostModal({ isOpen, onClose }) {
 						</ModalBody>
 
 						<ModalFooter>
-							<Button colorScheme="teal" type="submit">
+							<Button colorScheme="teal" type="submit" disabled={isCreateLoading}>
 								Post to UCI
 							</Button>
 						</ModalFooter>
