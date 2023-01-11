@@ -24,12 +24,14 @@ import { useErrorToast } from "../hooks/useErrorToast";
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
-	const res = await fetch("http://localhost:3001/posts?offset=0");
+	const res = await fetch("https://api.hottake.gg/posts?offset=0");
 	const postsFromDB = await res.json();
 	return { props: { postsFromDB } };
 }
 
 export default function Home({ postsFromDB }) {
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
+
 	// key for sorting button
 	const SORT_ICONS = [
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
@@ -57,7 +59,7 @@ export default function Home({ postsFromDB }) {
 	async function fetchPosts(type) {
 		// swap with "https://api.hottake.gg/posts"
 		try {
-			const response = await axios.get(`http://localhost:3001/posts?method=${type}`);
+			const response = await axios.get(`${API_URL}/posts?method=${type}`);
 			console.log(response);
 			// console.log(response.data[0]);
 			if (response.data.length == 0) {
@@ -97,7 +99,7 @@ export default function Home({ postsFromDB }) {
 		try {
 			console.log("Loading");
 			const res = await fetch(
-				`http://localhost:3001/posts?offset=${posts.length}&method=${SORT_ICONS[
+				`${API_URL}/posts?offset=${posts.length}&method=${SORT_ICONS[
 					sortMethod
 				].name.toLowerCase()}`
 			);

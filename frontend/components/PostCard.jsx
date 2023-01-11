@@ -23,7 +23,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 	const { addToast } = useErrorToast();
 
-	const API_URL = "http://localhost:3001";
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
 
 	const [heat, setHeat] = useState(agree.length + disagree.length);
 	const [commentsOpen, setCommentsOpen] = useState(false);
@@ -38,7 +38,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 	async function fetchComments() {
 		// on startup fetch comments
 		try {
-			const res = await fetch("http://localhost:3001/comment?postID=" + _id);
+			const res = await fetch(`${API_URL}/comment?postID=${_id}`);
 			const commentsFromDB = await res.json();
 			if (commentsFromDB.length !== 0) {
 				setComments(commentsFromDB);
@@ -276,7 +276,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 											// 	);
 											// }
 											return (
-												<div>
+												<div key={`${comment._id}${i}`}>
 													<PostComment
 														key={`${comment._id}${i}`}
 														content={comment.content}
@@ -377,7 +377,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 													//we have the id, we make a post request to /comment
 													axios
-														.post("http://localhost:3001/comment", {
+														.post(`${API_URL}/comment`, {
 															content: inputtedComment,
 															postID: _id,
 														})
