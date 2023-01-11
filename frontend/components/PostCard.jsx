@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 // UI Imports
 // prettier-ignore
-import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, Tooltip, Flex, Spacer, Text, Icon } from "@chakra-ui/react";
+import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, Tooltip, Flex, Spacer, Text, Icon, Toast } from "@chakra-ui/react";
 // Icons
 // prettier-ignore
 import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsChat, BsReply } from "react-icons/bs";
@@ -44,9 +44,9 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 				setComments(commentsFromDB);
 				// console.log(comments);
 			}
-		} catch (e) {
-			console.error(e);
-			addToast(e.message);
+		} catch (error) {
+			console.error(error);
+			addToast(error.response.data || error.message);
 		}
 	}
 
@@ -96,7 +96,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 			})
 			.catch(function (error) {
 				console.error(error);
-				addToast(error.message);
+				addToast(error.response.data || error.message);
 			});
 	}
 
@@ -136,7 +136,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 			})
 			.catch(function (error) {
 				console.error(error);
-				addToast(error.message);
+				addToast(error.response.data || error.message);
 			});
 	}
 
@@ -287,19 +287,21 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 										})}
 
 										<Divider />
-										<div
-											ref={lastComment}
-											style={{
-												height: "50px",
-												background: "none",
-												display: "flex",
-												justifyContent: "center",
-												alignItems: "center",
-												color: "#718096",
-											}}
-										>
-											end of comments
-										</div>
+										{comments.length > 2 ? (
+											<div
+												ref={lastComment}
+												style={{
+													height: "50px",
+													background: "none",
+													display: "flex",
+													justifyContent: "center",
+													alignItems: "center",
+													color: "#718096",
+												}}
+											>
+												end of comments
+											</div>
+										) : null}
 
 										{/* <Divider />
 												<Container m={1} ml={4} position="relative">
@@ -350,15 +352,26 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 												mr="8px"
 												onClick={() => {
 													let inputtedComment = commentInput.current.value;
+													if (inputtedComment.length > 140) {
+														addToast("Comment must be less than 140 characters.");
+
+														commentInput.current.value = "";
+														return;
+													} else if (inputtedComment.length === 0) {
+														addToast("Comment content is missing.");
+														return;
+													}
 													commentInput.current.value = "";
 													setComments((prev) => {
 														return [...prev, { content: inputtedComment, date: Date.now() }];
 													});
 
-													lastComment.current.scrollIntoView({
-														behavior: "smooth",
-														block: "end",
-													});
+													if (comments.length > 2) {
+														lastComment.current.scrollIntoView({
+															behavior: "smooth",
+															block: "end",
+														});
+													}
 
 													// commentContainer.current.scrollBy({ top: 20000000, behavior: "smooth" });
 
@@ -375,7 +388,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 														.catch(function (error) {
 															// implement error state
 															console.error(error);
-															addToast(error.message);
+															addToast(error.response.data || error.message);
 														});
 
 													//console.log(commentInput.current.value)

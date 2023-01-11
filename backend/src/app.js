@@ -24,21 +24,21 @@ app.use(
 	})
 );
 const createPostLimiter = rateLimit({
-	windowMs: 10 * 60 * 1000, // 1000 is a second
+	windowMs: 1 * 60 * 1000, // 1000 is a second
 	max: 1,
-	message: "Only allowed 1 posts per 10 min.",
+	message: "Only allowed 1 posts per minute.",
 });
 
 const fetchPostLimiter = rateLimit({
-	windowMs: 60 * 60 * 1000, // 1000 is a second
-	max: 100,
-	message: "Only allowed to fetch up to 100 posts an hour.",
+	windowMs: 10 * 60 * 1000, // 1000 is a second
+	max: 150,
+	message: "Only allowed to fetch up to 150 posts every 10 minutes.",
 });
 
 const voteLimiter = rateLimit({
 	windowMs: 1000, // 1000 is a second
 	max: 1,
-	message: "Only allowed to vote on up to 1 posts every second.",
+	message: "You are voting too fast!.",
 });
 
 // HELPER FUNCTIONS

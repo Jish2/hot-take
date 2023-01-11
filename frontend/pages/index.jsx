@@ -33,11 +33,11 @@ export default function Home({ postsFromDB }) {
 	// key for sorting button
 	const SORT_ICONS = [
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
-		{ icon: BsFillStarFill, name: "Popular", w: 4, h: 4 },
-		{ icon: BsSortNumericUp, name: "Old", w: 6, h: 6 },
 		{ icon: BsShuffle, name: "Random", w: 6, h: 6 },
+		{ icon: BsFillStarFill, name: "Popular", w: 4, h: 4 },
 		{ icon: BsFillHandThumbsDownFill, name: "Disagreed", w: 5, h: 5 },
 		{ icon: BsFillHandThumbsUpFill, name: "Agreed", w: 5, h: 5 },
+		{ icon: BsSortNumericUp, name: "Old", w: 6, h: 6 },
 	];
 
 	// toast
@@ -68,7 +68,7 @@ export default function Home({ postsFromDB }) {
 			return response;
 		} catch (error) {
 			console.error(error);
-			addToast(error.message);
+			addToast(error.response.data || error.message);
 		}
 	}
 
@@ -96,7 +96,11 @@ export default function Home({ postsFromDB }) {
 	async function loadMore() {
 		try {
 			console.log("Loading");
-			const res = await fetch(`http://localhost:3001/posts?offset=${posts.length}`);
+			const res = await fetch(
+				`http://localhost:3001/posts?offset=${posts.length}&method=${SORT_ICONS[
+					sortMethod
+				].name.toLowerCase()}`
+			);
 			const loadedPosts = await res.json();
 			if (loadedPosts.length == 0) {
 				setHasMorePosts(false);
@@ -105,7 +109,7 @@ export default function Home({ postsFromDB }) {
 			}
 			setPosts((prev) => [...prev, ...loadedPosts]);
 		} catch (e) {
-			addToast(e.message);
+			addToast(e.response.data || e.message);
 		}
 	}
 
@@ -145,7 +149,7 @@ export default function Home({ postsFromDB }) {
 							}, 500);
 						} catch (error) {
 							console.error(error);
-							addToast(error.message);
+							addToast(error.response.data || error.message);
 						}
 					}}
 					colorScheme="gray"
