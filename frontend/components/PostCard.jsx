@@ -23,34 +23,31 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 	const { addToast } = useErrorToast();
 
-	const API_URL = 'http://localhost:3001';
+	const API_URL = "http://localhost:3001";
 
 	const [heat, setHeat] = useState(agree.length + disagree.length);
 	const [commentsOpen, setCommentsOpen] = useState(false);
 	const [reportTooltip, setReportTooltip] = useState(false);
 	const [infoTooltip, setInfoTooltip] = useState(false);
 	const [comments, setComments] = useState([]);
+
 	const commentInput = useRef(null);
+	const lastComment = useRef(null);
+	const commentContainer = useRef(null);
 
 	async function fetchComments() {
 		// on startup fetch comments
-		try{
-
+		try {
 			const res = await fetch("http://localhost:3001/comment?postID=" + _id);
 			const commentsFromDB = await res.json();
 			if (commentsFromDB.length !== 0) {
-			setComments(commentsFromDB.map((item) => item));
-			// console.log(comments);
+				setComments(commentsFromDB);
+				// console.log(comments);
+			}
+		} catch (e) {
+			console.error(e);
+			addToast(e.message);
 		}
-
-		}
-		catch(e){
-			console.error(e)
-			addToast(e.message)
-
-
-		}
-		
 	}
 
 	useEffect(() => {
@@ -253,11 +250,56 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 											overflowY: "scroll",
 											overflowX: "hidden",
 										}}
+										ref={commentContainer}
 									>
-										
-										{comments.map((comment) => {
-											return <PostComment key={comment._id} content={comment.content} time={comment.date} />;
+										{comments.map((comment, i) => {
+											// if (i === comments.length - 1) {
+											// 	console.log(comment.content);
+											// 	return (
+											// 		<div ref={lastComment}>
+											// 			<PostComment
+											// 				key={`${comment._id}${i}`}
+											// 				content={comment.content}
+											// 				time={comment.date}
+											// 			/>
+											// 		</div>
+											// 	);
+											// } else {
+											// 	return (
+											// 		<div>
+											// 			<PostComment
+											// 				key={`${comment._id}${i}`}
+											// 				content={comment.content}
+											// 				time={comment.date}
+											// 			/>
+											// 		</div>
+											// 	);
+											// }
+											return (
+												<div>
+													<PostComment
+														key={`${comment._id}${i}`}
+														content={comment.content}
+														time={comment.date}
+													/>
+												</div>
+											);
 										})}
+
+										<Divider />
+										<div
+											ref={lastComment}
+											style={{
+												height: "50px",
+												background: "none",
+												display: "flex",
+												justifyContent: "center",
+												alignItems: "center",
+												color: "#718096",
+											}}
+										>
+											end of comments
+										</div>
 
 										{/* <Divider />
 												<Container m={1} ml={4} position="relative">
@@ -310,10 +352,16 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 													let inputtedComment = commentInput.current.value;
 													commentInput.current.value = "";
 													setComments((prev) => {
-														let prevComments = [...prev];
-														prevComments.push(inputtedComment);
-														return prevComments;
+														return [...prev, { content: inputtedComment, date: Date.now() }];
 													});
+
+													lastComment.current.scrollIntoView({
+														behavior: "smooth",
+														block: "end",
+													});
+
+													// commentContainer.current.scrollBy({ top: 20000000, behavior: "smooth" });
+
 													//we have the id, we make a post request to /comment
 													axios
 														.post("http://localhost:3001/comment", {
