@@ -62,7 +62,7 @@ export default function Home({ postsFromDB }) {
 			const response = await axios.get(`${API_URL}/posts?method=${type}`);
 			console.log(response);
 			// console.log(response.data[0]);
-			if (response.data.length == 0) {
+			if (response?.data.length == 0) {
 				setHasMorePosts(false);
 			} else {
 				setHasMorePosts(true);
@@ -70,7 +70,7 @@ export default function Home({ postsFromDB }) {
 			return response;
 		} catch (error) {
 			console.error(error);
-			addToast(error.response.data || error.message);
+			addToast(error?.response?.data || error.message);
 		}
 	}
 
@@ -110,8 +110,8 @@ export default function Home({ postsFromDB }) {
 				setHasMorePosts(true);
 			}
 			setPosts((prev) => [...prev, ...loadedPosts]);
-		} catch (e) {
-			addToast(e.response.data || e.message);
+		} catch (error) {
+			addToast(error.response?.data || error.message);
 		}
 	}
 
@@ -142,17 +142,16 @@ export default function Home({ postsFromDB }) {
 								return 0;
 							} else return prev + 1;
 						});
-						try {
-							fetchPosts(SORT_ICONS[(sortMethod + 1) % SORT_ICONS.length].name.toLowerCase()).then(
-								(res) => setPosts(res.data)
-							);
-							setTimeout(() => {
-								scrollContainerRef.current.scrollTo({ top: 0 });
-							}, 500);
-						} catch (error) {
-							console.error(error);
-							addToast(error.response.data || error.message);
-						}
+
+						fetchPosts(SORT_ICONS[(sortMethod + 1) % SORT_ICONS.length].name.toLowerCase())
+							.then((res) => setPosts(res.data))
+							.catch((error) => {
+								console.error(error);
+								addToast(error?.response?.data || error.message);
+							});
+						setTimeout(() => {
+							scrollContainerRef.current.scrollTo({ top: 0 });
+						}, 500);
 					}}
 					colorScheme="gray"
 					style={{

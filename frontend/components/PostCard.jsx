@@ -46,7 +46,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 			}
 		} catch (error) {
 			console.error(error);
-			addToast(error.response.data || error.message);
+			addToast(error?.response?.data || error.message);
 		}
 	}
 
@@ -388,7 +388,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 														.catch(function (error) {
 															// implement error state
 															console.error(error);
-															addToast(error.response.data || error.message);
+															addToast(error?.response?.data || error.message);
 														});
 
 													//console.log(commentInput.current.value)

@@ -29,7 +29,7 @@ export function CreatePostModal({ isOpen, onClose }) {
 			.catch(function (error) {
 				// implement error state
 				console.error(error);
-				addToast(error.response.data || error.message);
+				addToast(error?.response?.data || error.message);
 				setIsCreateLoading(false);
 			});
 	};
