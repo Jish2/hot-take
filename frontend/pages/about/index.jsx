@@ -12,7 +12,7 @@ export default function About() {
 				<Heading mt={3} style={{ textAlign: "center" }}>
 					About HotTake
 				</Heading>
-				<div
+				{/* <div
 					style={{
 						display: "flex",
 						justifyContent: "space-around",
@@ -54,12 +54,10 @@ export default function About() {
 							CTO @jgoon3
 						</Button>
 					</div>
-				</div>
+				</div> */}
 				<Text mt={10} style={{ textAlign: "center" }}>
-					HotTake was founded in December of 2022, by founders Ibrahim Shah, and
-					Joshua Goon. Ibrahim Shah attends the University of California,
-					Irvine, while Joshua Goon attends the University of Illinois, Urbana
-					Champaign, where they both study computer science. HotTake was created
+					HotTake was founded in December of 2022, by founders who study Computer Science at
+					UCI and UIUC respectively. HotTake was created
 					as a platform where users can create and rate other people's hot takes
 					within their college, connecting the community and providing comedic
 					relief.
