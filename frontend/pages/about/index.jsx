@@ -1,5 +1,6 @@
 import React from "react";
-import { Container, Heading, Image, Text, Button } from "@chakra-ui/react";
+import { HStack, Icon,Container, Heading, Image, Text, Button } from "@chakra-ui/react";
+import { AiFillFire } from "react-icons/ai";
 
 import { Navbar } from "../../components/Navbar";
 
@@ -64,6 +65,7 @@ export default function About() {
 					within their college, connecting the community and providing comedic
 					relief.
 				</Text>
+				
 			</Container>
 		</>
 	);
