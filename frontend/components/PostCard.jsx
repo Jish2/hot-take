@@ -81,7 +81,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 					setHeat((prev) => {
 						agree.push(uuid);
 						disagree.splice(disagree.indexOf(uuid), 1);
-						return prev + 2;
+						return prev;
 					});
 					//our user has previously disagreed, we should now undo disagree by +2ing the number
 				} else {
@@ -113,21 +113,21 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 				if (disagree.includes(uuid)) {
 					setHeat((prev) => {
 						disagree.splice(disagree.indexOf(uuid), 1);
-						return prev + 1;
+						return prev - 1;
 					});
 				} else if (agree.includes(uuid)) {
 					setHeat((prev) => {
 						agree.splice(agree.indexOf(uuid), 1);
 						disagree.push(uuid);
 
-						return prev - 2;
+						return prev;
 					});
 					//our user has previously disagreed, we should now undo disagree by +2ing the number
 				} else {
 					setHeat((prev) => {
 						disagree.push(uuid);
 
-						return prev - 1;
+						return prev + 1;
 					});
 					//has not agreed or disagreed, just +1
 				}
