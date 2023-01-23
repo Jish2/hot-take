@@ -60,9 +60,9 @@ export default function Home({ postsFromDB }) {
 		try {
 			const response = await fetch(`${API_URL}/posts?method=${type}`);
 			const results = await response.json();
-			// console.log(response);
-			// console.log(response.data[0]);
-			if (results?.data.length == 0) {
+
+			// console.log(response[0]);
+			if (results?.length == 0) {
 				setHasMorePosts(false);
 			} else {
 				setHasMorePosts(true);
@@ -90,6 +90,16 @@ export default function Home({ postsFromDB }) {
 
 		if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
 		setSortMethod(parseInt(localStorage.getItem("sort")));
+		if (localStorage.getItem("sort") !== "0") {
+			fetchPosts(
+				SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase()
+			)
+				.then((res) => setPosts(res))
+				.catch((error) => {
+					console.error(error);
+					addToast(error?.response?.data || error.message);
+				});
+		}
 
 		setHasMorePosts(!(posts.length === 0));
 	}, []);
@@ -147,7 +157,7 @@ export default function Home({ postsFromDB }) {
 						});
 
 						fetchPosts(SORT_ICONS[(sortMethod + 1) % SORT_ICONS.length].name.toLowerCase())
-							.then((res) => setPosts(res.data))
+							.then((res) => setPosts(res))
 							.catch((error) => {
 								console.error(error);
 								addToast(error?.response?.data || error.message);
