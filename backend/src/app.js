@@ -36,8 +36,8 @@ const fetchPostLimiter = rateLimit({
 });
 
 const voteLimiter = rateLimit({
-	windowMs: 1000, // 1000 is a second
-	max: 1,
+	windowMs: 500, // 1000 is a second
+	max: 2,
 	message: "You are voting too fast!.",
 });
 
