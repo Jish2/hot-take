@@ -1,7 +1,6 @@
 import { React, useState, useRef } from "react";
 // prettier-ignore
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
-import axios, { isCancel, AxiosError } from "axios";
 
 import { useErrorToast } from "../hooks/useErrorToast";
 
@@ -16,11 +15,13 @@ export function CreatePostModal({ isOpen, onClose }) {
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		setIsCreateLoading(true);
-		axios
-			.post(`${API_URL}/post`, {
-				title: input.current.value,
-			})
-			.then(function (response) {
+		fetch(`${API_URL}/post`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ title: input.current.value }),
+		})
+			.then((response) => response.json())
+			.then(function (data) {
 				// reload to refetch
 				// TODO: Change this to redirect to hottake.gg/post_id
 				setIsCreateLoading(false);
