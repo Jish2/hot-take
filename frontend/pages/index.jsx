@@ -60,7 +60,7 @@ export default function Home({ postsFromDB }) {
 		// swap with "https://api.hottake.gg/posts"
 		try {
 			const response = await axios.get(`${API_URL}/posts?method=${type}`);
-			console.log(response);
+			// console.log(response);
 			// console.log(response.data[0]);
 			if (response?.data.length == 0) {
 				setHasMorePosts(false);
@@ -114,7 +114,7 @@ export default function Home({ postsFromDB }) {
 			}
 			setPosts((prev) => [...prev, ...loadedPosts]);
 		} catch (error) {
-			addToast(error.response?.data || error.message);
+			addToast(error?.response?.data || error.message);
 		}
 	}
 
