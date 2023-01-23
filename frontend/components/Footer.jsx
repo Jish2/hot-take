@@ -51,8 +51,8 @@ export function Footer() {
 				<Stack direction={"row"} spacing={6}>
 					<Link href={"/"}>Home</Link>
 					<Link href={"/about"}>About</Link>
-					<Link href={"/activeCommunities"}>Communities</Link>
-					<Link href={"/jobs"}>Careers</Link>
+					<Link href={"/communities"}>Communities</Link>
+					<Link href={"/careers"}>Careers</Link>
 				</Stack>
 			</Container>
 
