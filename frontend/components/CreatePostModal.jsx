@@ -1,4 +1,4 @@
-import { React, useState, useRef } from "react";
+import { useState, useRef } from "react";
 // prettier-ignore
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
 

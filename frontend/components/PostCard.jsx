@@ -1,5 +1,5 @@
 // prettier-ignore
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // UI Imports
 // prettier-ignore
 import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, CardBody, CardFooter, Tooltip, Flex, Spacer, Text, Icon, Toast } from "@chakra-ui/react";
