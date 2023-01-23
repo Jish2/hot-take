@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 // UI imports
 // prettier-ignore
 import { useDisclosure, Button, Icon, Flex, Text } from "@chakra-ui/react";

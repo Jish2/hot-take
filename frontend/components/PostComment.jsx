@@ -1,4 +1,3 @@
-import React from "react";
 import { Divider, Container, Icon, Text, Input } from "@chakra-ui/react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { BsReply } from "react-icons/bs";
