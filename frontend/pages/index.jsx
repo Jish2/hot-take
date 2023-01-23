@@ -16,7 +16,6 @@ import { animateGreen, animateRed, scrollContainer, screenButtonContainer, creat
 // Dependencies
 import { v4 as uuidv4 } from "uuid";
 import ReactGA from "react-ga";
-import axios from "axios";
 
 import { useErrorToast } from "../hooks/useErrorToast";
 
@@ -59,15 +58,16 @@ export default function Home({ postsFromDB }) {
 	async function fetchPosts(type) {
 		// swap with "https://api.hottake.gg/posts"
 		try {
-			const response = await axios.get(`${API_URL}/posts?method=${type}`);
+			const response = await fetch(`${API_URL}/posts?method=${type}`);
+			const results = await response.json();
 			// console.log(response);
 			// console.log(response.data[0]);
-			if (response?.data.length == 0) {
+			if (results?.data.length == 0) {
 				setHasMorePosts(false);
 			} else {
 				setHasMorePosts(true);
 			}
-			return response;
+			return results;
 		} catch (error) {
 			console.error(error);
 			addToast(error?.response?.data || error.message);

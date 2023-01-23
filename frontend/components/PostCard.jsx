@@ -12,7 +12,7 @@ import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning, AiFillHeart, AiOu
 // prettier-ignore
 import { cardContainer, toolTipContainer, toolTipIcon, iconStyle } from "../styles/Card.module.css";
 // Dependencies
-import axios, { isCancel, AxiosError } from "axios";
+
 // Components
 import { PostComment } from "./PostComment";
 
@@ -68,9 +68,13 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 		setAnimated((prev) => ({ ...prev, left: true }));
 		scrollContainerRef.current.scrollBy({ top: 50 });
 
-		axios
-			.post(`${API_URL}/agree`, { postID: _id, userUUID: uuid })
-			.then(function (response) {
+		fetch(`${API_URL}/agree`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ postID: _id, userUUID: uuid }),
+		})
+			.then((response) => response.json())
+			.then(function (data) {
 				if (agree.includes(uuid)) {
 					setHeat((prev) => {
 						agree.splice(agree.indexOf(uuid), 1);
@@ -92,11 +96,11 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 					//has not agreed or disagreed, just +1
 				}
 
-				//console.log(response)
+				//console.log(data)
 			})
 			.catch(function (error) {
 				console.error(error);
-				addToast(error.response.data || error.message);
+				addToast(error?.response?.data || error.message);
 			});
 	}
 
@@ -104,12 +108,13 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 		setAnimated((prev) => ({ ...prev, right: true }));
 		scrollContainerRef.current.scrollBy({ top: 50 }); // scroll to next
 
-		axios
-			.post(`${API_URL}/disagree`, {
-				postID: _id,
-				userUUID: uuid,
-			})
-			.then(function (response) {
+		fetch(`${API_URL}/disagree`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ postID: _id, userUUID: uuid }),
+		})
+			.then((response) => response.json())
+			.then(function (data) {
 				if (disagree.includes(uuid)) {
 					setHeat((prev) => {
 						disagree.splice(disagree.indexOf(uuid), 1);
@@ -166,11 +171,12 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 		// commentContainer.current.scrollBy({ top: 20000000, behavior: "smooth" });
 
 		//we have the id, we make a post request to /comment
-		axios
-			.post(`${API_URL}/comment`, {
-				content: inputtedComment,
-				postID: _id,
-			})
+		fetch(`${API_URL}/comment`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ content: inputtedComment, postID: _id }),
+		})
+			.then((response) => response.json())
 			.then(function (response) {
 				// reload to refetch
 				// TODO: Change this to redirect to hottake.gg/post_id
