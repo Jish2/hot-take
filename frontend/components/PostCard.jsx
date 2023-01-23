@@ -140,6 +140,50 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 			});
 	}
 
+	function handleSubmitComment() {
+		let inputtedComment = commentInput.current.value;
+		if (inputtedComment.length > 140) {
+			addToast("Comment must be less than 140 characters.");
+
+			commentInput.current.value = "";
+			return;
+		} else if (inputtedComment.length === 0) {
+			addToast("Comment content is missing.");
+			return;
+		}
+		commentInput.current.value = "";
+		setComments((prev) => {
+			return [...prev, { content: inputtedComment, date: Date.now() }];
+		});
+
+		if (comments.length > 2) {
+			lastComment.current.scrollIntoView({
+				behavior: "smooth",
+				block: "end",
+			});
+		}
+
+		// commentContainer.current.scrollBy({ top: 20000000, behavior: "smooth" });
+
+		//we have the id, we make a post request to /comment
+		axios
+			.post(`${API_URL}/comment`, {
+				content: inputtedComment,
+				postID: _id,
+			})
+			.then(function (response) {
+				// reload to refetch
+				// TODO: Change this to redirect to hottake.gg/post_id
+			})
+			.catch(function (error) {
+				// implement error state
+				console.error(error);
+				addToast(error?.response?.data || error.message);
+			});
+
+		//console.log(commentInput.current.value)
+	}
+
 	return (
 		<div className={cardContainer}>
 			<Card variant="outline" bg="white" w="90%" maxW="400px">
@@ -344,56 +388,11 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 												placeholder="Comment your thoughts..."
 												ref={commentInput}
 												style={{ margin: "8px" }}
-											/>
-											<Icon
-												as={AiOutlineSend}
-												h={6}
-												w={6}
-												mr="8px"
-												onClick={() => {
-													let inputtedComment = commentInput.current.value;
-													if (inputtedComment.length > 140) {
-														addToast("Comment must be less than 140 characters.");
-
-														commentInput.current.value = "";
-														return;
-													} else if (inputtedComment.length === 0) {
-														addToast("Comment content is missing.");
-														return;
-													}
-													commentInput.current.value = "";
-													setComments((prev) => {
-														return [...prev, { content: inputtedComment, date: Date.now() }];
-													});
-
-													if (comments.length > 2) {
-														lastComment.current.scrollIntoView({
-															behavior: "smooth",
-															block: "end",
-														});
-													}
-
-													// commentContainer.current.scrollBy({ top: 20000000, behavior: "smooth" });
-
-													//we have the id, we make a post request to /comment
-													axios
-														.post(`${API_URL}/comment`, {
-															content: inputtedComment,
-															postID: _id,
-														})
-														.then(function (response) {
-															// reload to refetch
-															// TODO: Change this to redirect to hottake.gg/post_id
-														})
-														.catch(function (error) {
-															// implement error state
-															console.error(error);
-															addToast(error?.response?.data || error.message);
-														});
-
-													//console.log(commentInput.current.value)
+												onKeyPress={(e) => {
+													if (e.key === "Enter") handleSubmitComment();
 												}}
 											/>
+											<Icon as={AiOutlineSend} h={6} w={6} mr="8px" onClick={handleSubmitComment} />
 										</Flex>
 									</CardFooter>
 								</Card>
