@@ -181,6 +181,7 @@ export default function Home({ postsFromDB }) {
 				next={loadMore}
 				hasMore={hasMorePosts}
 				scrollableTarget="scrollContainer"
+				style={{ overflow: "hidden" }}
 				// loader={<h4>Loading...</h4>}
 				// loader was showing up persistently...
 			>
