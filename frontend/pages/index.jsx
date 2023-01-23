@@ -88,12 +88,15 @@ export default function Home({ postsFromDB }) {
 			setUUID(localStorage.getItem("uuid"));
 		}
 
-		if (posts.length == 0) {
-			setHasMorePosts(false);
-		} else {
-			setHasMorePosts(true);
-		}
+		if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
+		setSortMethod(parseInt(localStorage.getItem("sort")));
+
+		setHasMorePosts(!(posts.length === 0));
 	}, []);
+
+	useEffect(() => {
+		localStorage.setItem("sort", sortMethod);
+	}, [sortMethod]);
 
 	async function loadMore() {
 		try {
