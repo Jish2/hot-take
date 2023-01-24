@@ -345,6 +345,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 														key={`${comment._id}${i}`}
 														content={comment.content}
 														time={comment.date}
+														dev={comment?.dev}
 													/>
 												</div>
 											);
