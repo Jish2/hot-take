@@ -8,7 +8,7 @@ export default function Jobs() {
 	return (
 		<>
 			<Navbar />
-			<div style={{ height: "10vh" }}></div>
+			<div style={{ height: "60px" }}></div>
 
 			<TitleBlock
 				title="Careers"
