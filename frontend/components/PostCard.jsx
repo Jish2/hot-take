@@ -150,13 +150,15 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 		if (inputtedComment.length > 140) {
 			addToast("Comment must be less than 140 characters.");
 
-			commentInput.current.value = "";
+			// who the fuck added this? why?
+			// commentInput.current.value = "";
 			return;
 		} else if (inputtedComment.length === 0) {
 			addToast("Comment content is missing.");
 			return;
 		}
-		commentInput.current.value = "";
+		// and this?? why the fuck?
+		// commentInput.current.value = "";
 		setComments((prev) => {
 			return [...prev, { content: inputtedComment, date: Date.now() }];
 		});
