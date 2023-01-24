@@ -249,15 +249,30 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 							<Text fontSize={{ base: "12px", sm: "15px" }}>{agree.length} Agree</Text>
 						</Button>
 						<Spacer />
-						<Button
+						{/* <Button
 							leftIcon={<AiOutlineFire />}
 							disabled
 							variant="outline"
 							color="black"
 							colorScheme="gray"
+						></Button> */}
+						<div
+							style={{
+								height: "inherit",
+								color: "#A0AEC0",
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+								fontSize: "20px",
+								fontWeight: "600",
+								gap: "6px",
+								marginRight: "6px",
+								marginLeft: "6px",
+							}}
 						>
+							<Icon as={AiOutlineFire} w={5} h={5} />
 							{formatNumberCompact(heat)}
-						</Button>
+						</div>
 						<Spacer />
 						<Button
 							width="125px"

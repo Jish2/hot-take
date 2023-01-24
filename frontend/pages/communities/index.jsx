@@ -1,4 +1,4 @@
-import { Container, Heading, Text, Link } from "@chakra-ui/react";
+import { Link } from "@chakra-ui/react";
 
 import { Navbar } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
@@ -8,7 +8,7 @@ export default function About() {
 	return (
 		<>
 			<Navbar />
-			<div style={{ height: "10vh" }}></div>
+			<div style={{ height: "60px" }}></div>
 
 			<TitleBlock
 				title="Communities"
