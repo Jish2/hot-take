@@ -7,7 +7,8 @@ export default function Internships() {
 	return (
 		<>
 			<Navbar />
-			<div style={{ height: "10vh" }}></div>
+			<div style={{ height: "60px" }}></div>
+
 			<TitleBlock
 				title="Intern at HotTake"
 				url="https://www.arts.uci.edu/sites/default/files/Visit-StudentCenter.jpg"
