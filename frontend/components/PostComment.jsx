@@ -1,8 +1,8 @@
 import { Divider, Container, Icon, Text, Input } from "@chakra-ui/react";
-import { AiOutlineHeart } from "react-icons/ai";
+import { MdVerified } from "react-icons/md";
 import { BsReply } from "react-icons/bs";
 
-export const PostComment = ({ content, time }) => {
+export const PostComment = ({ content, time, dev }) => {
 	const date = new Date(time);
 	const months = [
 		"Jan",
@@ -44,9 +44,23 @@ export const PostComment = ({ content, time }) => {
 					}}
 				/> */}
 				{/* 10:01 am, Jan 5 */}
-				<Text fontSize="xs">{`${formatAMPM(date)}, ${
-					months[date.getMonth()]
-				} ${date.getDate()}`}</Text>
+				<Text fontSize="xs">
+					{`${formatAMPM(date)}, ${months[date.getMonth()]} ${date.getDate()}`}
+					{dev === "true" && (
+						<>
+							<Icon
+								as={MdVerified}
+								color="#249CF0"
+								h={3}
+								w={3}
+								ml="6px"
+								mr="2px"
+								style={{ verticalAlign: "-1.5px" }}
+							/>
+							Dev
+						</>
+					)}
+				</Text>
 				<Text>{content}</Text>
 			</Container>
 		</>
