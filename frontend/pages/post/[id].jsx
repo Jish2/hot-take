@@ -1,4 +1,8 @@
-import { useRouter } from "next/router";
+// --------------------------------------------------------- //
+//  WARNING : ANY EDITS ON INDEX.JS ARE NOT REFLECTED HERE.  //
+//                  THIS WILL BE OUTDATED.                   //
+// --------------------------------------------------------- //
+
 import { useState, useRef, useEffect } from "react";
 // UI imports
 // prettier-ignore
