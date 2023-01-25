@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import Post from "./models/Post.js";
 import Comment from "./models/Comment.js";
 import ReplySchema from "./models/Reply.js";
+import Moderator from "./models/Moderator.js";
 // additional packages
 import cors from "cors";
 import rateLimit from "express-rate-limit";
@@ -300,6 +301,25 @@ app.post("/post", createPostLimiter, async (req, res) => {
 		console.error(error);
 		res.status(400).send(error);
 	}
+});
+
+app.post("/admin", async (req, res) => {
+	const { username, password } = req.body;
+	const user = await Moderator.findOne({ username });
+
+	if (!user) {
+		res.status(400).send({ message: "Invalid username." });
+		return;
+	}
+
+	const isMatch = await user.comparePassword(password);
+
+	if (!isMatch) {
+		res.status(400).send({ message: "Invalid password." });
+		return;
+	}
+
+	res.status(200).send({ success: true });
 });
 
 mongoose.set("strictQuery", false); // resolving some deprecation warning
