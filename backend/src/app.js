@@ -102,6 +102,31 @@ app.get("/posts", async (req, res) => {
 	}
 });
 
+app.get("/post", async (req, res) => {
+	try {
+		const postID = req.query.postID;
+
+		// catch invalid postID
+		if (mongoose.Types.ObjectId.isValid(postID) === false) {
+			res.status(400).send("stop trying to fuck with us you cs pussy dick es8 wanna be nerd pussy");
+			return;
+		}
+
+		// // catch invalid uuid
+		// const validUUID = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+		// if (!validUUID.test(postID)) {
+		// 	res.status(400).send("stop trying to fuck with us you cs pussy dick es8 wanna be nerd pussy");
+		// 	return;
+		// }
+
+		const results = await Post.findById(postID).limit(1);
+		res.send(results);
+	} catch (error) {
+		console.error(error);
+		res.status(400).send(error);
+	}
+});
+
 // agree function
 app.post("/agree", voteLimiter, (req, res) => {
 	// console.log(req.headers);
