@@ -419,7 +419,6 @@ app.post("/report", voteLimiter, (req, res) => {
 app.post("/search", async (req, res) => {
 	try {
 		const { username, password, query, sort, skip, limit } = req.body;
-		console.log(username, password, query, sort, skip, limit);
 
 		const user = await Moderator.findOne({ username });
 		if (!user) {
