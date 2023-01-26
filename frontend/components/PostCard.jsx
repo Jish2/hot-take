@@ -18,11 +18,13 @@ import { cardContainer, toolTipContainer, toolTipIcon, iconStyle } from "../styl
 import { PostComment } from "./PostComment";
 
 import { useErrorToast } from "../hooks/useErrorToast";
+import { useSuccessToast } from "../hooks/useSuccessToast";
 
 export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => {
 	const { title, agree, disagree, interactions, _id } = post;
 
 	const { addToast } = useErrorToast();
+	const { addSuccessToast } = useSuccessToast();
 
 	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
 
@@ -196,11 +198,27 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 			<Card variant="outline" bg="white" w="90%" maxW="400px">
 				{/* tool tip container */}
 				<div className={toolTipContainer}>
-					<Tooltip label="Report this post" isOpen={reportTooltip}>
+					<Tooltip label={"Click to report this post"} isOpen={reportTooltip}>
 						<Button
 							onMouseEnter={() => setReportTooltip(true)}
 							onMouseLeave={() => setReportTooltip(false)}
-							onClick={() => setReportTooltip(true)}
+							onClick={() => {
+								setReportTooltip(true);
+
+								fetch(`${API_URL}/report`, {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({ postID: _id, userUUID: uuid }),
+								})
+									.then((response) => response.json())
+									.then((data) => {
+										addSuccessToast(`Post "${post.title}" has been reported`);
+									})
+									.catch(function (error) {
+										console.error(error);
+										addToast(error?.response?.data || error.message);
+									});
+							}}
 							color="gray.300"
 							variant="ghost"
 							className={toolTipIcon}
