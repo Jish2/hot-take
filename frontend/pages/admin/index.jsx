@@ -185,9 +185,7 @@ function Dashboard({ setLoggedIn }) {
 		if (!searchRef.current.value) {
 			try {
 				const res = await fetch(
-					`${API_URL}/posts?offset=${results.length}&method=${
-						sort_method[index ?? sortMethod].name
-					}`
+					`${API_URL}/posts?offset=${results.length}&method=${sort_method[sortMethod].name}`
 				);
 				const posts = await res.json();
 				if (posts.length === 0) addToast("No more posts");
@@ -340,6 +338,7 @@ function Dashboard({ setLoggedIn }) {
 								{sort_method.map((item, index) => {
 									return (
 										<MenuItem
+											key={index}
 											icon={<item.icon w={item.h} h={item.w} />}
 											onClick={async () => {
 												setSortMethod(index);
