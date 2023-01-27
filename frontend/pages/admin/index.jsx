@@ -41,9 +41,27 @@ import { useSuccessToast } from "../../hooks/useSuccessToast";
 import Cookies from "js-cookie";
 // import DeletePostModal from "../../components/DeletePostModal";
 
+import {
+	BsSortNumericUp,
+	BsFillStarFill,
+	BsSortNumericDownAlt,
+	BsShuffle,
+	BsFillHandThumbsUpFill,
+	BsFillHandThumbsDownFill,
+} from "react-icons/bs";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
 
 function Dashboard({ setLoggedIn }) {
+	const sort_method = [
+		{ icon: BsSortNumericDownAlt, name: "new", w: 6, h: 6 },
+		{ icon: BsShuffle, name: "reported", w: 6, h: 6 },
+		{ icon: BsFillStarFill, name: "popular", w: 4, h: 4 },
+		{ icon: BsFillHandThumbsDownFill, name: "disagreed", w: 5, h: 5 },
+		{ icon: BsFillHandThumbsUpFill, name: "agreed", w: 5, h: 5 },
+		{ icon: BsSortNumericUp, name: "old", w: 6, h: 6 },
+	];
+
 	const months = [
 		"Jan",
 		"Feb",
@@ -76,10 +94,10 @@ function Dashboard({ setLoggedIn }) {
 
 	const [results, setResults] = useState([]);
 	const [selectedPost, setSelectedPost] = useState();
-	const [sortMethod, setSortMethod] = useState("new");
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
+	const [sortMethod, setSortMethod] = useState(0);
 	const deleteRef = useRef();
 	const searchRef = useRef();
 
@@ -127,7 +145,7 @@ function Dashboard({ setLoggedIn }) {
 					username: Cookies.get("adminUsername"),
 					password: Cookies.get("adminPassword"),
 					query: searchRef.current.value,
-					sort: sortMethod,
+					sort: sort_method.name,
 				}),
 			})
 				.then((response) => response.json())
@@ -151,9 +169,11 @@ function Dashboard({ setLoggedIn }) {
 		setLoggedIn(false);
 	}
 
-	async function fetchPosts() {
+	async function fetchPosts(index) {
 		try {
-			const res = await fetch(`${API_URL}/posts?offset=0`);
+			const res = await fetch(
+				`${API_URL}/posts?offset=0&method=${sort_method[index ?? sortMethod].name}`
+			);
 			const posts = await res.json();
 			setResults([...posts]);
 		} catch (error) {
@@ -165,8 +185,9 @@ function Dashboard({ setLoggedIn }) {
 		if (!searchRef.current.value) {
 			try {
 				const res = await fetch(
-					`${API_URL}/posts?offset=${results.length}`
-					// &method=${SORT_ICONS[sortMethod].name.toLowerCase()} // for sorting
+					`${API_URL}/posts?offset=${results.length}&method=${
+						sort_method[index ?? sortMethod].name
+					}`
 				);
 				const posts = await res.json();
 				if (posts.length === 0) addToast("No more posts");
@@ -184,7 +205,7 @@ function Dashboard({ setLoggedIn }) {
 						username: Cookies.get("adminUsername"),
 						password: Cookies.get("adminPassword"),
 						query: searchRef.current.value,
-						sort: sortMethod,
+						sort: sort_method[sortMethod].name,
 					}),
 				})
 					.then((response) => response.json())
@@ -311,37 +332,29 @@ function Dashboard({ setLoggedIn }) {
 							padding: "8px 16px 8px 16px",
 						}}
 					>
-						<Input placeholder="Search for a post" ref={searchRef}></Input>
-						<Button type="submit">Go</Button>
-
-						<Menu>
-							<MenuButton as={Button} p="10px">
+						<Menu matchWidth={true} placement="bottom">
+							<MenuButton as={Button} p="8px 10px 8px 10px">
 								<Icon as={FaSort} w="20px" h="20px" />
 							</MenuButton>
 							<MenuList>
-								<MenuItem
-									onClick={() => {
-										setSortMethod("new");
-									}}
-								>
-									New
-								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setSortMethod("reported");
-									}}
-								>
-									Reported
-								</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setSortMethod("old");
-									}}
-								>
-									Old
-								</MenuItem>
+								{sort_method.map((item, index) => {
+									return (
+										<MenuItem
+											icon={<item.icon w={item.h} h={item.w} />}
+											onClick={async () => {
+												setSortMethod(index);
+												await fetchPosts(index);
+											}}
+											style={{ textTransform: "capitalize" }}
+										>
+											{item.name}
+										</MenuItem>
+									);
+								})}
 							</MenuList>
 						</Menu>
+						<Input placeholder="Search for a post" ref={searchRef}></Input>
+						<Button type="submit">Go</Button>
 					</form>
 
 					<Container
