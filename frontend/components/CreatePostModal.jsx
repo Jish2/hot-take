@@ -15,6 +15,7 @@ export function CreatePostModal({ isOpen, onClose }) {
 	const handlePostSubmit = (e) => {
 		e.preventDefault();
 		setIsCreateLoading(true);
+
 		fetch(`${API_URL}/post`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -28,9 +29,9 @@ export function CreatePostModal({ isOpen, onClose }) {
 				window.location.reload(true);
 			})
 			.catch(function (error) {
-				// implement error state
 				console.error(error);
-				addToast(error?.response?.data || error.message);
+				// addToast(error?.response || error.message);
+				addToast("Posting too fast");
 				setIsCreateLoading(false);
 			});
 	};

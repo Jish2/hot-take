@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import Post from "./models/Post.js";
 import Comment from "./models/Comment.js";
 import ReplySchema from "./models/Reply.js";
+import Moderator from "./models/Moderator.js";
 // additional packages
 import cors from "cors";
 import rateLimit from "express-rate-limit";
@@ -41,6 +42,20 @@ const voteLimiter = rateLimit({
 	message: "You are voting too fast!.",
 });
 
+const adminLimiter = rateLimit({
+	skip: async (request, response) => {
+		try {
+			return await checkUser(request.body.username, request.body.password); //request.body.username
+		} catch (error) {
+			console.error(error);
+			return false;
+		}
+	},
+	windowMs: 60 * 60 * 1000, // 1000 is a second
+	max: 3,
+	message: "You are blocked",
+});
+
 // HELPER FUNCTIONS
 // error handling
 const handleError = (err) => {
@@ -49,11 +64,30 @@ const handleError = (err) => {
 };
 
 // remove element from array
-const remove = (value, array) => {
+function remove(value, array) {
 	return array.filter((item) => {
 		return item !== value;
 	});
-};
+}
+
+async function checkUser(username, password) {
+	try {
+		const user = await Moderator.findOne({ username });
+		if (!user) {
+			return false;
+		}
+		const isMatch = await user.comparePassword(password);
+
+		if (!isMatch) {
+			return false;
+		}
+
+		return true;
+	} catch (e) {
+		console.error(error);
+		return false;
+	}
+}
 
 // fetch posts // fetchPostLimiter,
 app.get("/posts", async (req, res) => {
@@ -90,11 +124,39 @@ app.get("/posts", async (req, res) => {
 			case "agreed":
 				postsLists = { votes: -1 };
 				break;
+			case "reported":
+				postsLists = { reports: -1 };
+				break;
 			default:
 				// fallback to sorting by new
 				postsLists = { date: -1 };
 		}
 		const results = await Post.find().sort(postsLists).skip(offset).limit(limit);
+		res.send(results);
+	} catch (error) {
+		console.error(error);
+		res.status(400).send(error);
+	}
+});
+
+app.get("/post", async (req, res) => {
+	try {
+		const postID = req.query.postID;
+
+		// catch invalid postID
+		if (mongoose.Types.ObjectId.isValid(postID) === false) {
+			res.status(400).send("***REMOVED***");
+			return;
+		}
+
+		// // catch invalid uuid
+		// const validUUID = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+		// if (!validUUID.test(postID)) {
+		// 	res.status(400).send("***REMOVED***");
+		// 	return;
+		// }
+
+		const results = await Post.findById(postID).limit(1);
 		res.send(results);
 	} catch (error) {
 		console.error(error);
@@ -266,6 +328,7 @@ app.post("/post", createPostLimiter, async (req, res) => {
 				disagree: [],
 				votes: 0,
 				interactions: 0,
+				reports: [],
 				date: new Date(),
 			});
 			const createdPost = await newPost.save();
@@ -275,6 +338,138 @@ app.post("/post", createPostLimiter, async (req, res) => {
 		console.error(error);
 		res.status(400).send(error);
 	}
+});
+
+app.post("/admin", adminLimiter, async (req, res) => {
+	const { username, password } = req.body;
+	const user = await Moderator.findOne({ username });
+
+	if (!user) {
+		res.status(400).send({ message: "Invalid username." });
+		return;
+	}
+
+	const isMatch = await user.comparePassword(password);
+
+	if (!isMatch) {
+		res.status(400).send({ message: "Invalid password." });
+		return;
+	}
+
+	res.status(200).send({ success: true });
+});
+
+app.post("/delete", adminLimiter, async (req, res) => {
+	try {
+		const { username, password, postID } = req.body;
+		const user = await Moderator.findOne({ username });
+
+		if (!user) {
+			res.status(400).send({ message: "Invalid username." });
+			return;
+		}
+
+		const isMatch = await user.comparePassword(password);
+
+		if (!isMatch) {
+			res.status(400).send({ message: "Invalid password." });
+			return;
+		}
+		await Post.deleteOne({ _id: postID });
+		res.status(200).send({ message: "Post deleted" });
+	} catch (error) {
+		console.error(error);
+		res.status(400).send({ message: `Failed to delete: ${error}` });
+	}
+});
+
+app.post("/report", voteLimiter, (req, res) => {
+	// console.log(req.headers);
+	try {
+		const postID = req.body.postID;
+		const user = req.body.userUUID;
+
+		if (!postID) {
+			res.status(400).send("Report failed, no post included.");
+		} else if (!user) {
+			res.status(400).send("Report failed, no user registered.");
+		} else {
+			Post.findById(postID, async (err, post) => {
+				if (err) handleError(err); // error handle
+				else {
+					// check if includes....
+					if (post.reports.includes(user)) {
+						post.reports = remove(user, post.agree);
+					} else {
+						post.reports.push(user);
+					}
+					await post.save((err, result) => {
+						if (err) handleError(err);
+						else res.status(200).send(result);
+					});
+				}
+			});
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(400).send(error);
+	}
+});
+
+app.post("/search", async (req, res) => {
+	try {
+		const { username, password, query, sort, skip, limit } = req.body;
+
+		const user = await Moderator.findOne({ username });
+		if (!user) {
+			res.status(400).send({ message: "Invalid username." });
+			return;
+		}
+		const isMatch = await user.comparePassword(password);
+		if (!isMatch) {
+			res.status(400).send({ message: "Invalid password." });
+			return;
+		}
+
+		let postsLists = { reports: -1 };
+		switch (sort) {
+			case "new":
+				postsLists = { date: -1 };
+				break;
+			case "popular":
+				postsLists = { interactions: -1 };
+				break;
+			case "old":
+				postsLists = { date: 1 };
+				break;
+			case "disagreed":
+				postsLists = { votes: 1 };
+				break;
+			case "agreed":
+				postsLists = { votes: -1 };
+				break;
+			case "reported":
+				postsLists = { reports: -1 };
+				break;
+			default:
+				// fallback to sorting by reports
+				postsLists = { reports: -1 };
+		}
+
+		const results = await Post.find({ $text: { $search: query } })
+			.sort(postsLists)
+			.skip(skip ?? 0)
+			.limit(limit ?? 10);
+		res.status(200).send(results);
+	} catch (error) {
+		console.error(error);
+	}
+});
+
+app.get("/updateAll", async (req, res) => {
+	// use this to purge DB
+	// await Post.updateMany({}, { $set: { reports: [] } });
+	res.status(200).send({ message: "all good" });
 });
 
 mongoose.set("strictQuery", false); // resolving some deprecation warning

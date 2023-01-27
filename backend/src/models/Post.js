@@ -14,10 +14,9 @@ const PostSchema = new Schema({
 	disagree: { type: [String], required: true },
 	votes: { type: Number, required: true },
 	interactions: { type: Number, required: true },
+	reports: { type: [String], required: true },
 	date: { type: Date, required: true, immutable: true },
-},
-
-);
+});
 
 // middleware populates votes and interactions
 PostSchema.pre("save", function (next) {
@@ -27,6 +26,8 @@ PostSchema.pre("save", function (next) {
 	this.interactions = agreeLength + disagreeLength;
 	next();
 });
+
+PostSchema.index({ title: "text" });
 
 const PostModel = mongoose.model("Post", PostSchema);
 

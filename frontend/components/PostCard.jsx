@@ -8,6 +8,7 @@ import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, Ca
 import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsChat, BsReply } from "react-icons/bs";
 // prettier-ignore
 import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning, AiFillHeart, AiOutlineSend } from "react-icons/ai";
+import { TfiShare } from "react-icons/tfi";
 // Styling
 // prettier-ignore
 import { cardContainer, toolTipContainer, toolTipIcon, iconStyle } from "../styles/Card.module.css";
@@ -17,11 +18,13 @@ import { cardContainer, toolTipContainer, toolTipIcon, iconStyle } from "../styl
 import { PostComment } from "./PostComment";
 
 import { useErrorToast } from "../hooks/useErrorToast";
+import { useSuccessToast } from "../hooks/useSuccessToast";
 
 export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => {
 	const { title, agree, disagree, interactions, _id } = post;
 
 	const { addToast } = useErrorToast();
+	const { addSuccessToast } = useSuccessToast();
 
 	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
 
@@ -29,6 +32,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 	const [commentsOpen, setCommentsOpen] = useState(false);
 	const [reportTooltip, setReportTooltip] = useState(false);
 	const [infoTooltip, setInfoTooltip] = useState(false);
+	const [shareTooltip, setShareTooltip] = useState(false);
 	const [comments, setComments] = useState([]);
 
 	const commentInput = useRef(null);
@@ -194,11 +198,27 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 			<Card variant="outline" bg="white" w="90%" maxW="400px">
 				{/* tool tip container */}
 				<div className={toolTipContainer}>
-					<Tooltip label="Report this post" isOpen={reportTooltip}>
+					<Tooltip label={"Click to report this post"} isOpen={reportTooltip}>
 						<Button
 							onMouseEnter={() => setReportTooltip(true)}
 							onMouseLeave={() => setReportTooltip(false)}
-							onClick={() => setReportTooltip(true)}
+							onClick={() => {
+								setReportTooltip(true);
+
+								fetch(`${API_URL}/report`, {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({ postID: _id, userUUID: uuid }),
+								})
+									.then((response) => response.json())
+									.then((data) => {
+										addSuccessToast(`Post "${post.title}" has been reported`);
+									})
+									.catch(function (error) {
+										console.error(error);
+										addToast(error?.response?.data || error.message);
+									});
+							}}
 							color="gray.300"
 							variant="ghost"
 							className={toolTipIcon}
@@ -221,6 +241,23 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 							_active={{ transform: "scale(.9)" }}
 						>
 							<AiOutlineInfoCircle className={iconStyle} />
+						</Button>
+					</Tooltip>
+					<Tooltip label="Click to copy sharable link!" isOpen={shareTooltip}>
+						<Button
+							onMouseEnter={() => setShareTooltip(true)}
+							onMouseLeave={() => setShareTooltip(false)}
+							onClick={() => {
+								setShareTooltip(true);
+								navigator.clipboard.writeText(`https://hottake.gg/post/${_id}`);
+							}}
+							color="gray.300"
+							variant="ghost"
+							className={toolTipIcon}
+							_hover={{ color: "var(--chakra-colors-gray-500)" }}
+							_active={{ transform: "scale(.9)" }}
+						>
+							<TfiShare className={iconStyle} />
 						</Button>
 					</Tooltip>
 				</div>
