@@ -29,4 +29,4 @@ PostSchema.pre("save", function (next) {
 
 PostSchema.index({ title: "text" });
 
-export default mongoose.models.Post || mongoose.model("Post", PostModel);
+export default mongoose.models.Post || mongoose.model("Post", PostSchema);
