@@ -59,6 +59,7 @@ export default async function handler(req, res) {
 				const results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 				res.status(200).json(results);
 			} catch (error) {
+				console.error(error);
 				res.status(400).json({ message: error });
 				// res.status(400).json({ success: false });
 			}
