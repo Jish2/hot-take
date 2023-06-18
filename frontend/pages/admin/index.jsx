@@ -50,7 +50,7 @@ import {
 	BsFillHandThumbsDownFill,
 } from "react-icons/bs";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg/"; // this reamins legacy
 
 function Dashboard({ setLoggedIn }) {
 	const sort_method = [

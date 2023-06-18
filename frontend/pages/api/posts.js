@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 						break;
 					case "random":
 						const results = await Post.aggregate([{ $sample: { size: limit } }]);
-						res.send(results);
+						res.json(results);
 						return;
 					case "disagreed":
 						postsLists = { votes: 1 };
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 						postsLists = { date: -1 };
 				}
 				const results = await Post.find().sort(postsLists).skip(offset).limit(limit);
-				res.send(results);
+				res.json(results);
 			} catch (error) {
 				res.status(400).send(error);
 				// res.status(400).json({ success: false });
