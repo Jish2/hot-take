@@ -1,10 +1,11 @@
 import Post from "../../db/models/Post";
 import remove from "../../db/helpers";
+import connect from "../../db/connect";
 
 export default async function handler(req, res) {
 	const { method } = req;
 
-	await dbConnect();
+	await connect();
 
 	switch (method) {
 		case "POST":
@@ -13,9 +14,9 @@ export default async function handler(req, res) {
 				const user = req.body.userUUID;
 
 				if (!postID) {
-					res.status(400).send("Agreement failed, no post included.");
+					res.status(400).json({ message: "Agreement failed, no post included." });
 				} else if (!user) {
-					res.status(400).send("Agreement failed, no user registered.");
+					res.status(400).json({ message: "Agreement failed, no user registered." });
 				} else {
 					Post.findById(postID, async (err, post) => {
 						if (err) handleError(err); // error handle
@@ -38,11 +39,11 @@ export default async function handler(req, res) {
 				}
 			} catch (error) {
 				console.error(error);
-				res.status(400).send(error);
+				res.status(400).json({ message: error });
 			}
 			break;
 		default:
-			res.status(400).send(error);
+			res.status(400).json({ message: error });
 			break;
 	}
 }

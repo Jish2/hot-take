@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
+import connect from "../../db/connect";
 
 export default async function handler(req, res) {
 	const { method } = req;
 
-	await dbConnect();
+	await connect();
 
 	switch (method) {
 		case "GET":
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
 
 				// catch invalid postID
 				if (mongoose.Types.ObjectId.isValid(postID) === false) {
-					res.status(400).send("stop trying to fuck with us you cs pussy dick es8 wanna be nerd pussy");
+					res.status(400).json({ message: "stop trying to fuck with us you cs pussy dick es8 wanna be nerd pussy" });
 					return;
 				}
 
@@ -24,20 +25,20 @@ export default async function handler(req, res) {
 				// }
 
 				const results = await Post.findById(postID).limit(1);
-				res.send(results);
+				res.status(200).json(results);
 			} catch (error) {
 				console.error(error);
-				res.status(400).send(error);
+				res.status(400).json({ message: error });
 			}
 			break;
 		case "POST":
 			try {
 				if (req.body.title.length == 0) {
-					res.status(400).send("Post content is missing");
+					res.status(400).json({ message: "Post content is missing" });
 				} else if (req.body.title.length <= 5) {
-					res.status(400).send("Post must be longer than 5 characters");
+					res.status(400).json({ message: "Post must be longer than 5 characters" });
 				} else if (req.body.title.length > 140) {
-					res.status(400).send("Post must be less than 140 characters");
+					res.status(400).json({ message: "Post must be less than 140 characters" });
 				} else {
 					const newPost = new Post({
 						title: req.body.title,
@@ -49,15 +50,15 @@ export default async function handler(req, res) {
 						date: new Date(),
 					});
 					const createdPost = await newPost.save();
-					res.status(200).send(createdPost);
+					res.status(200).json(createdPost);
 				}
 			} catch (error) {
 				console.error(error);
-				res.status(400).send(error);
+				res.status(400).json({ message: error });
 			}
 			break;
 		default:
-			res.status(400).send(error);
+			res.status(400).json({ message: error });
 			break;
 	}
 }
