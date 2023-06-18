@@ -26,7 +26,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 	const { addToast } = useErrorToast();
 	const { addSuccessToast } = useSuccessToast();
 
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 
 	const [heat, setHeat] = useState(agree.length + disagree.length);
 	const [commentsOpen, setCommentsOpen] = useState(false);
@@ -331,14 +331,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 				<CardFooter p="16px">
 					<Flex w="100%" align="" direction="column" gap={2}>
-						<Flex
-							w="100%"
-							justify="center"
-							align="center"
-							gap={2}
-							onClick={() => setCommentsOpen((i) => !i)}
-							color="gray.500"
-						>
+						<Flex w="100%" justify="center" align="center" gap={2} onClick={() => setCommentsOpen((i) => !i)} color="gray.500">
 							<Icon as={BsChat} />
 							<Text>Comments ({comments.length})</Text>
 						</Flex>
@@ -378,12 +371,7 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 											// }
 											return (
 												<div key={`${comment._id}${i}`}>
-													<PostComment
-														key={`${comment._id}${i}`}
-														content={comment.content}
-														time={comment.date}
-														dev={comment?.dev}
-													/>
+													<PostComment key={`${comment._id}${i}`} content={comment.content} time={comment.date} dev={comment?.dev} />
 												</div>
 											);
 										})}
