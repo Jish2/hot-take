@@ -4,19 +4,7 @@ import { BsReply } from "react-icons/bs";
 
 export const PostComment = ({ content, time, dev }) => {
 	const date = new Date(time);
-	const months = [
-		"Jan",
-		"Feb",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"Aug",
-		"Sept",
-		"Nov",
-		"Dec",
-	];
+	const months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Nov", "Dec"];
 
 	function formatAMPM(date) {
 		var hours = date.getHours();
@@ -48,15 +36,7 @@ export const PostComment = ({ content, time, dev }) => {
 					{`${formatAMPM(date)}, ${months[date.getMonth()]} ${date.getDate()}`}
 					{dev === "true" && (
 						<>
-							<Icon
-								as={MdVerified}
-								color="#249CF0"
-								h={3}
-								w={3}
-								ml="6px"
-								mr="2px"
-								style={{ verticalAlign: "-1.5px" }}
-							/>
+							<Icon as={MdVerified} color="#249CF0" h={3} w={3} ml="6px" mr="2px" style={{ verticalAlign: "-1.5px" }} />
 							Dev
 						</>
 					)}
