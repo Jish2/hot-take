@@ -8,7 +8,7 @@ export function CreatePostModal({ isOpen, onClose }) {
 	const { addToast } = useErrorToast();
 	const [isCreateLoading, setIsCreateLoading] = useState(false);
 
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 	// ref for input
 	const input = useRef(null);
 

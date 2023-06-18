@@ -23,13 +23,13 @@ import { useErrorToast } from "../hooks/useErrorToast";
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
-	const res = await fetch("https://api.hottake.gg/posts?offset=0");
+	const res = await fetch("https://hottake.gg/api/posts?offset=0");
 	const postsFromDB = await res.json();
 	return { props: { postsFromDB } };
 }
 
 export default function Home({ postsFromDB }) {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 
 	// key for sorting button
 	const SORT_ICONS = [
@@ -58,7 +58,7 @@ export default function Home({ postsFromDB }) {
 	async function fetchPosts(type) {
 		// swap with "https://api.hottake.gg/posts"
 		try {
-			const response = await fetch(`${API_URL}/posts?method=${type}`);
+			const response = await fetch(`${API_URL}/posts?sort=${type}`);
 			const results = await response.json();
 
 			// console.log(response[0]);
@@ -91,9 +91,7 @@ export default function Home({ postsFromDB }) {
 		if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
 		setSortMethod(parseInt(localStorage.getItem("sort")));
 		if (localStorage.getItem("sort") !== "0") {
-			fetchPosts(
-				SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase()
-			)
+			fetchPosts(SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase())
 				.then((res) => setPosts(res))
 				.catch((error) => {
 					console.error(error);
@@ -111,11 +109,7 @@ export default function Home({ postsFromDB }) {
 	async function loadMore() {
 		try {
 			console.log("Loading");
-			const res = await fetch(
-				`${API_URL}/posts?offset=${posts.length}&method=${SORT_ICONS[
-					sortMethod
-				].name.toLowerCase()}`
-			);
+			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`);
 			const loadedPosts = await res.json();
 			if (loadedPosts.length == 0) {
 				setHasMorePosts(false);
@@ -174,12 +168,7 @@ export default function Home({ postsFromDB }) {
 						borderRadius: "25%",
 					}}
 				>
-					<Icon
-						as={SORT_ICONS[sortMethod].icon}
-						w={SORT_ICONS[sortMethod].w}
-						h={SORT_ICONS[sortMethod].h}
-						color="white"
-					/>
+					<Icon as={SORT_ICONS[sortMethod].icon} w={SORT_ICONS[sortMethod].w} h={SORT_ICONS[sortMethod].h} color="white" />
 				</Button>
 				<Text className={sortText} fontSize="large">
 					Sort by {SORT_ICONS[sortMethod].name}
@@ -222,13 +211,7 @@ export default function Home({ postsFromDB }) {
 							</div>
 							{/* actual card */}
 
-							<PostCard
-								{...post}
-								uuid={uuid}
-								setAnimated={setAnimated}
-								scrollContainerRef={scrollContainerRef}
-								key={`${post._id}${i}`}
-							/>
+							<PostCard {...post} uuid={uuid} setAnimated={setAnimated} scrollContainerRef={scrollContainerRef} key={`${post._id}${i}`} />
 						</div>
 					))}
 				</div>

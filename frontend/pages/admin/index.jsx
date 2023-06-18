@@ -50,7 +50,7 @@ import {
 	BsFillHandThumbsDownFill,
 } from "react-icons/bs";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hottake.gg";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 
 function Dashboard({ setLoggedIn }) {
 	const sort_method = [
@@ -62,19 +62,7 @@ function Dashboard({ setLoggedIn }) {
 		{ icon: BsSortNumericUp, name: "old", w: 6, h: 6 },
 	];
 
-	const months = [
-		"Jan",
-		"Feb",
-		"March",
-		"April",
-		"May",
-		"June",
-		"July",
-		"Aug",
-		"Sept",
-		"Nov",
-		"Dec",
-	];
+	const months = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Nov", "Dec"];
 
 	function formatAMPM(date) {
 		var day = date.getDate();
@@ -171,9 +159,7 @@ function Dashboard({ setLoggedIn }) {
 
 	async function fetchPosts(index) {
 		try {
-			const res = await fetch(
-				`${API_URL}/posts?offset=0&method=${sort_method[index ?? sortMethod].name}`
-			);
+			const res = await fetch(`${API_URL}/posts?offset=0&sort=${sort_method[index ?? sortMethod].name}`);
 			const posts = await res.json();
 			setResults([...posts]);
 		} catch (error) {
@@ -184,9 +170,7 @@ function Dashboard({ setLoggedIn }) {
 	async function loadMorePosts() {
 		if (!searchRef.current.value) {
 			try {
-				const res = await fetch(
-					`${API_URL}/posts?offset=${results.length}&method=${sort_method[sortMethod].name}`
-				);
+				const res = await fetch(`${API_URL}/posts?offset=${results.length}&sort=${sort_method[sortMethod].name}`);
 				const posts = await res.json();
 				if (posts.length === 0) addToast("No more posts");
 				setResults((prev) => [...prev, ...posts]);
@@ -279,13 +263,7 @@ function Dashboard({ setLoggedIn }) {
 				</ModalContent>
 			</Modal>
 
-			<Flex
-				justify="center"
-				align="center"
-				direction="column"
-				p={0}
-				style={{ height: "100vh", width: "100vw" }}
-			>
+			<Flex justify="center" align="center" direction="column" p={0} style={{ height: "100vh", width: "100vw" }}>
 				<div style={{ width: "50px", minHeight: "60px", maxHeight: "60px" }}></div>
 				<Flex
 					justify="center"
@@ -407,12 +385,7 @@ function Dashboard({ setLoggedIn }) {
 											maxHeight: "34px",
 										}}
 									>
-										<Icon
-											as={AiOutlineWarning}
-											w="16px"
-											h="16px"
-											style={{ verticalAlign: "2px" }}
-										/>
+										<Icon as={AiOutlineWarning} w="16px" h="16px" style={{ verticalAlign: "2px" }} />
 									</div>
 									<Text
 										style={{
@@ -508,10 +481,7 @@ export default function Admin() {
 
 	useEffect(() => {
 		try {
-			if (
-				Cookies.get("adminUsername") !== undefined &&
-				Cookies.get("adminPassword") !== undefined
-			) {
+			if (Cookies.get("adminUsername") !== undefined && Cookies.get("adminPassword") !== undefined) {
 				usernameRef.current.value = Cookies.get("adminUsername");
 				passwordRef.current.value = Cookies.get("adminPassword");
 				handlePasswordSubmit();
@@ -537,31 +507,13 @@ export default function Admin() {
 			<Navbar />
 
 			<form onSubmit={handlePasswordSubmit}>
-				<Flex
-					justify="center"
-					align="center"
-					direction="column"
-					p={5}
-					gap="8px"
-					style={{ height: "100vh", width: "100vw" }}
-				>
+				<Flex justify="center" align="center" direction="column" p={5} gap="8px" style={{ height: "100vh", width: "100vw" }}>
 					<Heading textAlign="center" noOfLines={2} mb={2}>
 						Welcome, Moderator
 					</Heading>
 					<Input ref={usernameRef} placeholder="username" size="lg" style={{ maxWidth: "400px" }} />
-					<Input
-						type="password"
-						ref={passwordRef}
-						placeholder="password"
-						size="lg"
-						style={{ maxWidth: "400px" }}
-					/>
-					<Button
-						type="submit"
-						colorScheme="teal"
-						size="md"
-						style={{ width: "100%", maxWidth: "400px" }}
-					>
+					<Input type="password" ref={passwordRef} placeholder="password" size="lg" style={{ maxWidth: "400px" }} />
+					<Button type="submit" colorScheme="teal" size="md" style={{ width: "100%", maxWidth: "400px" }}>
 						Enter
 					</Button>
 				</Flex>
