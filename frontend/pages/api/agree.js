@@ -1,6 +1,12 @@
 import Post from "../../db/models/Post";
-import remove from "../../db/helpers";
+import { remove } from "../../db/helpers";
 import connect from "../../db/connect";
+
+export const config = {
+	api: {
+		externalResolver: true,
+	},
+};
 
 export default async function handler(req, res) {
 	const { method } = req;
@@ -30,11 +36,12 @@ export default async function handler(req, res) {
 							} else {
 								post.agree.push(user);
 							}
+
 							await post.save((err, result) => {
 								if (err) {
 									handleError(err);
 								} else {
-									res.status(200).json(result);
+									res.status(200).json({ message: "res" });
 								}
 							});
 						}
