@@ -6,19 +6,19 @@ if (!MONGODB_URI) {
 	throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
 }
 
-if (process.env.NEXT_PUBLIC_ENVIRONMENT === "LOCAL") {
-	/**
-	 * Global is used here to maintain a cached connection across hot reloads
-	 * in development. This prevents connections growing exponentially
-	 * during API Route usage.
-	 */
-	let cached = global.mongoose;
+async function connect() {
+	if (process.env.NEXT_PUBLIC_ENVIRONMENT === "LOCAL") {
+		/**
+		 * Global is used here to maintain a cached connection across hot reloads
+		 * in development. This prevents connections growing exponentially
+		 * during API Route usage.
+		 */
+		let cached = global.mongoose;
 
-	if (!cached) {
-		cached = global.mongoose = { conn: null, promise: null };
-	}
+		if (!cached) {
+			cached = global.mongoose = { conn: null, promise: null };
+		}
 
-	async function connect() {
 		if (cached.conn) {
 			return cached.conn;
 		}
@@ -43,19 +43,17 @@ if (process.env.NEXT_PUBLIC_ENVIRONMENT === "LOCAL") {
 		}
 
 		return cached.conn;
+	} else {
+		const opts = {
+			bufferCommands: false,
+		};
+
+		mongoose.set("strictQuery", false);
+
+		cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+			return mongoose;
+		});
 	}
-} else {
-	// In production mode, it's best to not use a global variable.
-
-	const opts = {
-		bufferCommands: false,
-	};
-
-	mongoose.set("strictQuery", false);
-
-	cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-		return mongoose;
-	});
 }
 
 export default connect;
