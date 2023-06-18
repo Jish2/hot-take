@@ -31,8 +31,11 @@ export default async function handler(req, res) {
 								post.agree.push(user);
 							}
 							await post.save((err, result) => {
-								if (err) handleError(err);
-								else res.status(200).json(result);
+								if (err) {
+									handleError(err);
+								} else {
+									res.status(200).json(result);
+								}
 							});
 						}
 					});

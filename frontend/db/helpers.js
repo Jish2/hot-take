@@ -3,3 +3,8 @@ export function remove(value, array) {
 		return item !== value;
 	});
 }
+
+export const handleError = (err) => {
+	console.error(err);
+	return;
+};

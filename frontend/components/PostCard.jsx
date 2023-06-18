@@ -331,7 +331,15 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 				<CardFooter p="16px">
 					<Flex w="100%" align="" direction="column" gap={2}>
-						<Flex w="100%" justify="center" align="center" gap={2} onClick={() => setCommentsOpen((i) => !i)} color="gray.500">
+						<Flex
+							w="100%"
+							justify="center"
+							align="center"
+							gap={2}
+							onClick={() => setCommentsOpen((i) => !i)}
+							color="gray.500"
+							cursor="pointer"
+						>
 							<Icon as={BsChat} />
 							<Text>Comments ({comments.length})</Text>
 						</Flex>
