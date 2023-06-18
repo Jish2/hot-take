@@ -1,6 +1,12 @@
 import Post from "../../db/models/Post";
-import remove from "../../db/helpers";
+import { remove } from "../../db/helpers";
 import connect from "../../db/connect";
+
+export const config = {
+	api: {
+		externalResolver: true,
+	},
+};
 
 export default async function handler(req, res) {
 	const { method } = req;

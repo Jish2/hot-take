@@ -1,6 +1,12 @@
 import connect from "../../db/connect";
 import Post from "../../db/models/Post";
 
+export const config = {
+	api: {
+		externalResolver: true,
+	},
+};
+
 export default async function handler(req, res) {
 	const { method, query } = req;
 
