@@ -50,7 +50,7 @@ async function connect() {
 
 		mongoose.set("strictQuery", false);
 
-		cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+		mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
 			return mongoose;
 		});
 	}
