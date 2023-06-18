@@ -23,7 +23,9 @@ import { useErrorToast } from "../hooks/useErrorToast";
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
-	const res = await fetch("https://hottake.gg/api/posts?offset=0");
+	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+
+	const res = await fetch(`${API_URL}/posts?offset=0`);
 	const postsFromDB = await res.json();
 	return { props: { postsFromDB } };
 }
