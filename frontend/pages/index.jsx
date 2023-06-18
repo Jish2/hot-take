@@ -19,11 +19,14 @@ import ReactGA from "react-ga";
 
 import { useErrorToast } from "../hooks/useErrorToast";
 
+import { env_url } from "/utils/api_url";
+
 // Google Analytics ID
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
 export async function getServerSideProps() {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+	const API_URL = env_url();
+	// process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 
 	const res = await fetch(`${API_URL}/posts?offset=0`);
 	const postsFromDB = await res.json();
@@ -31,7 +34,7 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ postsFromDB }) {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+	const API_URL = env_url();
 
 	// key for sorting button
 	const SORT_ICONS = [

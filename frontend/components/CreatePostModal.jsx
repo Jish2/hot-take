@@ -3,12 +3,14 @@ import { useState, useRef } from "react";
 import { Button, Textarea, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ModalContent } from "@chakra-ui/react";
 
 import { useErrorToast } from "../hooks/useErrorToast";
+import { env_url } from "/utils/api_url";
 
 export function CreatePostModal({ isOpen, onClose }) {
 	const { addToast } = useErrorToast();
 	const [isCreateLoading, setIsCreateLoading] = useState(false);
 
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+	const API_URL = env_url();
+
 	// ref for input
 	const input = useRef(null);
 

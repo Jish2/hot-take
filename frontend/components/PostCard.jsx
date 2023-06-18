@@ -20,13 +20,15 @@ import { PostComment } from "./PostComment";
 import { useErrorToast } from "../hooks/useErrorToast";
 import { useSuccessToast } from "../hooks/useSuccessToast";
 
+import { env_url } from "/utils/api_url";
+
 export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => {
 	const { title, agree, disagree, interactions, _id } = post;
 
 	const { addToast } = useErrorToast();
 	const { addSuccessToast } = useSuccessToast();
 
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+	const API_URL = env_url();
 
 	const [heat, setHeat] = useState(agree.length + disagree.length);
 	const [commentsOpen, setCommentsOpen] = useState(false);

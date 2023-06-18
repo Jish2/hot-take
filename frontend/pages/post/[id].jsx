@@ -27,7 +27,9 @@ import { useErrorToast } from "../../hooks/useErrorToast";
 // Google Analytics ID
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+import { env_url } from "/utils/api_url";
+
+const API_URL = env_url();
 
 export async function getServerSideProps(context) {
 	const { id } = context.query;
@@ -45,8 +47,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function Home({ postsFromDB, queriedPost }) {
-	const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
-
 	// key for sorting button
 	const SORT_ICONS = [
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
