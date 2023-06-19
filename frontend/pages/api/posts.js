@@ -60,13 +60,13 @@ export default async function handler(req, res) {
 				res.status(200).json(results);
 			} catch (error) {
 				console.error("error", error);
-				res.status(400).json({ message: error });
+				res.status(400).json({ message: error, case: "hm" });
 				// res.status(400).json({ success: false });
 			}
 			break;
 		default:
 			// res.status(400).json({ success: false });
-			res.status(400).json({ message: error });
+			res.status(400).json({ message: "wack method" });
 
 			break;
 	}
