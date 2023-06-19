@@ -14,7 +14,11 @@ export default async function handler(req, res) {
 	const offset = query.offset || 0;
 	const sort = req.query.sort;
 
-	await connect();
+	// await connect();
+	mongoose.set("strictQuery", true);
+	mongoose.connect(process.env.MONGO_URL, () => {
+		console.log("...ok");
+	});
 
 	let postsLists = {};
 
