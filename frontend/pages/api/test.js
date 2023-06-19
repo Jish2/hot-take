@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
 	switch (method) {
 		case "GET":
-			res.status(200).json({ success: true, data: "MOM", mng: global.mongoose });
+			res.status(200).json({ success: true, data: "MOMs" });
 			break;
 		default:
 			res.status(400).json({ success: false });
