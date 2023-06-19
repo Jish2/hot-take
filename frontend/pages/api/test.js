@@ -1,4 +1,5 @@
 // import connect from "../../db/connect";
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
 	const { method } = req;
