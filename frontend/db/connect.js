@@ -50,7 +50,8 @@ async function connect() {
 
 		mongoose.set("strictQuery", false);
 
-		await mongoose.connect(MONGODB_URI, opts);
+		mongoose.connect(MONGODB_URI);
+		// await mongoose.connect(MONGODB_URI, opts);
 	}
 }
 
