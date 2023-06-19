@@ -54,14 +54,14 @@ if (!cached) {
 	cached = global.mongoose = { conn: null, promise: null };
 }
 
-mongoose.set("strictQuery", true);
-
 async function connect() {
 	if (cached.conn) {
 		return cached.conn;
 	}
 
 	if (!cached.promise) {
+		mongoose.set("strictQuery", true);
+
 		const opts = {
 			bufferCommands: true,
 		};
