@@ -1,6 +1,5 @@
 import connect from "../../db/connect";
 import Post from "../../db/models/Post";
-import mongoose from "mongoose";
 
 export const config = {
 	api: {
@@ -15,11 +14,7 @@ export default async function handler(req, res) {
 	const offset = query.offset || 0;
 	const sort = req.query.sort;
 
-	// await connect();
-	mongoose.set("strictQuery", true);
-	mongoose.connect(process.env.MONGO_URL, () => {
-		console.log("...ok");
-	});
+	await connect();
 
 	let postsLists = {};
 
