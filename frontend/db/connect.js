@@ -24,13 +24,9 @@ async function connect() {
 		}
 
 		if (!cached.promise) {
-			const opts = {
-				bufferCommands: false,
-			};
-
 			mongoose.set("strictQuery", false);
 
-			cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+			cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
 				return mongoose;
 			});
 		}
@@ -44,14 +40,11 @@ async function connect() {
 
 		return cached.conn;
 	} else {
-		// const opts = {
-		// 	bufferCommands: false,
-		// };
-
 		mongoose.set("strictQuery", false);
 
-		// return mongoose.connect(MONGODB_URI);
-		mongoose.connect(MONGODB_URI);
+		mongoose.connect(MONGODB_URI).then((mongoose) => {
+			return mongoose;
+		});
 	}
 }
 
