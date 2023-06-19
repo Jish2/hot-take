@@ -6,8 +6,8 @@ export default async function handler(req, res) {
 
 	// await connect();
 	mongoose.set("strictQuery", true);
-	mongoose.connect(process.env.MONGO_URL, () => {
-		console.log("...ok");
+	mongoose.connect(process.env.MONGO_URL).then((response) => {
+		res.status(200).json({ success: true, data: "MOMs111231!" });
 	});
 
 	switch (method) {
