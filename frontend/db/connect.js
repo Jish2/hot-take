@@ -83,7 +83,9 @@ if (!MONGODB_URI) {
 
 async function connect() {
 	mongoose.set("strictQuery", true);
-	return mongoose.connect(MONGODB_URI);
+	return mongoose.connect(MONGODB_URI).then((mongoose) => {
+		return mongoose;
+	});
 }
 
 export default connect;
