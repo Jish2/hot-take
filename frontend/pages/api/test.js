@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 	// });
 
 	mongoose.set("strictQuery", true);
-	const connection = mongoose.connect(MONGODB_URI).then((mongoose) => {
+	const connection = mongoose.connect(process.env.MONGO_URL).then((mongoose) => {
 		return mongoose;
 	});
 	await connection;
