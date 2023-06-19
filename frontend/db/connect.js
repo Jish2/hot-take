@@ -50,10 +50,10 @@ async function connect() {
 
 		mongoose.set("strictQuery", false);
 
-		mongoose.connect(MONGODB_URI, opts);
-		// .then((mongoose) => {
-		// 	return mongoose;
-		// });
+		mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+			console.log("Connected to DB");
+			return mongoose;
+		});
 	}
 }
 
