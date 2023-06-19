@@ -54,6 +54,8 @@ if (!cached) {
 	cached = global.mongoose = { conn: null, promise: null };
 }
 
+mongoose.set("strictQuery", true);
+
 async function connect() {
 	if (cached.conn) {
 		return cached.conn;
@@ -63,8 +65,6 @@ async function connect() {
 		const opts = {
 			bufferCommands: true,
 		};
-
-		mongoose.set("strictQuery", true);
 
 		cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
 			return mongoose;
