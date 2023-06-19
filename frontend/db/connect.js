@@ -44,14 +44,14 @@ async function connect() {
 
 		return cached.conn;
 	} else {
-		const opts = {
-			bufferCommands: false,
-		};
+		// const opts = {
+		// 	bufferCommands: false,
+		// };
 
 		mongoose.set("strictQuery", false);
 
 		// return mongoose.connect(MONGODB_URI);
-		mongoose.connect(MONGODB_URI, opts);
+		mongoose.connect(MONGODB_URI);
 	}
 }
 
