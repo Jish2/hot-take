@@ -7,8 +7,12 @@ export const config = {
 	},
 };
 
+const mongo = process.env.MONGO_URL;
+
 export default async function handler(req, res) {
 	const { method } = req;
+
+	mongoose.set("strictQuery", true);
 
 	// await connect();
 	// mongoose.set("strictQuery", true);
@@ -16,11 +20,14 @@ export default async function handler(req, res) {
 	// 	res.status(200).json({ success: true, data: "MOMs111231!" });
 	// });
 
-	mongoose.set("strictQuery", true);
-	const connection = mongoose.connect(process.env.MONGO_URL).then((mongoose) => {
-		return mongoose;
-	});
-	await connection;
+	// const connection = mongoose.connect(process.env.MONGO_URL).then((mongoose) => {
+	// 	return mongoose;
+	// });
+	// await connection;
+
+	const conn = mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
+
+	await conn.asPromise();
 
 	switch (method) {
 		case "GET":
