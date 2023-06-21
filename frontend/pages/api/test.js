@@ -9,6 +9,14 @@ export const config = {
 
 const mongo = process.env.MONGO_URL;
 
+async function establish_connect() {
+	// const connection = mongoose.connect(mongo);
+	// await connection.asPromise();
+
+	const conn = mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
+	await conn.asPromise();
+}
+
 export default async function handler(req, res) {
 	const { method } = req;
 
@@ -25,13 +33,17 @@ export default async function handler(req, res) {
 	// });
 	// await connection;
 
-	const conn = mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
+	// const conn = mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
 
-	await conn.asPromise();
+	// await conn.asPromise();
+
+	// await mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
+
+	await establish_connect();
 
 	switch (method) {
 		case "GET":
-			res.status(200).json({ success: true, data: "MOMs!1aa" });
+			res.status(200).json({ success: true, data: "MOMs!1aa", other: mongoose.connection.readyState });
 			break;
 		default:
 			res.status(400).json({ success: false });
