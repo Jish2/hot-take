@@ -1,4 +1,4 @@
-// import connect from "../../db/connect";
+import connect from "../../db/connect";
 import mongoose from "mongoose";
 
 export const config = {
@@ -39,7 +39,8 @@ export default async function handler(req, res) {
 
 	// await mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
 
-	await establish_connect();
+	// await establish_connect();
+	await connect();
 
 	switch (method) {
 		case "GET":
