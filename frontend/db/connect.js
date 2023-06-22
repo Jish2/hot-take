@@ -83,12 +83,6 @@ if (!MONGODB_URI) {
 
 async function connect() {
 	mongoose.set("strictQuery", true);
-	// const lol = mongoose.connect(MONGODB_URI).then((mongoose) => {
-	// 	return mongoose;
-	// });
-	// await lol;
-	// return lol;
-
 	const conn = mongoose.createConnection(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
 	await conn.asPromise();
 }
