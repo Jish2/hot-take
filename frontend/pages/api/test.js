@@ -1,5 +1,4 @@
 import connect from "../../db/connect";
-import mongoose from "mongoose";
 import Post from "../../db/models/Post";
 
 export const config = {
@@ -15,10 +14,10 @@ export default async function handler(req, res) {
 
 	switch (method) {
 		case "GET":
-			const results = await Post.findById("64711997ce441726e6aeb831").limit(1);
-			res.status(200).json(results);
+			// const results = await Post.findById("64711997ce441726e6aeb831").limit(1);
+			// res.status(200).json(results);
 
-			// res.status(200).json({ success: true, data: "MOMs!1aa", other: mongoose.connection.readyState });
+			res.status(200).json({ success: true, data: "MOMs!1aa", other: mongoose.connection.readyState });
 			break;
 		default:
 			res.status(400).json({ success: false });
