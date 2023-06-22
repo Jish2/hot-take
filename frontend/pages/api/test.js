@@ -20,31 +20,14 @@ async function establish_connect() {
 export default async function handler(req, res) {
 	const { method } = req;
 
-	mongoose.set("strictQuery", true);
-
-	// await connect();
-	// mongoose.set("strictQuery", true);
-	// mongoose.connect(process.env.MONGO_URL).then((response) => {
-	// 	res.status(200).json({ success: true, data: "MOMs111231!" });
-	// });
-
-	// const connection = mongoose.connect(process.env.MONGO_URL).then((mongoose) => {
-	// 	return mongoose;
-	// });
-	// await connection;
-
-	// const conn = mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
-
-	// await conn.asPromise();
-
-	// await mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
-
-	// await establish_connect();
 	await connect();
 
 	switch (method) {
 		case "GET":
-			res.status(200).json({ success: true, data: "MOMs!1aa", other: mongoose.connection.readyState });
+			const results = await Post.findById("64711997ce441726e6aeb831").limit(1);
+			res.status(200).json(results);
+
+			// res.status(200).json({ success: true, data: "MOMs!1aa", other: mongoose.connection.readyState });
 			break;
 		default:
 			res.status(400).json({ success: false });
