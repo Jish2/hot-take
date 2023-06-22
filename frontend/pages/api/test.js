@@ -1,21 +1,12 @@
 import connect from "../../db/connect";
 import mongoose from "mongoose";
+import Post from "../../db/models/Post";
 
 export const config = {
 	api: {
 		externalResolver: true,
 	},
 };
-
-const mongo = process.env.MONGO_URL;
-
-async function establish_connect() {
-	// const connection = mongoose.connect(mongo);
-	// await connection.asPromise();
-
-	const conn = mongoose.createConnection(mongo, { serverSelectionTimeoutMS: 5000 });
-	await conn.asPromise();
-}
 
 export default async function handler(req, res) {
 	const { method } = req;
