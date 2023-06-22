@@ -6,6 +6,7 @@ if (!MONGODB_URI) {
 	throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
 }
 
+// Local dev method
 // async function connect() {
 // 	if (process.env.NEXT_PUBLIC_ENVIRONMENT === "LOCAL") {
 // 		/**
@@ -83,8 +84,10 @@ if (!MONGODB_URI) {
 
 async function connect() {
 	mongoose.set("strictQuery", true);
-	// const conn = mongoose.createConnection(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
 	mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+
+	// alt method
+	// const conn = mongoose.createConnection(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
 	// await conn.asPromise();
 }
 
