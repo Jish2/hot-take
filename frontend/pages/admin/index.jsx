@@ -52,7 +52,7 @@ import {
 
 import { env_url } from "/utils/api_url";
 
-const API_URL = env_url();
+const API_URL = "https://api.hottake.gg";
 
 function Dashboard({ setLoggedIn }) {
 	const sort_method = [
