@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import connect from "../../db/connect";
+import Post from "../../db/models/Post";
 
 export const config = {
 	api: {
