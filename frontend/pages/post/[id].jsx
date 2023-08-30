@@ -39,14 +39,14 @@ export async function getServerSideProps(context) {
 	try {
 		const res2 = await fetch(`${API_URL}/post?postID=${id}`);
 		const queriedPost = await res2.json();
-		return { props: { postsFromDB, queriedPost } };
+		return { props: { postsFromDB, queriedPost, id } };
 	} catch (e) {
 		const queriedPost = "invalid";
-		return { props: { postsFromDB, queriedPost } };
+		return { props: { postsFromDB, queriedPost, id } };
 	}
 }
 
-export default function Home({ postsFromDB, queriedPost }) {
+export default function Home({ postsFromDB, queriedPost, id }) {
 	// key for sorting button
 	const SORT_ICONS = [
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
@@ -118,7 +118,8 @@ export default function Home({ postsFromDB, queriedPost }) {
 		setHasMorePosts(!(posts.length === 0));
 
 		if (queriedPost !== "invalid") {
-			setPosts([queriedPost, ...postsFromDB]);
+			const updatedPosts = postsFromDB.filter((item) => item._id !== id);
+			setPosts([queriedPost, ...updatedPosts]);
 		}
 	}, []);
 
@@ -128,7 +129,6 @@ export default function Home({ postsFromDB, queriedPost }) {
 
 	async function loadMore() {
 		try {
-			console.log("Loading");
 			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`);
 			const loadedPosts = await res.json();
 			if (loadedPosts.length == 0) {
@@ -136,7 +136,11 @@ export default function Home({ postsFromDB, queriedPost }) {
 			} else {
 				setHasMorePosts(true);
 			}
-			setPosts((prev) => [...prev, ...loadedPosts]);
+
+			setPosts((prev) => {
+				const updatedPosts = loadedPosts.filter((item) => item._id !== id);
+				return [...prev, ...updatedPosts];
+			});
 		} catch (error) {
 			addToast(error?.response?.data || error.message);
 		}
