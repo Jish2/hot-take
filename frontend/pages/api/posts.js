@@ -123,7 +123,7 @@ export default async function handler(req, res) {
             },
           },
           { $sort: { rating: -1 } },
-          { $skip: offset },
+          { $skip: parseInt(offset) },
           { $limit: parseInt(limit) },
           // { $project: { rating: 0 } },
         ]);
