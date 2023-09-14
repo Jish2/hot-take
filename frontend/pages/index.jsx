@@ -5,6 +5,7 @@ import { useDisclosure, Button, Icon, Flex, Text } from "@chakra-ui/react";
 // Icons
 // prettier-ignore
 import { BsPlusLg, BsSortNumericUp, BsFillStarFill, BsSortNumericDownAlt, BsShuffle, BsFillHandThumbsUpFill, BsFillHandThumbsDownFill } from "react-icons/bs";
+import { AiFillFire } from "react-icons/ai";
 // Components
 import { PostCard } from "../components/PostCard";
 import { CreatePostModal } from "../components/CreatePostModal";
@@ -38,6 +39,7 @@ export default function Home({ postsFromDB }) {
 
 	// key for sorting button
 	const SORT_ICONS = [
+		{ icon: AiFillFire, name: "Hot", w: 6, h: 6 },
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
 		{ icon: BsShuffle, name: "Random", w: 6, h: 6 },
 		{ icon: BsFillStarFill, name: "Popular", w: 4, h: 4 },
@@ -93,23 +95,23 @@ export default function Home({ postsFromDB }) {
 			setUUID(localStorage.getItem("uuid"));
 		}
 
-		if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
-		setSortMethod(parseInt(localStorage.getItem("sort")));
-		if (localStorage.getItem("sort") !== "0") {
-			fetchPosts(SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase())
-				.then((res) => setPosts(res))
-				.catch((error) => {
-					console.error(error);
-					addToast(error?.response?.data || error.message);
-				});
-		}
+		// if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
+		// setSortMethod(parseInt(localStorage.getItem("sort")));
+		// if (localStorage.getItem("sort") !== "0") {
+		// 	fetchPosts(SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase())
+		// 		.then((res) => setPosts(res))
+		// 		.catch((error) => {
+		// 			console.error(error);
+		// 			addToast(error?.response?.data || error.message);
+		// 		});
+		// }
 
 		setHasMorePosts(!(posts.length === 0));
 	}, []);
 
-	useEffect(() => {
-		localStorage.setItem("sort", sortMethod);
-	}, [sortMethod]);
+	// useEffect(() => {
+	// 	localStorage.setItem("sort", sortMethod);
+	// }, [sortMethod]);
 
 	async function loadMore() {
 		try {
