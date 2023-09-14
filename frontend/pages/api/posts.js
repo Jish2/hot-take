@@ -7,6 +7,71 @@ export const config = {
   },
 };
 
+async function getHotPosts(offset, limit) {
+  const std = 0.4;
+  const mean = 0.31;
+  const engagementBonusCoef = 0.1;
+
+  const engagementBonus = {
+    $multiply: [
+      engagementBonusCoef,
+      {
+        $ln: {
+          $add: ['$interactions', 1],
+        },
+      },
+    ],
+  };
+
+  const x = {
+    $divide: [
+      {
+        $add: ['$votes', 1],
+      },
+      { $add: ['$interactions', 2] },
+    ],
+  };
+
+  const results = await Post.aggregate([
+    { $match: {} },
+    // 1/s *sqrt(2pi) * e^(-1/2 * x-m/s)^2
+    {
+      $addFields: {
+        rating: {
+          $add: [
+            {
+              $multiply: [
+                1 / (std * Math.sqrt(2 * Math.PI)),
+                {
+                  $exp: {
+                    $multiply: [
+                      -0.5,
+                      {
+                        $pow: [
+                          {
+                            $divide: [{ $subtract: [x, mean] }, std],
+                          },
+                          2,
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+            engagementBonus,
+          ],
+        },
+      },
+    },
+    { $sort: { rating: -1 } },
+    { $skip: parseInt(offset) },
+    { $limit: parseInt(limit) },
+  ]);
+
+  return results;
+}
+
 export default async function handler(req, res) {
   const { method, query } = req;
 
@@ -35,66 +100,7 @@ export default async function handler(req, res) {
 
         switch (sort) {
           case 'hot':
-            const std = 0.4;
-            const mean = 0.31;
-            const engagementBonusCoef = 0.1;
-
-            const engagementBonus = {
-              $multiply: [
-                engagementBonusCoef,
-                {
-                  $ln: {
-                    $add: ['$interactions', 1],
-                  },
-                },
-              ],
-            };
-
-            const x = {
-              $divide: [
-                {
-                  $add: ['$votes', 1],
-                },
-                { $add: ['$interactions', 2] },
-              ],
-            };
-
-            results = await Post.aggregate([
-              { $match: {} },
-              // 1/s *sqrt(2pi) * e^(-1/2 * x-m/s)^2
-              {
-                $addFields: {
-                  rating: {
-                    $add: [
-                      {
-                        $multiply: [
-                          1 / (std * Math.sqrt(2 * Math.PI)),
-                          {
-                            $exp: {
-                              $multiply: [
-                                -0.5,
-                                {
-                                  $pow: [
-                                    {
-                                      $divide: [{ $subtract: [x, mean] }, std],
-                                    },
-                                    2,
-                                  ],
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                      },
-                      engagementBonus,
-                    ],
-                  },
-                },
-              },
-              { $sort: { rating: -1 } },
-              { $skip: parseInt(offset) },
-              { $limit: parseInt(limit) },
-            ]);
+            results = await getHotPosts(offset, limit);
             res.status(200).json(results);
 
             break;
@@ -123,6 +129,9 @@ export default async function handler(req, res) {
           default:
             // fallback to sorting by new
             postsLists = { date: -1 };
+            results = await getHotPosts(offset, limit);
+            res.status(200).json(results);
+            return;
         }
         results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 
