@@ -100,39 +100,39 @@ export default async function handler(req, res) {
 				switch (sort) {
 					case "hot":
 						results = await getHotPosts(offset, limit);
-						res.status(200).json(results);
-
 						break;
 					case "new":
 						postsLists = { date: -1 };
+						results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 						break;
 					case "popular":
 						postsLists = { interactions: -1 };
+						results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 						break;
 					case "old":
 						postsLists = { date: 1 };
+						results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 						break;
 					case "random":
 						results = await Post.aggregate([{ $sample: { size: limit } }]);
-						res.status(200).json(results);
-						return;
+						break;
 					case "disagreed":
 						postsLists = { votes: 1 };
+						results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 						break;
 					case "agreed":
 						postsLists = { votes: -1 };
+						results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 						break;
 					case "reported":
 						postsLists = { reports: -1 };
+						results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 						break;
 					default:
-						// fallback to sorting by new
+						// fallback to sorting by HOT
 						postsLists = { date: -1 };
 						results = await getHotPosts(offset, limit);
-						res.status(200).json(results);
-						return;
 				}
-				results = await Post.find().sort(postsLists).skip(offset).limit(limit);
 
 				res.status(200).json(results);
 			} catch (error) {
