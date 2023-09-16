@@ -7,7 +7,7 @@ export const config = {
 	},
 };
 
-async function getHotPosts(offset, limit) {
+async function getHotPosts(offset, limit, userId = "") {
 	const std = 0.4;
 	const mean = 0.31;
 	const engagementBonusCoef = 0.1;
@@ -34,6 +34,11 @@ async function getHotPosts(offset, limit) {
 
 	const results = await Post.aggregate([
 		{ $match: {} },
+		{
+			$match: {
+				$nor: [{ agree: { $elemMatch: { $eq: userId } } }, { disagree: { $elemMatch: { $eq: userId } } }],
+			},
+		},
 		// 1/s *sqrt(2pi) * e^(-1/2 * x-m/s)^2
 		{
 			$addFields: {
@@ -64,6 +69,7 @@ async function getHotPosts(offset, limit) {
 				},
 			},
 		},
+
 		{ $sort: { rating: -1 } },
 		{ $skip: parseInt(offset) },
 		{ $limit: parseInt(limit) },
@@ -78,6 +84,10 @@ export default async function handler(req, res) {
 	const limit = query.limit || 10; // default to 20
 	const offset = query.offset || 0;
 	const sort = req.query.sort;
+
+	const auth = req.headers.authorization;
+	const parts = auth.split(" ");
+	const decoded = Buffer.from(parts[1], "base64").toString("utf8");
 
 	await connect();
 
@@ -99,7 +109,7 @@ export default async function handler(req, res) {
 
 				switch (sort) {
 					case "hot":
-						results = await getHotPosts(offset, limit);
+						results = await getHotPosts(offset, limit, decoded);
 						break;
 					case "new":
 						postsLists = { date: -1 };
@@ -131,7 +141,7 @@ export default async function handler(req, res) {
 					default:
 						// fallback to sorting by HOT
 						postsLists = { date: -1 };
-						results = await getHotPosts(offset, limit);
+						results = await getHotPosts(offset, limit, decoded);
 				}
 
 				res.status(200).json(results);

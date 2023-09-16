@@ -25,16 +25,16 @@ import { env_url } from "/utils/api_url";
 // Google Analytics ID
 const TRACKING_ID = "UA-253199381-1"; // OUR_TRACKING_ID
 
-export async function getServerSideProps() {
-	const API_URL = env_url();
-	// process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
+// export async function getServerSideProps() {
+// 	const API_URL = env_url();
+// 	// process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 
-	const res = await fetch(`${API_URL}/posts?offset=0`);
-	const postsFromDB = await res.json();
-	return { props: { postsFromDB } };
-}
+// 	const res = await fetch(`${API_URL}/posts?offset=0`);
+// 	const postsFromDB = await res.json();
+// 	return { props: { postsFromDB } };
+// }
 
-export default function Home({ postsFromDB }) {
+export default function Home() {
 	const API_URL = env_url();
 
 	// key for sorting button
@@ -55,7 +55,7 @@ export default function Home({ postsFromDB }) {
 	const [animated, setAnimated] = useState({ left: false, right: false }); // Left and Right flashing animations
 	const [uuid, setUUID] = useState(null);
 	const [sortMethod, setSortMethod] = useState(0);
-	const [posts, setPosts] = useState(postsFromDB);
+	const [posts, setPosts] = useState([]);
 	const [hasMorePosts, setHasMorePosts] = useState(false);
 
 	// other hooks
@@ -63,9 +63,10 @@ export default function Home({ postsFromDB }) {
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
 
 	async function fetchPosts(type) {
-		// swap with "https://api.hottake.gg/posts"
 		try {
-			const response = await fetch(`${API_URL}/posts?sort=${type}`);
+			const response = await fetch(`${API_URL}/posts?sort=${type}`, {
+				headers: { Authorization: `Basic ${btoa(localStorage.getItem("uuid"))}` },
+			});
 			const results = await response.json();
 
 			// console.log(response[0]);
@@ -106,6 +107,11 @@ export default function Home({ postsFromDB }) {
 		// 		});
 		// }
 
+		(async () => {
+			const res = await fetchPosts("hot");
+			setPosts(res);
+		})();
+
 		setHasMorePosts(!(posts.length === 0));
 	}, []);
 
@@ -116,7 +122,9 @@ export default function Home({ postsFromDB }) {
 	async function loadMore() {
 		try {
 			console.log("Loading");
-			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`);
+			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`, {
+				headers: { Authorization: `Basic ${btoa(localStorage.getItem("uuid"))}` },
+			});
 			const loadedPosts = await res.json();
 			if (loadedPosts.length == 0) {
 				setHasMorePosts(false);
