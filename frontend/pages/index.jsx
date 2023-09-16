@@ -10,6 +10,7 @@ import { AiFillFire } from "react-icons/ai";
 import { PostCard } from "../components/PostCard";
 import { CreatePostModal } from "../components/CreatePostModal";
 import { Navbar } from "../components/Navbar";
+import FireLoadAnimation from "../components/FireLoadAnimation";
 import InfiniteScroll from "react-infinite-scroll-component";
 // Styling
 // prettier-ignore
@@ -190,47 +191,61 @@ export default function Home() {
 				</Text>
 			</Flex>
 
-			<InfiniteScroll
-				dataLength={posts.length}
-				next={loadMore}
-				hasMore={hasMorePosts}
-				scrollableTarget="scrollContainer"
-				style={{ overflow: "hidden" }}
-				// loader={<h4>Loading...</h4>}
-				// loader was showing up persistently...
-			>
-				<div id="scrollContainer" ref={scrollContainerRef} m={0} p={0} className={scrollContainer}>
-					{posts.map((post, i) => (
-						//TODO theres an error here...duplicate keys
-						<div key={`${post._id}${i}`} className={relative}>
-							{/* this is the left and right indicators */}
-							<div id="flexContainer" className={screenButtonContainer}>
-								<div
-									onClick={() => {
-										scrollContainerRef.current.scrollBy({ top: 50 });
-										setAnimated((prev) => ({ ...prev, left: true }));
-									}}
-									onAnimationEnd={() => setAnimated((prev) => ({ ...prev, left: false }))}
-									style={{ width: "50%", height: "100vh" }}
-									className={animated.left ? animateGreen : ""}
-								></div>
-								<div
-									onClick={() => {
-										scrollContainerRef.current.scrollBy({ top: 50 });
-										setAnimated((prev) => ({ ...prev, right: true }));
-									}}
-									onAnimationEnd={() => setAnimated((prev) => ({ ...prev, right: false }))}
-									style={{ width: "50%", height: "100vh" }}
-									className={animated.right ? animateRed : ""}
-								></div>
-							</div>
-							{/* actual card */}
+			{posts && posts.length !== 0 ? (
+				<InfiniteScroll
+					dataLength={posts.length}
+					next={loadMore}
+					hasMore={hasMorePosts}
+					scrollableTarget="scrollContainer"
+					style={{ overflow: "hidden" }}
+					// loader={<h4>Loading...</h4>}
+					// loader was showing up persistently...
+				>
+					<div id="scrollContainer" ref={scrollContainerRef} m={0} p={0} className={scrollContainer}>
+						{posts.map(
+							(
+								post,
+								i //TODO theres an error here...duplicate keys
+							) => (
+								<div key={`${post._id}${i}`} className={relative}>
+									{/* this is the left and right indicators */}
+									<div id="flexContainer" className={screenButtonContainer}>
+										<div
+											onClick={() => {
+												scrollContainerRef.current.scrollBy({ top: 50 });
+												setAnimated((prev) => ({ ...prev, left: true }));
+											}}
+											onAnimationEnd={() => setAnimated((prev) => ({ ...prev, left: false }))}
+											style={{ width: "50%", height: "100vh" }}
+											className={animated.left ? animateGreen : ""}
+										></div>
+										<div
+											onClick={() => {
+												scrollContainerRef.current.scrollBy({ top: 50 });
+												setAnimated((prev) => ({ ...prev, right: true }));
+											}}
+											onAnimationEnd={() => setAnimated((prev) => ({ ...prev, right: false }))}
+											style={{ width: "50%", height: "100vh" }}
+											className={animated.right ? animateRed : ""}
+										></div>
+									</div>
+									{/* actual card */}
 
-							<PostCard {...post} uuid={uuid} setAnimated={setAnimated} scrollContainerRef={scrollContainerRef} key={`${post._id}${i}`} />
-						</div>
-					))}
-				</div>
-			</InfiniteScroll>
+									<PostCard
+										{...post}
+										uuid={uuid}
+										setAnimated={setAnimated}
+										scrollContainerRef={scrollContainerRef}
+										key={`${post._id}${i}`}
+									/>
+								</div>
+							)
+						)}
+					</div>
+				</InfiniteScroll>
+			) : (
+				<FireLoadAnimation />
+			)}
 		</>
 	);
 }
