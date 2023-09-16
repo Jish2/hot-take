@@ -29,7 +29,9 @@ export async function getServerSideProps() {
 	const API_URL = env_url();
 	// process.env.NEXT_PUBLIC_API_URL || "https://hottake.gg/api";
 
-	const res = await fetch(`${API_URL}/posts?offset=0`);
+	const res = await fetch(`${API_URL}/posts?offset=0`, {
+		headers: { Authorization: `Basic ${uuid}` },
+	});
 	const postsFromDB = await res.json();
 	return { props: { postsFromDB } };
 }
@@ -63,9 +65,10 @@ export default function Home({ postsFromDB }) {
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
 
 	async function fetchPosts(type) {
-		// swap with "https://api.hottake.gg/posts"
 		try {
-			const response = await fetch(`${API_URL}/posts?sort=${type}`);
+			const response = await fetch(`${API_URL}/posts?sort=${type}`, {
+				headers: { Authorization: `Basic ${uuid}` },
+			});
 			const results = await response.json();
 
 			// console.log(response[0]);
@@ -116,7 +119,9 @@ export default function Home({ postsFromDB }) {
 	async function loadMore() {
 		try {
 			console.log("Loading");
-			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`);
+			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`, {
+				headers: { Authorization: `Basic ${uuid}` },
+			});
 			const loadedPosts = await res.json();
 			if (loadedPosts.length == 0) {
 				setHasMorePosts(false);
