@@ -261,8 +261,8 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 								if (hasShare) {
 									navigator
 										.share({
-											title: "Check out this hottake!",
-											text: title,
+											title: title,
+											text: "Check out this hottake!",
 											url: link,
 										})
 										.catch((error) => {
