@@ -6,6 +6,7 @@ import { Stack, Input, Divider, Container, Heading, Button, Card, CardHeader, Ca
 // Icons
 // prettier-ignore
 import { BsFillHandThumbsUpFill, BsFillHandThumbsDownFill, BsChat, BsReply } from "react-icons/bs";
+import { MdIosShare, MdWarningAmber } from "react-icons/md";
 // prettier-ignore
 import { AiOutlineFire, AiOutlineInfoCircle, AiOutlineWarning, AiFillHeart, AiOutlineSend } from "react-icons/ai";
 import { TfiShare } from "react-icons/tfi";
@@ -41,6 +42,8 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 	const lastComment = useRef(null);
 	const commentContainer = useRef(null);
 
+	const hasShare = !!navigator.share;
+
 	async function fetchComments() {
 		// on startup fetch comments
 		try {
@@ -72,7 +75,9 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 	function agreeWithPost() {
 		setAnimated((prev) => ({ ...prev, left: true }));
-		scrollContainerRef.current.scrollBy({ top: 50 });
+		setTimeout(() => {
+			scrollContainerRef.current.scrollBy({ top: 50 });
+		}, 800);
 
 		fetch(`${API_URL}/agree`, {
 			method: "POST",
@@ -112,7 +117,9 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 
 	function disagreeWithPost() {
 		setAnimated((prev) => ({ ...prev, right: true }));
-		scrollContainerRef.current.scrollBy({ top: 50 }); // scroll to next
+		setTimeout(() => {
+			scrollContainerRef.current.scrollBy({ top: 50 });
+		}, 800);
 
 		fetch(`${API_URL}/disagree`, {
 			method: "POST",
@@ -227,11 +234,11 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 							_hover={{ color: "var(--chakra-colors-gray-500)" }}
 							_active={{ transform: "scale(.9)" }}
 						>
-							<AiOutlineWarning className={iconStyle} />
+							<MdWarningAmber className={iconStyle} style={{ transform: "translateY(1.5px)" }} />
 						</Button>
 					</Tooltip>
-
-					<Tooltip label={"Total votes: " + interactions} isOpen={infoTooltip}>
+					{/* hide icon tooltip for now */}
+					{/* <Tooltip label={"Total votes: " + interactions} isOpen={infoTooltip}>
 						<Button
 							onMouseEnter={() => setInfoTooltip(true)}
 							onMouseLeave={() => setInfoTooltip(false)}
@@ -244,14 +251,30 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 						>
 							<AiOutlineInfoCircle className={iconStyle} />
 						</Button>
-					</Tooltip>
-					<Tooltip label="Click to copy sharable link!" isOpen={shareTooltip}>
+					</Tooltip> */}
+					<Tooltip label={hasShare ? "Share drawer opened!" : "Click to copy sharable link!"} isOpen={shareTooltip}>
 						<Button
 							onMouseEnter={() => setShareTooltip(true)}
 							onMouseLeave={() => setShareTooltip(false)}
 							onClick={() => {
-								setShareTooltip(true);
-								navigator.clipboard.writeText(`https://hottake.gg/post/${_id}`);
+								const link = `https://hottake.gg/post/${_id}`;
+								if (hasShare) {
+									navigator
+										.share({
+											title: "Check out this hottake!",
+											text: title,
+											url: link,
+										})
+										.catch((error) => {
+											if (error.message !== "Abort due to cancellation of share.") {
+												addToast(error.message);
+											}
+										});
+									setShareTooltip(false);
+								} else {
+									navigator.clipboard.writeText(link);
+									addSuccessToast("Copied to clipboard!");
+								}
 							}}
 							color="gray.300"
 							variant="ghost"
@@ -259,32 +282,44 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 							_hover={{ color: "var(--chakra-colors-gray-500)" }}
 							_active={{ transform: "scale(.9)" }}
 						>
-							<TfiShare className={iconStyle} />
+							<MdIosShare className={iconStyle} />
 						</Button>
 					</Tooltip>
 				</div>
 				{/* content */}
-				<CardBody p="16px">
+				<CardBody p="16px" pt="24px">
 					<Stack mt="6" spacing="3">
 						<Heading size="lg">{title}</Heading>
 					</Stack>
 				</CardBody>
 				{/* buttons */}
-				<CardBody p="16px">
+				<CardBody p="16px" pt="0">
 					{/* //agree heat and disagree div */}
 					<Flex style={{ width: "100%" }} gap="6px">
 						<Button
-							width="125px"
-							leftIcon={<BsFillHandThumbsUpFill />}
+							// width="125px"
+							// leftIcon={<BsFillHandThumbsUpFill />}
 							variant="outline"
 							colorScheme="teal"
 							color="#319795"
 							onClick={agreeWithPost}
 							style={{
 								backgroundColor: agree.includes(uuid) ? "#B2F5EA" : "white",
+								borderRadius: "24px",
+								width: "72px",
+								height: "72px",
+								borderWidth: "2px",
 							}}
 						>
-							<Text fontSize={{ base: "12px", sm: "15px" }}>{agree.length} Agree</Text>
+							{disagree.includes(uuid) || agree.includes(uuid) ? (
+								<div>
+									{agree.length}
+									<Icon as={BsFillHandThumbsUpFill} w={3} h={3} ml="1" />
+								</div>
+							) : (
+								<BsFillHandThumbsUpFill size={24} />
+							)}
+							{/* <Text fontSize={{ base: "12px", sm: "15px" }}>{agree.length} Agree</Text> */}
 						</Button>
 						<Spacer />
 						{/* <Button
@@ -301,29 +336,41 @@ export const PostCard = ({ uuid, setAnimated, scrollContainerRef, ...post }) => 
 								display: "flex",
 								justifyContent: "center",
 								alignItems: "center",
-								fontSize: "20px",
+								fontSize: "24px",
 								fontWeight: "600",
 								gap: "6px",
 								marginRight: "6px",
 								marginLeft: "6px",
 							}}
 						>
-							<Icon as={AiOutlineFire} w={5} h={5} />
+							<Icon as={AiOutlineFire} w={6} h={6} />
 							{formatNumberCompact(heat)}
 						</div>
 						<Spacer />
 						<Button
-							width="125px"
-							rightIcon={<BsFillHandThumbsDownFill />}
+							// width="125px"
+							// rightIcon={<BsFillHandThumbsDownFill />}
 							variant="outline"
 							colorScheme="red"
 							color="#ff5242"
 							onClick={disagreeWithPost}
 							style={{
 								backgroundColor: disagree.includes(uuid) ? "#FEB2B2" : "white",
+								borderRadius: "24px",
+								width: "72px",
+								height: "72px",
+								borderWidth: "2px",
 							}}
 						>
-							<Text fontSize={{ base: "12px", sm: "15px" }}>{disagree.length} Disagree</Text>
+							{disagree.includes(uuid) || agree.includes(uuid) ? (
+								<div>
+									<Icon as={BsFillHandThumbsDownFill} w={3} h={3} mr="1" />
+									{disagree.length}
+								</div>
+							) : (
+								<BsFillHandThumbsDownFill size={24} />
+							)}
+							{/* <Text fontSize={{ base: "12px", sm: "15px" }}>{disagree.length} Disagree</Text> */}
 						</Button>
 					</Flex>
 					{/* //agree heat disagree div ends */}
