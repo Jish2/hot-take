@@ -10,10 +10,12 @@ import { useDisclosure, Button, Icon, Flex, Text } from "@chakra-ui/react";
 // Icons
 // prettier-ignore
 import { BsPlusLg, BsSortNumericUp, BsFillStarFill, BsSortNumericDownAlt, BsShuffle, BsFillHandThumbsUpFill, BsFillHandThumbsDownFill } from "react-icons/bs";
+import { AiFillFire } from "react-icons/ai";
 // Components
 import { PostCard } from "../../components/PostCard";
 import { CreatePostModal } from "../../components/CreatePostModal";
 import { Navbar } from "../../components/Navbar";
+import FireLoadAnimation from "../../components/FireLoadAnimation";
 import InfiniteScroll from "react-infinite-scroll-component";
 // Styling
 // prettier-ignore
@@ -34,21 +36,22 @@ const API_URL = env_url();
 export async function getServerSideProps(context) {
 	const { id } = context.query;
 
-	const res = await fetch(`${API_URL}/posts?offset=0`);
-	const postsFromDB = await res.json();
 	try {
 		const res2 = await fetch(`${API_URL}/post?postID=${id}`);
 		const queriedPost = await res2.json();
-		return { props: { postsFromDB, queriedPost, id } };
+		return { props: { queriedPost, id } };
 	} catch (e) {
 		const queriedPost = "invalid";
-		return { props: { postsFromDB, queriedPost, id } };
+		return { props: { queriedPost, id } };
 	}
 }
 
-export default function Home({ postsFromDB, queriedPost, id }) {
+export default function Home({ queriedPost, id }) {
+	const API_URL = env_url();
+
 	// key for sorting button
 	const SORT_ICONS = [
+		{ icon: AiFillFire, name: "Hot", w: 6, h: 6 },
 		{ icon: BsSortNumericDownAlt, name: "New", w: 6, h: 6 },
 		{ icon: BsShuffle, name: "Random", w: 6, h: 6 },
 		{ icon: BsFillStarFill, name: "Popular", w: 4, h: 4 },
@@ -64,7 +67,7 @@ export default function Home({ postsFromDB, queriedPost, id }) {
 	const [animated, setAnimated] = useState({ left: false, right: false }); // Left and Right flashing animations
 	const [uuid, setUUID] = useState(null);
 	const [sortMethod, setSortMethod] = useState(0);
-	const [posts, setPosts] = useState(postsFromDB);
+	const [posts, setPosts] = useState([]);
 	const [hasMorePosts, setHasMorePosts] = useState(false);
 
 	// other hooks
@@ -72,9 +75,10 @@ export default function Home({ postsFromDB, queriedPost, id }) {
 	const { isOpen, onOpen, onClose } = useDisclosure(); // Modal state
 
 	async function fetchPosts(type) {
-		// swap with "https://api.hottake.gg/posts"
 		try {
-			const response = await fetch(`${API_URL}/posts?sort=${type}`);
+			const response = await fetch(`${API_URL}/posts?sort=${type}`, {
+				headers: { Authorization: `Basic ${btoa(localStorage.getItem("uuid"))}` },
+			});
 			const results = await response.json();
 
 			// console.log(response[0]);
@@ -104,32 +108,35 @@ export default function Home({ postsFromDB, queriedPost, id }) {
 			setUUID(localStorage.getItem("uuid"));
 		}
 
-		if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
-		setSortMethod(parseInt(localStorage.getItem("sort")));
-		if (localStorage.getItem("sort") !== "0") {
-			fetchPosts(SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase())
-				.then((res) => setPosts(res))
-				.catch((error) => {
-					console.error(error);
-					addToast(error?.response?.data || error.message);
-				});
-		}
+		// if (localStorage.getItem("sort") == null) localStorage.setItem("sort", "0");
+		// setSortMethod(parseInt(localStorage.getItem("sort")));
+		// if (localStorage.getItem("sort") !== "0") {
+		// 	fetchPosts(SORT_ICONS[parseInt(localStorage.getItem("sort")) % SORT_ICONS.length].name.toLowerCase())
+		// 		.then((res) => setPosts(res))
+		// 		.catch((error) => {
+		// 			console.error(error);
+		// 			addToast(error?.response?.data || error.message);
+		// 		});
+		// }
+
+		(async () => {
+			const res = await fetchPosts("hot");
+			if (queriedPost !== "invalid") {
+				const updatedPosts = res.filter((item) => item._id !== id);
+				setPosts([queriedPost, ...res]);
+			} else {
+				setPosts(res);
+			}
+		})();
 
 		setHasMorePosts(!(posts.length === 0));
-
-		if (queriedPost !== "invalid") {
-			const updatedPosts = postsFromDB.filter((item) => item._id !== id);
-			setPosts([queriedPost, ...updatedPosts]);
-		}
 	}, []);
-
-	useEffect(() => {
-		localStorage.setItem("sort", sortMethod);
-	}, [sortMethod]);
 
 	async function loadMore() {
 		try {
-			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`);
+			const res = await fetch(`${API_URL}/posts?offset=${posts.length}&sort=${SORT_ICONS[sortMethod].name.toLowerCase()}`, {
+				headers: { Authorization: `Basic ${btoa(localStorage.getItem("uuid"))}` },
+			});
 			const loadedPosts = await res.json();
 			if (loadedPosts.length == 0) {
 				setHasMorePosts(false);
@@ -199,47 +206,51 @@ export default function Home({ postsFromDB, queriedPost, id }) {
 				</Text>
 			</Flex>
 
-			<InfiniteScroll
-				dataLength={posts.length}
-				next={loadMore}
-				hasMore={hasMorePosts}
-				scrollableTarget="scrollContainer"
-				style={{ overflow: "hidden" }}
-				// loader={<h4>Loading...</h4>}
-				// loader was showing up persistently...
-			>
-				<div id="scrollContainer" ref={scrollContainerRef} m={0} p={0} className={scrollContainer}>
-					{posts.map((post, i) => (
-						//TODO theres an error here...duplicate keys
-						<div key={`${post._id}${i}`} className={relative}>
-							{/* this is the left and right indicators */}
-							<div id="flexContainer" className={screenButtonContainer}>
-								<div
-									onClick={() => {
-										scrollContainerRef.current.scrollBy({ top: 50 });
-										setAnimated((prev) => ({ ...prev, left: true }));
-									}}
-									onAnimationEnd={() => setAnimated((prev) => ({ ...prev, left: false }))}
-									style={{ width: "50%", height: "100vh" }}
-									className={animated.left ? animateGreen : ""}
-								></div>
-								<div
-									onClick={() => {
-										scrollContainerRef.current.scrollBy({ top: 50 });
-										setAnimated((prev) => ({ ...prev, right: true }));
-									}}
-									onAnimationEnd={() => setAnimated((prev) => ({ ...prev, right: false }))}
-									style={{ width: "50%", height: "100vh" }}
-									className={animated.right ? animateRed : ""}
-								></div>
-							</div>
-							{/* actual card */}
+			{posts && posts.length !== 0 ? (
+				<InfiniteScroll
+					dataLength={posts.length}
+					next={loadMore}
+					hasMore={hasMorePosts}
+					scrollableTarget="scrollContainer"
+					style={{ overflow: "hidden" }}
+					// loader={<h4>Loading...</h4>}
+					// loader was showing up persistently...
+				>
+					<div id="scrollContainer" ref={scrollContainerRef} m={0} p={0} className={scrollContainer}>
+						{posts.map((post, i) => (
+							//TODO theres an error here...duplicate keys
+							<div key={`${post._id}${i}`} className={relative}>
+								{/* this is the left and right indicators */}
+								<div id="flexContainer" className={screenButtonContainer}>
+									<div
+										onClick={() => {
+											scrollContainerRef.current.scrollBy({ top: 50 });
+											setAnimated((prev) => ({ ...prev, left: true }));
+										}}
+										onAnimationEnd={() => setAnimated((prev) => ({ ...prev, left: false }))}
+										style={{ width: "50%", height: "100vh" }}
+										className={animated.left ? animateGreen : ""}
+									></div>
+									<div
+										onClick={() => {
+											scrollContainerRef.current.scrollBy({ top: 50 });
+											setAnimated((prev) => ({ ...prev, right: true }));
+										}}
+										onAnimationEnd={() => setAnimated((prev) => ({ ...prev, right: false }))}
+										style={{ width: "50%", height: "100vh" }}
+										className={animated.right ? animateRed : ""}
+									></div>
+								</div>
+								{/* actual card */}
 
-							<PostCard {...post} uuid={uuid} setAnimated={setAnimated} scrollContainerRef={scrollContainerRef} key={`${post._id}${i}`} />
-						</div>
-					))}
-				</div>
-			</InfiniteScroll>
+								<PostCard {...post} uuid={uuid} setAnimated={setAnimated} scrollContainerRef={scrollContainerRef} key={`${post._id}${i}`} />
+							</div>
+						))}
+					</div>
+				</InfiniteScroll>
+			) : (
+				<FireLoadAnimation />
+			)}
 		</>
 	);
 }
