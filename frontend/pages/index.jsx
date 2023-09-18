@@ -39,8 +39,8 @@ export default function Home({ postsFromDB }) {
 
   // key for sorting button
   const SORT_ICONS = [
-    { icon: AiFillFire, name: 'Hot', w: 6, h: 6 },
     { icon: BsSortNumericDownAlt, name: 'New', w: 6, h: 6 },
+    { icon: AiFillFire, name: 'Hot', w: 6, h: 6 },
     { icon: BsShuffle, name: 'Random', w: 6, h: 6 },
     { icon: BsFillStarFill, name: 'Popular', w: 4, h: 4 },
     { icon: BsFillHandThumbsDownFill, name: 'Disagreed', w: 5, h: 5 },
