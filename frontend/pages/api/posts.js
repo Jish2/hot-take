@@ -161,9 +161,13 @@ export default async function handler(req, res) {
               .limit(limit);
             break;
           default:
-            // fallback to sorting by HOT
+            // fallback to sorting by NEW
             postsLists = { date: -1 };
-            results = await getHotPosts(offset, limit);
+            results = await Post.find()
+              .sort(postsLists)
+              .skip(offset)
+              .limit(limit);
+            break;
         }
 
         res.status(200).json(results);
