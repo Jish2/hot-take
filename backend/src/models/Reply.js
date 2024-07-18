@@ -9,11 +9,11 @@ const ObjectId = Schema.ObjectId;
 // identification (auto generated)
 
 const ReplySchema = new Schema(
-	{
-		content: { type: String, required: true },
-		commentID: { type: String, required: true },
-	},
-	{ timestamps: true }
+  {
+    content: { type: String, required: true },
+    commentID: { type: String, required: true },
+  },
+  { timestamps: true },
 );
 
 const ReplyModel = mongoose.model("Reply", ReplySchema);

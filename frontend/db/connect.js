@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const MONGODB_URI = process.env.MONGO_URL;
 
 if (!MONGODB_URI) {
-	throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
+  throw new Error(
+    "Please define the MONGODB_URI environment variable inside .env.local",
+  );
 }
 
 // Local dev method
@@ -83,12 +85,12 @@ if (!MONGODB_URI) {
 // }
 
 async function connect() {
-	mongoose.set("strictQuery", true);
-	mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+  mongoose.set("strictQuery", true);
+  mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
 
-	// alt method
-	// const conn = mongoose.createConnection(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
-	// await conn.asPromise();
+  // alt method
+  // const conn = mongoose.createConnection(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+  // await conn.asPromise();
 }
 
 export default connect;
