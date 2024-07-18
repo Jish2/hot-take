@@ -9,15 +9,16 @@ const ObjectId = Schema.ObjectId;
 // identification (auto generated)
 
 const CommentSchema = new Schema({
-	date: { type: Date, required: true },
-	content: { type: String, required: true },
-	postID: { type: String, required: true },
-	replies: [
-		{
-			date: Date,
-			content: String,
-		},
-	],
+  date: { type: Date, required: true },
+  content: { type: String, required: true },
+  postID: { type: String, required: true },
+  replies: [
+    {
+      date: Date,
+      content: String,
+    },
+  ],
 });
 
-export default mongoose.models.Comment || mongoose.model("Comment", CommentSchema);
+export default mongoose.models.Comment ||
+  mongoose.model("Comment", CommentSchema);

@@ -9,22 +9,22 @@ const ObjectId = Schema.ObjectId;
 // identification (auto generated)
 
 const PostSchema = new Schema({
-	title: { type: String, required: true },
-	agree: { type: [String], required: true },
-	disagree: { type: [String], required: true },
-	votes: { type: Number, required: true },
-	interactions: { type: Number, required: true },
-	reports: { type: [String], required: true },
-	date: { type: Date, required: true, immutable: true },
+  title: { type: String, required: true },
+  agree: { type: [String], required: true },
+  disagree: { type: [String], required: true },
+  votes: { type: Number, required: true },
+  interactions: { type: Number, required: true },
+  reports: { type: [String], required: true },
+  date: { type: Date, required: true, immutable: true },
 });
 
 // middleware populates votes and interactions
 PostSchema.pre("save", function (next) {
-	let agreeLength = this.agree.length;
-	let disagreeLength = this.disagree.length;
-	this.votes = agreeLength - disagreeLength;
-	this.interactions = agreeLength + disagreeLength;
-	next();
+  let agreeLength = this.agree.length;
+  let disagreeLength = this.disagree.length;
+  this.votes = agreeLength - disagreeLength;
+  this.interactions = agreeLength + disagreeLength;
+  next();
 });
 
 PostSchema.index({ title: "text" });
