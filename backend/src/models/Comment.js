@@ -10,15 +10,15 @@ import Reply from "./Reply.js";
 // identification (auto generated)
 
 const CommentSchema = new Schema({
-	date: { type: Date, required: true },
-	content: { type: String, required: true },
-	postID: { type: String, required: true },
-	replies: [
-		{
-			date: Date,
-			content: String,
-		},
-	],
+  date: { type: Date, required: true },
+  content: { type: String, required: true },
+  postID: { type: String, required: true },
+  replies: [
+    {
+      date: Date,
+      content: String,
+    },
+  ],
 });
 
 const CommentModel = mongoose.model("Comment", CommentSchema);
